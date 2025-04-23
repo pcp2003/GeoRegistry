@@ -710,4 +710,58 @@ class CadastroTest {
         CadastroTestLogger.logSuccess("Teste testHandleLocation concluído com sucesso");
         CadastroTestLogger.logTestEnd("testHandleLocation");
     }
+
+    @Test
+    void testCalculateAverageArea() throws Exception {
+        CadastroTestLogger.logTestStart("testCalculateAverageArea");
+        
+        // Obter cadastros do arquivo CSV
+        List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
+        CadastroTestLogger.log("Total de cadastros carregados: " + cadastros.size());
+        
+        // Verificar se temos cadastros
+        assertNotNull(cadastros, "A lista de cadastros não deve ser nula");
+        assertFalse(cadastros.isEmpty(), "A lista de cadastros não deve estar vazia");
+        
+        // Testar cálculo de área média para uma freguesia específica
+        String freguesia = "Arco da Calheta";
+        double mediaFreguesia = Cadastro.calculateAverageArea(cadastros, freguesia, null, null);
+        CadastroTestLogger.log("Área média da freguesia " + freguesia + ": " + mediaFreguesia);
+        assertTrue(mediaFreguesia > 0, "A área média deve ser maior que zero");
+        
+        // Testar cálculo de área média para um município específico
+        String municipio = "Calheta";
+        double mediaMunicipio = Cadastro.calculateAverageArea(cadastros, null, municipio, null);
+        CadastroTestLogger.log("Área média do município " + municipio + ": " + mediaMunicipio);
+        assertTrue(mediaMunicipio > 0, "A área média deve ser maior que zero");
+        
+        // Testar cálculo de área média para um concelho específico
+        String concelho = "Ilha da Madeira (Madeira)";
+        double mediaConcelho = Cadastro.calculateAverageArea(cadastros, null, null, concelho);
+        CadastroTestLogger.log("Área média do concelho " + concelho + ": " + mediaConcelho);
+        assertTrue(mediaConcelho > 0, "A área média deve ser maior que zero");
+        
+        // Testar cálculo de área média para uma combinação de freguesia e município
+        double mediaFreguesiaMunicipio = Cadastro.calculateAverageArea(cadastros, freguesia, municipio, null);
+        CadastroTestLogger.log("Área média da freguesia " + freguesia + " no município " + municipio + ": " + mediaFreguesiaMunicipio);
+        assertTrue(mediaFreguesiaMunicipio > 0, "A área média deve ser maior que zero");
+        
+        // Testar cálculo de área média para uma combinação de município e concelho
+        double mediaMunicipioConcelho = Cadastro.calculateAverageArea(cadastros, null, municipio, concelho);
+        CadastroTestLogger.log("Área média do município " + municipio + " no concelho " + concelho + ": " + mediaMunicipioConcelho);
+        assertTrue(mediaMunicipioConcelho > 0, "A área média deve ser maior que zero");
+        
+        // Testar cálculo de área média para uma combinação completa
+        double mediaCompleta = Cadastro.calculateAverageArea(cadastros, freguesia, municipio, concelho);
+        CadastroTestLogger.log("Área média da freguesia " + freguesia + " no município " + municipio + " do concelho " + concelho + ": " + mediaCompleta);
+        assertTrue(mediaCompleta > 0, "A área média deve ser maior que zero");
+        
+        // Testar exceção para área inexistente
+        assertThrows(IllegalArgumentException.class, () -> {
+            Cadastro.calculateAverageArea(cadastros, "AreaInexistente", null, null);
+        }, "Deve lançar exceção para área inexistente");
+        
+        CadastroTestLogger.logSuccess("Teste testCalculateAverageArea concluído com sucesso");
+        CadastroTestLogger.logTestEnd("testCalculateAverageArea");
+    }
 }

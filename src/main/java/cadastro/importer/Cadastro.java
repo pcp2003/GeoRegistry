@@ -263,6 +263,55 @@ public class Cadastro {
         }
         return cadastros;
     }
+    
+    /**
+     * Calcula a área média das propriedades para uma área geográfica/administrativa específica.
+     * 
+     * @param cadastros Lista de cadastros
+     * @param freguesia Nome da freguesia (pode ser null)
+     * @param municipio Nome do município (pode ser null)
+     * @param concelho Nome do concelho (pode ser null)
+     * @return Área média das propriedades na área especificada
+     * @throws IllegalArgumentException Se não houver propriedades na área ou se nenhum parâmetro for fornecido
+     */
+    public static double calculateAverageArea(List<Cadastro> cadastros, String freguesia, String municipio, String concelho) {
+        if (cadastros == null || cadastros.isEmpty()) {
+            throw new IllegalArgumentException("Lista de cadastros não pode ser nula ou vazia");
+        }
+
+        if (freguesia == null && municipio == null && concelho == null) {
+            throw new IllegalArgumentException("Pelo menos um parâmetro de localização deve ser fornecido");
+        }
+
+        // Filtrar cadastros pela área especificada
+        List<Cadastro> filteredCadastros = cadastros.stream()
+            .filter(cadastro -> {
+                List<String> locations = cadastro.getLocation();
+                if (locations.size() < 3) return false;
+                
+                boolean matchesFreguesia = freguesia == null || locations.get(0).equals(freguesia);
+                boolean matchesMunicipio = municipio == null || locations.get(1).equals(municipio);
+                boolean matchesConcelho = concelho == null || locations.get(2).equals(concelho);
+                
+                return matchesFreguesia && matchesMunicipio && matchesConcelho;
+            })
+            .toList();
+
+        if (filteredCadastros.isEmpty()) {
+            StringBuilder areaInfo = new StringBuilder("Não há propriedades na área especificada: ");
+            if (freguesia != null) areaInfo.append("Freguesia=").append(freguesia).append(" ");
+            if (municipio != null) areaInfo.append("Município=").append(municipio).append(" ");
+            if (concelho != null) areaInfo.append("Concelho=").append(concelho);
+            throw new IllegalArgumentException(areaInfo.toString());
+        }
+
+        // Calcular a área média
+        double totalArea = filteredCadastros.stream()
+            .mapToDouble(Cadastro::getArea)
+            .sum();
+
+        return totalArea / filteredCadastros.size();
+    }
 
     /**
      * Retorna uma representação em string do cadastro.
