@@ -15,6 +15,12 @@ public class CadastroConstants {
     public static final int SORT_BY_AREA = 2;
     /** Constante para ordenação por proprietário */
     public static final int SORT_BY_OWNER = 3;
+    /** Constante para ordenação por distrito */
+    public static final int SORT_BY_DISTRICT = 4;
+    /** Constante para ordenação por município */
+    public static final int SORT_BY_MUNICIPALITY = 5;
+    /** Constante para ordenação por concelho */
+    public static final int SORT_BY_COUNTY = 6;
 
     /** Índice do campo ID no CSV */
     public static final int ID_INDEX = 0;
@@ -26,8 +32,12 @@ public class CadastroConstants {
     public static final int SHAPE_INDEX = 5;
     /** Índice do campo proprietário no CSV */
     public static final int OWNER_INDEX = 6;
-    /** Índice inicial das localizações no CSV */
-    public static final int LOCATION_START_INDEX = 7;
+    /** Índice do campo Freguesia no CSV */
+    public static final int DISTRICT_INDEX = 7;
+    /** Índice do campo Municipio no CSV */
+    public static final int MUNICIPALITY_INDEX = 8;
+    /** Índice do campo Concelho no CSV */
+    public static final int COUNTY_INDEX = 9;
 
     /** Valor que indica localização não disponível no CSV */
     public static final String NA_VALUE = "NA";

@@ -30,7 +30,6 @@ public class GUI extends JFrame {
     private int cadastrosResultPointer;
     private final List<JButton> sortButtons = new ArrayList<>();
     private List<Cadastro> cadastros;
-    private PropertyGraph propertyGraph;
 
     /**
      * Construtor da classe GUI.
@@ -150,8 +149,15 @@ public class GUI extends JFrame {
 
     private void initializeSortButtons() {
         sortButtons.clear();
-        int[] sortTypes = {CadastroConstants.SORT_BY_ID, CadastroConstants.SORT_BY_LENGTH, 
-                          CadastroConstants.SORT_BY_AREA, CadastroConstants.SORT_BY_OWNER};
+        int[] sortTypes = {
+            CadastroConstants.SORT_BY_ID, 
+            CadastroConstants.SORT_BY_LENGTH, 
+            CadastroConstants.SORT_BY_AREA, 
+            CadastroConstants.SORT_BY_OWNER,
+            CadastroConstants.SORT_BY_DISTRICT,
+            CadastroConstants.SORT_BY_MUNICIPALITY,
+            CadastroConstants.SORT_BY_COUNTY
+        };
 
         for (int i = 0; i < GUIConstants.SORT_BUTTON_LABELS.length; i++) {
             JButton button = new JButton(GUIConstants.SORT_BUTTON_LABELS[i]);
@@ -273,12 +279,20 @@ public class GUI extends JFrame {
             JPanel cardPanel = new JPanel(new BorderLayout());
             cardPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
+            List<String> location = cadastro.getLocation();
+            String district = location.size() > 0 ? location.get(0) : "N/A";
+            String municipality = location.size() > 1 ? location.get(1) : "N/A";
+            String county = location.size() > 2 ? location.get(2) : "N/A";
+
             JLabel infoLabel = new JLabel(
                     String.format(GUIConstants.CADASTRO_INFO_FORMAT,
                             cadastro.getId(),
                             cadastro.getOwner(),
                             cadastro.getArea(),
-                            cadastro.getLength()));
+                            cadastro.getLength(),
+                            district,
+                            municipality,
+                            county));
 
             cardPanel.add(infoLabel, BorderLayout.CENTER);
             cardPanel.add(cadastroButton, BorderLayout.SOUTH);

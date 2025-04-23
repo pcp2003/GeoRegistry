@@ -157,10 +157,24 @@ public class Cadastro {
      * @return Lista de localizações processadas
      */
     private List<String> handleLocation(CSVRecord record) {
-        return record.stream()
-                .skip(CadastroConstants.LOCATION_START_INDEX)
-                .filter(s -> !s.equals(CadastroConstants.NA_VALUE))
-                .toList();
+        // Obter as localizações usando os índices específicos
+        String freguesia = record.get(CadastroConstants.DISTRICT_INDEX);
+        String municipio = record.get(CadastroConstants.MUNICIPALITY_INDEX);
+        String concelho = record.get(CadastroConstants.COUNTY_INDEX);
+        
+        // Verificar se alguma localização é nula
+        if (freguesia.equals(CadastroConstants.NA_VALUE) || municipio.equals(CadastroConstants.NA_VALUE) || concelho.equals(CadastroConstants.NA_VALUE)) {
+            throw new IllegalArgumentException("Localizações não podem ser nulas para o registro: " + id);
+        }
+        
+        List<String> locations = new ArrayList<>();
+
+        // Adicionar apenas valores não-NA
+        locations.add(freguesia);
+        locations.add(municipio);
+        locations.add(concelho);
+        
+        return locations;
     }
 
     /**
@@ -223,6 +237,29 @@ public class Cadastro {
             case CadastroConstants.SORT_BY_OWNER:
                 cadastros.sort(Comparator.comparingInt(Cadastro::getOwner));
                 break;
+            case CadastroConstants.SORT_BY_DISTRICT:
+                cadastros.sort((c1, c2) -> {
+                    String district1 = c1.getLocation().get(0);
+                    String district2 = c2.getLocation().get(0);
+                    return district1.compareToIgnoreCase(district2);
+                });
+                break;
+            case CadastroConstants.SORT_BY_MUNICIPALITY:
+                cadastros.sort((c1, c2) -> {
+                    String municipality1 = c1.getLocation().get(1);
+                    String municipality2 = c2.getLocation().get(1);
+                    return municipality1.compareToIgnoreCase(municipality2);
+                });
+                break;
+            case CadastroConstants.SORT_BY_COUNTY:
+                cadastros.sort((c1, c2) -> {
+                    String county1 = c1.getLocation().get(2);
+                    String county2 = c2.getLocation().get(2);
+                    return county1.compareToIgnoreCase(county2);
+                });
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid sort type: " + sortType);
         }
         return cadastros;
     }

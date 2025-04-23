@@ -32,7 +32,7 @@ public class GUIConstants {
     public static final String NULL_CADASTRO_ERROR = "Cadastro não pode ser nulo";
 
     // Constantes para formatação
-    public static final String CADASTRO_INFO_FORMAT = "<html>Id: %s<br>Proprietário: %s<br>Área: %s<br>Comprimento: %s</html>";
+    public static final String CADASTRO_INFO_FORMAT = "<html>Id: %s<br>Proprietário: %s<br>Área: %s<br>Comprimento: %s<br>Distrito: %s<br>Município: %s<br>Concelho: %s</html>";
     public static final String SHAPE_WINDOW_TITLE = "Shape - ";
 
     // Constantes para ordenação
@@ -40,7 +40,10 @@ public class GUIConstants {
         "Sort by ID",
         "Sort by Length",
         "Sort by Area",
-        "Sort by Owner"
+        "Sort by Owner",
+        "Sort by District",
+        "Sort by Municipality",
+        "Sort by County"
     };
 
     // Constante para carregamento de cadastros

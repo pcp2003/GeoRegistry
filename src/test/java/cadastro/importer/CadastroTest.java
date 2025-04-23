@@ -659,4 +659,55 @@ class CadastroTest {
         CadastroTestLogger.logSuccess("Teste getLocation concluído com sucesso");
         CadastroTestLogger.logTestEnd("getLocation");
     }
+
+    @Test
+    void testHandleLocation() throws Exception {
+        CadastroTestLogger.logTestStart("testHandleLocation");
+        
+        // Obter cadastros do arquivo CSV
+        List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
+        CadastroTestLogger.log("Total de cadastros carregados: " + cadastros.size());
+        
+        // Verificar se temos cadastros
+        assertNotNull(cadastros, "A lista de cadastros não deve ser nula");
+        assertFalse(cadastros.isEmpty(), "A lista de cadastros não deve estar vazia");
+        
+        // Testar o primeiro cadastro
+        Cadastro cadastro = cadastros.get(0);
+        List<String> locations = cadastro.getLocation();
+        CadastroTestLogger.log("Localizações do primeiro cadastro: " + locations);
+        
+        // Verificar se as localizações foram extraídas corretamente
+        assertNotNull(locations, "A lista de localizações não deve ser nula");
+        assertFalse(locations.isEmpty(), "A lista de localizações não deve estar vazia");
+        
+        // Verificar se não há valores "NA" na lista
+        assertFalse(locations.contains(CadastroConstants.NA_VALUE), 
+            "A lista de localizações não deve conter valores 'NA'");
+        
+        // Verificar se a ordem das localizações está correta
+        // Assumindo que o CSV tem a ordem: Freguesia, Municipio, Concelho
+        if (locations.size() >= 3) {
+            CadastroTestLogger.log("Freguesia: " + locations.get(0));
+            CadastroTestLogger.log("Municipio: " + locations.get(1));
+            CadastroTestLogger.log("Concelho: " + locations.get(2));
+            
+            assertNotNull(locations.get(0), "Freguesia não deve ser nula");
+            assertNotNull(locations.get(1), "Municipio não deve ser nulo");
+            assertNotNull(locations.get(2), "Concelho não deve ser nulo");
+        } else {
+            CadastroTestLogger.logError("Lista de localizações tem menos de 3 elementos: " + locations.size());
+            fail("A lista de localizações deve ter pelo menos 3 elementos (Freguesia, Municipio, Concelho)");
+        }
+        
+        // Verificar se os valores não estão vazios
+        for (int i = 0; i < locations.size(); i++) {
+            String location = locations.get(i);
+            assertFalse(location.trim().isEmpty(), 
+                "Localização " + i + " não deve estar vazia: " + location);
+        }
+        
+        CadastroTestLogger.logSuccess("Teste testHandleLocation concluído com sucesso");
+        CadastroTestLogger.logTestEnd("testHandleLocation");
+    }
 }
