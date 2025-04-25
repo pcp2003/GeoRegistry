@@ -53,4 +53,13 @@ public class GUIConstants {
     public static final String VIEW_GRAPH_BUTTON_TEXT = "Visualizar Grafo";
     public static final String GRAPH_WINDOW_TITLE = "Visualização do Grafo de Propriedades";
     public static final String GRAPH_ERROR = "Erro ao criar grafo de propriedades";
+
+    // Average Area Panel Constants
+    public static final String AVERAGE_AREA_BUTTON_TEXT = "Calcular Média";
+    public static final String AVERAGE_AREA_WINDOW_TITLE = "Cálculo de Área Média";
+    public static final String DISTRICT_LABEL = "Distrito:";
+    public static final String MUNICIPALITY_LABEL = "Município:";
+    public static final String COUNTY_LABEL = "Concelho:";
+    public static final String AVERAGE_AREA_RESULT_FORMAT = "Área média: %.2f";
+    public static final String AVERAGE_AREA_ERROR = "Erro ao calcular área média";
 } 

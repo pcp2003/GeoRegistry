@@ -26,6 +26,7 @@ public class GUI extends JFrame {
     private final JButton importButton = new JButton(GUIConstants.IMPORT_BUTTON_TEXT);
     private final JButton showMore = new JButton(GUIConstants.SHOW_MORE_BUTTON_TEXT);
     private final JButton viewGraphButton = new JButton(GUIConstants.VIEW_GRAPH_BUTTON_TEXT);
+    private final JButton calculateAverageButton = new JButton(GUIConstants.AVERAGE_AREA_BUTTON_TEXT);
     private final JPanel resultsPanel = new JPanel();
     private int cadastrosResultPointer;
     private final List<JButton> sortButtons = new ArrayList<>();
@@ -57,6 +58,7 @@ public class GUI extends JFrame {
         csvPathInput.setEditable(false);
         resultsPanel.setLayout(new BoxLayout(resultsPanel, BoxLayout.Y_AXIS));
         viewGraphButton.setEnabled(false);
+        calculateAverageButton.setEnabled(false);
     }
 
     private void setupLayout() {
@@ -66,6 +68,7 @@ public class GUI extends JFrame {
         buttonPanel.add(browseButton);
         buttonPanel.add(importButton);
         buttonPanel.add(viewGraphButton);
+        buttonPanel.add(calculateAverageButton);
 
         filePanel.add(fileLabel, BorderLayout.WEST);
         filePanel.add(csvPathInput, BorderLayout.CENTER);
@@ -83,6 +86,7 @@ public class GUI extends JFrame {
         importButton.addActionListener(this::importCadastros);
         showMore.addActionListener(this::moreResults);
         viewGraphButton.addActionListener(this::showGraphVisualization);
+        calculateAverageButton.addActionListener(this::showAverageAreaPanel);
     }
 
     /**
@@ -134,8 +138,9 @@ public class GUI extends JFrame {
                 throw new IllegalStateException(GUIConstants.EMPTY_FILE_ERROR);
             }
 
-            // Habilitar o botão de visualização do grafo
+            // Habilitar os botões de visualização do grafo e cálculo de média
             viewGraphButton.setEnabled(true);
+            calculateAverageButton.setEnabled(true);
 
             initializeSortButtons();
             displayResults();
@@ -397,6 +402,67 @@ public class GUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "Erro ao visualizar grafo: " + ex.getMessage(),
+                    GUIConstants.ERROR_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Exibe o painel para cálculo da área média.
+     * 
+     * @param e O evento de ação que disparou o método
+     */
+    private void showAverageAreaPanel(ActionEvent e) {
+        try {
+            if (cadastros == null || cadastros.isEmpty()) {
+                throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "calcular área média");
+            }
+
+            JFrame averageFrame = new JFrame(GUIConstants.AVERAGE_AREA_WINDOW_TITLE);
+            averageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            averageFrame.setSize(400, 200);
+            averageFrame.setLocationRelativeTo(this);
+
+            JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
+            panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            JTextField districtField = new JTextField();
+            JTextField municipalityField = new JTextField();
+            JTextField countyField = new JTextField();
+            JLabel resultLabel = new JLabel();
+
+            panel.add(new JLabel(GUIConstants.DISTRICT_LABEL));
+            panel.add(districtField);
+            panel.add(new JLabel(GUIConstants.MUNICIPALITY_LABEL));
+            panel.add(municipalityField);
+            panel.add(new JLabel(GUIConstants.COUNTY_LABEL));
+            panel.add(countyField);
+
+            JButton calculateButton = new JButton(GUIConstants.AVERAGE_AREA_BUTTON_TEXT);
+            calculateButton.addActionListener(_ -> {
+                try {
+                    String district = districtField.getText().isEmpty() ? null : districtField.getText();
+                    String municipality = municipalityField.getText().isEmpty() ? null : municipalityField.getText();
+                    String county = countyField.getText().isEmpty() ? null : countyField.getText();
+
+                    double averageArea = Cadastro.calculateAverageArea(cadastros, district, municipality, county);
+                    resultLabel.setText(String.format(GUIConstants.AVERAGE_AREA_RESULT_FORMAT, averageArea));
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(averageFrame,
+                            ex.getMessage(),
+                            GUIConstants.ERROR_TITLE,
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            });
+
+            panel.add(calculateButton);
+            panel.add(resultLabel);
+
+            averageFrame.add(panel);
+            averageFrame.setVisible(true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    GUIConstants.AVERAGE_AREA_ERROR + ": " + ex.getMessage(),
                     GUIConstants.ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
