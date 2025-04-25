@@ -7,7 +7,7 @@ import org.locationtech.jts.geom.TopologyException;
 import java.util.*;
 
 /**
- * Classe que representa um grafo de propriedades, onde os vértices são cadastros
+ * Classe que representa um grafo de propriedades, onde os vértices são cadastros (propriedades)
  * e as arestas representam adjacências físicas entre as propriedades.
  * 
  * @author [Lei-G]

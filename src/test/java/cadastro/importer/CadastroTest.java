@@ -1,7 +1,7 @@
 package cadastro.importer;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.apache.commons.csv.CSVFormat;
@@ -41,40 +41,35 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class CadastroTest {
     private static final String CSV_PATH = new File("Dados/Madeira-Moodle-1.1.csv").getAbsolutePath();
+    private static List<Cadastro> cadastros;
+    private static CSVRecord validRecord;
 
-    private CSVRecord validRecord;
-
-    @BeforeEach
-    void setUp() throws Exception {
-        CadastroTestLogger.log("Iniciando setup do teste");
-        CadastroTestLogger.log("Caminho do arquivo CSV: " + CSV_PATH);
-
+    @BeforeAll
+    static void setUp() throws Exception {
+        CadastroTestLogger.log("=== Iniciando setup dos testes ===");
+        CadastroTestLogger.log("Carregando arquivo: " + CSV_PATH);
+        
         File csvFile = new File(CSV_PATH);
         if (!csvFile.exists()) {
-            CadastroTestLogger.logError("Arquivo CSV não encontrado em: " + CSV_PATH);
-            throw new IllegalStateException("Arquivo CSV não encontrado");
+            throw new IllegalStateException("Arquivo CSV não encontrado em: " + CSV_PATH);
         }
-
-        // Lê o arquivo CSV
+        
         try (FileReader reader = new FileReader(csvFile);
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-
-            CadastroTestLogger.logSuccess("Arquivo CSV aberto com sucesso");
+             CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
+            
             List<CSVRecord> records = parser.getRecords();
-            CadastroTestLogger.log("Total de registros lidos: " + records.size());
-
-            if (records.size() >= 3) { // Pelo menos 2 registros + cabeçalho
-                CadastroTestLogger.log("Criando registros de teste");
+            CadastroTestLogger.log("Registros encontrados: " + records.size());
+            
+            if (records.size() > 1) {
                 validRecord = records.get(1);
-                CadastroTestLogger.logSuccess("Registros criados com sucesso");
+                cadastros = Cadastro.getCadastros(CSV_PATH);
+                CadastroTestLogger.logSuccess("Cadastros de teste criados com sucesso");
             } else {
-                CadastroTestLogger.logError("Arquivo CSV não contém registros suficientes");
                 throw new IllegalStateException("Arquivo CSV não contém registros suficientes");
             }
-        } catch (Exception e) {
-            CadastroTestLogger.logError("Erro ao ler arquivo CSV: " + e.getMessage());
-            throw e;
         }
+        
+        CadastroTestLogger.log("=== Setup concluído ===\n");
     }
 
     @AfterAll
@@ -84,23 +79,27 @@ class CadastroTest {
 
     @Test
     void constructor() throws Exception {
-        CadastroTestLogger.logTestStart("constructor");
+        CadastroTestLogger.logTestStart("Construtor do Cadastro");
+        
+        CadastroTestLogger.log("Criando cadastro com registro válido");
         Cadastro cadastro = new Cadastro(validRecord);
-
+        
+        CadastroTestLogger.log("Verificando atributos do cadastro");
         assertNotNull(cadastro, "O cadastro deve ser criado");
         assertNotNull(cadastro.getId(), "O ID deve ser definido");
         assertNotNull(cadastro.getOwner(), "O proprietário deve ser definido");
         assertNotNull(cadastro.getArea(), "A área deve ser definida");
         assertNotNull(cadastro.getLength(), "O comprimento deve ser definido");
         assertNotNull(cadastro.getShape(), "A forma deve ser definida");
-        CadastroTestLogger.logSuccess("Teste constructor concluído com sucesso");
-        CadastroTestLogger.logTestEnd("constructor");
+        
+        CadastroTestLogger.logSuccess("Cadastro criado com sucesso");
+        CadastroTestLogger.logTestEnd("Construtor do Cadastro");
     }
 
     @Test
     void constructorInvalid1() {
-        CadastroTestLogger.logTestStart("constructorInvalid1");
-        // Cria um registro CSV inválido manualmente
+        CadastroTestLogger.logTestStart("Construtor com ID inválido");
+        
         String[] invalidValues = {
                 "a", // id invalido
                 "7343148", // random par_id
@@ -112,18 +111,24 @@ class CadastroTest {
                 "Lisboa", // location1
                 "Portugal" // location2
         };
+        
+        CadastroTestLogger.log("Testando criação com ID inválido: " + invalidValues[0]);
+        
         try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
+             CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
+            
             CSVRecord invalidRecord = parser.getRecords().get(0);
-
             assertThrows(IllegalArgumentException.class, () -> {
                 new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
+            }, "Deve lançar exceção ao criar cadastro com ID inválido");
+            
+            CadastroTestLogger.logSuccess("Exceção lançada corretamente para ID inválido");
         } catch (Exception e) {
+            CadastroTestLogger.logError("Erro ao criar registro CSV inválido: " + e.getMessage());
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste constructorInvalid1 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("constructorInvalid1");
+        
+        CadastroTestLogger.logTestEnd("Construtor com ID inválido");
     }
 
     @Test
@@ -713,30 +718,29 @@ class CadastroTest {
 
     @Test
     void testCalculateAverageArea() throws Exception {
-        CadastroTestLogger.logTestStart("testCalculateAverageArea");
+        CadastroTestLogger.logTestStart("Cálculo de Área Média");
         
-        // Obter cadastros do arquivo CSV
-        List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
         CadastroTestLogger.log("Total de cadastros carregados: " + cadastros.size());
-        
-        // Verificar se temos cadastros
         assertNotNull(cadastros, "A lista de cadastros não deve ser nula");
         assertFalse(cadastros.isEmpty(), "A lista de cadastros não deve estar vazia");
         
         // Testar cálculo de área média para uma freguesia específica
         String freguesia = "Arco da Calheta";
+        CadastroTestLogger.log("Calculando área média para freguesia: " + freguesia);
         double mediaFreguesia = Cadastro.calculateAverageArea(cadastros, freguesia, null, null);
         CadastroTestLogger.log("Área média da freguesia " + freguesia + ": " + mediaFreguesia);
         assertTrue(mediaFreguesia > 0, "A área média deve ser maior que zero");
         
         // Testar cálculo de área média para um município específico
         String municipio = "Calheta";
+        CadastroTestLogger.log("Calculando área média para município: " + municipio);
         double mediaMunicipio = Cadastro.calculateAverageArea(cadastros, null, municipio, null);
         CadastroTestLogger.log("Área média do município " + municipio + ": " + mediaMunicipio);
         assertTrue(mediaMunicipio > 0, "A área média deve ser maior que zero");
         
         // Testar cálculo de área média para um concelho específico
         String concelho = "Ilha da Madeira (Madeira)";
+        CadastroTestLogger.log("Calculando área média para concelho: " + concelho);
         double mediaConcelho = Cadastro.calculateAverageArea(cadastros, null, null, concelho);
         CadastroTestLogger.log("Área média do concelho " + concelho + ": " + mediaConcelho);
         assertTrue(mediaConcelho > 0, "A área média deve ser maior que zero");
@@ -757,11 +761,13 @@ class CadastroTest {
         assertTrue(mediaCompleta > 0, "A área média deve ser maior que zero");
         
         // Testar exceção para área inexistente
+        String areaInexistente = "AreaInexistente";
+        CadastroTestLogger.log("Testando cálculo para área inexistente: " + areaInexistente);
         assertThrows(IllegalArgumentException.class, () -> {
-            Cadastro.calculateAverageArea(cadastros, "AreaInexistente", null, null);
+            Cadastro.calculateAverageArea(cadastros, areaInexistente, null, null);
         }, "Deve lançar exceção para área inexistente");
         
-        CadastroTestLogger.logSuccess("Teste testCalculateAverageArea concluído com sucesso");
-        CadastroTestLogger.logTestEnd("testCalculateAverageArea");
+        CadastroTestLogger.logSuccess("Teste de cálculo de área média concluído com sucesso");
+        CadastroTestLogger.logTestEnd("Cálculo de Área Média");
     }
 }
