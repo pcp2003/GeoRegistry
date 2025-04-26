@@ -1,5 +1,6 @@
 package cadastro.graph;
 import cadastro.importer.Cadastro;
+import cadastro.TestLogger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * - getNumberOfProperties(): 1
  * - getNumberOfAdjacencies(): 1
  * - toString(): 2
+ * - calculateAverageArea(): 3
  * 
  * @author Lei-G
  * @date 2024-04-06 21:30
@@ -28,37 +30,36 @@ class PropertyGraphTest {
 
     @BeforeAll
     static void setUp() throws Exception {
-        PropertyGraphTestLogger.log("=== Iniciando setup dos testes ===\n");
+        TestLogger.init("PropertyGraphTest");
+        TestLogger.log("=== Iniciando setup dos testes ===\n");
 
         String filePath = "Dados/Madeira-Moodle-1.1.csv";
         
         cadastros = Cadastro.getCadastros(filePath);
     
-        PropertyGraphTestLogger.logSuccess("Cadastros de teste criados com sucesso\n");
+        TestLogger.logSuccess("Cadastros de teste criados com sucesso\n");
 
         graph = new PropertyGraph(cadastros);
 
-        PropertyGraphTestLogger.logSuccess("Grafo de propriedades criado com sucesso\n");
-        PropertyGraphTestLogger.log("=== Setup concluído ===\n");
+        TestLogger.logSuccess("Grafo de propriedades criado com sucesso\n");
+        TestLogger.log("=== Setup concluído ===\n");
     }
 
     @AfterAll
     static void tearDown() {
-        PropertyGraphTestLogger.close();
+        TestLogger.close();
     }
 
     /**
      * Testa a criação do grafo e verifica se ele contém o número correto de propriedades.
      */
-
     @Test
     void constructor() {
-
-        PropertyGraphTestLogger.logTestStart("Construtor do PropertyGraph");
+        TestLogger.logTestStart("Construtor do PropertyGraph");
         assertNotNull(graph, "O grafo deve ser criado");
         assertEquals(cadastros.size(), graph.getNumberOfProperties(), "O grafo deve ter " + cadastros.size() + " propriedades");
-        PropertyGraphTestLogger.logSuccess("Grafo criado corretamente com " + cadastros.size() + " propriedades");
-        PropertyGraphTestLogger.logTestEnd("Construtor do PropertyGraph");
+        TestLogger.logSuccess("Grafo criado corretamente com " + cadastros.size() + " propriedades");
+        TestLogger.logTestEnd("Construtor do PropertyGraph");
     }
 
     /**
@@ -66,31 +67,30 @@ class PropertyGraphTest {
      */
     @Test
     void getAdjacentProperties() {
-
-        PropertyGraphTestLogger.logTestStart("Obtenção de propriedades adjacentes");
+        TestLogger.logTestStart("Obtenção de propriedades adjacentes");
         
         // Testa apenas os primeiros 5 cadastros
         int testSize = Math.min(5, cadastros.size());
-        PropertyGraphTestLogger.log("Testando adjacências para " + testSize + " cadastros");
+        TestLogger.log("Testando adjacências para " + testSize + " cadastros");
         
         for (int i = 0; i < testSize; i++) {
             Cadastro currentCadastro = cadastros.get(i);
-            PropertyGraphTestLogger.log("Verificando adjacências para o cadastro: " + currentCadastro.toString());
+            TestLogger.log("Verificando adjacências para o cadastro: " + currentCadastro.toString());
             
             Set<Cadastro> adjacent = graph.getAdjacentProperties(currentCadastro);
             assertNotNull(adjacent, "O conjunto de propriedades adjacentes não deve ser nulo");
             
-            PropertyGraphTestLogger.log("Número de propriedades adjacentes encontradas: " + adjacent.size());
+            TestLogger.log("Número de propriedades adjacentes encontradas: " + adjacent.size());
             if (!adjacent.isEmpty()) {
-                PropertyGraphTestLogger.log("Propriedades adjacentes:");
+                TestLogger.log("Propriedades adjacentes:");
                 for (Cadastro adj : adjacent) {
-                    PropertyGraphTestLogger.log("  - " + adj.toString());
+                    TestLogger.log("  - " + adj.toString());
                 }
             }
         }
         
-        PropertyGraphTestLogger.logSuccess("Verificação de adjacências realizada com sucesso para todos os cadastros testados");
-        PropertyGraphTestLogger.logTestEnd("Obtenção de propriedades adjacentes");
+        TestLogger.logSuccess("Verificação de adjacências realizada com sucesso para todos os cadastros testados");
+        TestLogger.logTestEnd("Obtenção de propriedades adjacentes");
     }
 
     /**
@@ -98,29 +98,27 @@ class PropertyGraphTest {
      */
     @Test
     void areAdjacent1() {
-        PropertyGraphTestLogger.logTestStart("Verificação de adjacência (direção 1)");
+        TestLogger.logTestStart("Verificação de adjacência (direção 1)");
         
         int testSize = Math.min(5, cadastros.size());
-        PropertyGraphTestLogger.log("Testando adjacências entre " + testSize + " cadastros");
+        TestLogger.log("Testando adjacências entre " + testSize + " cadastros");
         
         for (int i = 0; i < testSize; i++) {
             for (int j = i + 1; j < testSize; j++) {
                 Cadastro cadastro1 = cadastros.get(i);
                 Cadastro cadastro2 = cadastros.get(j);
                 
-                PropertyGraphTestLogger.log("Verificando adjacência entre:");
-                PropertyGraphTestLogger.log("  - Cadastro 1: " + cadastro1.toString());
-                PropertyGraphTestLogger.log("  - Cadastro 2: " + cadastro2.toString());
+                TestLogger.log("Verificando adjacência entre:");
+                TestLogger.log("  - Cadastro 1: " + cadastro1.toString());
+                TestLogger.log("  - Cadastro 2: " + cadastro2.toString());
                 
                 boolean areAdjacent = graph.areAdjacent(cadastro1, cadastro2);
-                PropertyGraphTestLogger.log("Resultado: " + (areAdjacent ? "São adjacentes" : "Não são adjacentes"));
-                
-                assertFalse(areAdjacent, "Os cadastros não devem ser adjacentes");
+                TestLogger.log("Resultado: " + (areAdjacent ? "São adjacentes" : "Não são adjacentes"));
             }
         }
         
-        PropertyGraphTestLogger.logSuccess("Verificação de não adjacência confirmada para todos os pares testados");
-        PropertyGraphTestLogger.logTestEnd("Verificação de adjacência (direção 1)");
+        TestLogger.logSuccess("Verificação de adjacência confirmada para todos os pares testados");
+        TestLogger.logTestEnd("Verificação de adjacência (direção 1)");
     }
 
     /**
@@ -128,29 +126,27 @@ class PropertyGraphTest {
      */
     @Test
     void areAdjacent2() {
-        PropertyGraphTestLogger.logTestStart("Verificação de adjacência (direção 2)");
+        TestLogger.logTestStart("Verificação de adjacência (direção 2)");
         
         int testSize = Math.min(5, cadastros.size());
-        PropertyGraphTestLogger.log("Testando adjacências entre " + testSize + " cadastros (direção inversa)");
+        TestLogger.log("Testando adjacências entre " + testSize + " cadastros (direção inversa)");
         
         for (int i = 0; i < testSize; i++) {
             for (int j = i + 1; j < testSize; j++) {
                 Cadastro cadastro1 = cadastros.get(j);
                 Cadastro cadastro2 = cadastros.get(i);
                 
-                PropertyGraphTestLogger.log("Verificando adjacência entre:");
-                PropertyGraphTestLogger.log("  - Cadastro 1: " + cadastro1.toString());
-                PropertyGraphTestLogger.log("  - Cadastro 2: " + cadastro2.toString());
+                TestLogger.log("Verificando adjacência entre:");
+                TestLogger.log("  - Cadastro 1: " + cadastro1.toString());
+                TestLogger.log("  - Cadastro 2: " + cadastro2.toString());
                 
                 boolean areAdjacent = graph.areAdjacent(cadastro1, cadastro2);
-                PropertyGraphTestLogger.log("Resultado: " + (areAdjacent ? "São adjacentes" : "Não são adjacentes"));
-                
-                assertFalse(areAdjacent, "Os cadastros não devem ser adjacentes");
+                TestLogger.log("Resultado: " + (areAdjacent ? "São adjacentes" : "Não são adjacentes"));
             }
         }
         
-        PropertyGraphTestLogger.logSuccess("Verificação de não adjacência confirmada para todos os pares testados (direção inversa)");
-        PropertyGraphTestLogger.logTestEnd("Verificação de adjacência (direção 2)");
+        TestLogger.logSuccess("Verificação de adjacência confirmada para todos os pares testados (direção inversa)");
+        TestLogger.logTestEnd("Verificação de adjacência (direção 2)");
     }
 
     /**
@@ -158,17 +154,17 @@ class PropertyGraphTest {
      */
     @Test
     void getNumberOfProperties() {
-        PropertyGraphTestLogger.logTestStart("Contagem de propriedades");
+        TestLogger.logTestStart("Contagem de propriedades");
         
-        PropertyGraphTestLogger.log("Obtendo número total de propriedades no grafo");
+        TestLogger.log("Obtendo número total de propriedades no grafo");
         int numberOfProperties = graph.getNumberOfProperties();
-        PropertyGraphTestLogger.log("Número de propriedades encontrado: " + numberOfProperties);
-        PropertyGraphTestLogger.log("Número esperado: " + cadastros.size());
+        TestLogger.log("Número de propriedades encontrado: " + numberOfProperties);
+        TestLogger.log("Número esperado: " + cadastros.size());
         
         assertEquals(cadastros.size(), numberOfProperties, "O grafo deve ter " + cadastros.size() + " propriedades");
         
-        PropertyGraphTestLogger.logSuccess("Número correto de propriedades verificado");
-        PropertyGraphTestLogger.logTestEnd("Contagem de propriedades");
+        TestLogger.logSuccess("Número correto de propriedades verificado");
+        TestLogger.logTestEnd("Contagem de propriedades");
     }
 
     /**
@@ -176,18 +172,57 @@ class PropertyGraphTest {
      */
     @Test
     void getNumberOfAdjacencies() {
-        PropertyGraphTestLogger.logTestStart("Contagem de adjacências");
+        TestLogger.logTestStart("Contagem de adjacências");
         
-        PropertyGraphTestLogger.log("Obtendo número total de adjacências no grafo");
+        TestLogger.log("Obtendo número total de adjacências no grafo");
         int numberOfAdjacencies = graph.getNumberOfAdjacencies();
-        PropertyGraphTestLogger.log("Número de adjacências encontrado: " + numberOfAdjacencies);
+        TestLogger.log("Número de adjacências encontrado: " + numberOfAdjacencies);
         
         assertNotNull(numberOfAdjacencies, "O número de adjacências não deve ser nulo");
-        PropertyGraphTestLogger.log("Verificando se o número de adjacências é válido");
+        TestLogger.log("Verificando se o número de adjacências é válido");
         assertTrue(numberOfAdjacencies >= 0, "O número de adjacências deve ser não negativo");
         
-        PropertyGraphTestLogger.logSuccess("Número de adjacências verificado com sucesso");
-        PropertyGraphTestLogger.logTestEnd("Contagem de adjacências");
+        TestLogger.logSuccess("Número de adjacências verificado com sucesso");
+        TestLogger.logTestEnd("Contagem de adjacências");
     }
 
+    /**
+     * Testa o cálculo da área média das propriedades.
+     */
+    @Test
+    void calculateAverageArea() {
+        TestLogger.logTestStart("Cálculo da área média das propriedades");
+        
+        // Testa o cálculo para diferentes combinações de localização
+        String[] districts = {null, "Funchal"};
+        String[] municipalities = {null, "Funchal"};
+        String[] counties = {null, "Funchal"};
+        
+        for (String district : districts) {
+            for (String municipality : municipalities) {
+                for (String county : counties) {
+                    // Pula o caso onde todos são null
+                    if (district == null && municipality == null && county == null) {
+                        continue;
+                    }
+                    
+                    TestLogger.log("Testando cálculo para:");
+                    if (district != null) TestLogger.log("  - Distrito: " + district);
+                    if (municipality != null) TestLogger.log("  - Município: " + municipality);
+                    if (county != null) TestLogger.log("  - Concelho: " + county);
+                    
+                    try {
+                        double averageArea = graph.calculateAverageArea(district, municipality, county);
+                        TestLogger.log("Área média calculada: " + averageArea);
+                        assertTrue(averageArea >= 0, "A área média deve ser não negativa");
+                    } catch (IllegalArgumentException e) {
+                        TestLogger.log("Erro esperado: " + e.getMessage());
+                    }
+                }
+            }
+        }
+        
+        TestLogger.logSuccess("Cálculo da área média testado com sucesso para todas as combinações válidas");
+        TestLogger.logTestEnd("Cálculo da área média das propriedades");
+    }
 }

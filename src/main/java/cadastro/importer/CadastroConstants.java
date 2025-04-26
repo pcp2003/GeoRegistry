@@ -54,4 +54,6 @@ public class CadastroConstants {
     public static final String FILE_READ_ERROR = "Erro ao ler o ficheiro CSV";
     /** Mensagem de erro para conversão de valores */
     public static final String NUMBER_CONVERSION_ERROR = "Erro ao converter valores numéricos";
+    /** Mensagem de erro para lista vazia */
+    public static final String EMPTY_LIST_ERROR = "Lista de cadastros não pode ser nula ou vazia";
 } 

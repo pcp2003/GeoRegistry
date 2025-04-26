@@ -16,6 +16,8 @@ public class GraphConstants {
     public static final String TOPOLOGY_ERROR = "Erro durante a análise topológica: ";
     public static final String GRAPH_BUILD_ERROR = "Erro durante a construção do grafo: ";
     public static final String ADJACENCY_ERROR = "Erro durante a análise de adjacência: ";
+    /** Mensagem de erro para proprietário inválido */
+    public static final String INVALID_OWNER_ERROR = "ID do proprietário deve ser maior que zero";
 
     // Constantes para formatação de strings
     public static final String GRAPH_STRING_FORMAT = "PropertyGraph{properties=[%s], adjacencies=[]}";

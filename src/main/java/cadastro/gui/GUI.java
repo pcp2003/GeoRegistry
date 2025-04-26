@@ -3,6 +3,7 @@ package cadastro.gui;
 import cadastro.importer.Cadastro;
 import cadastro.importer.CadastroConstants;
 import cadastro.graph.PropertyGraph;
+import cadastro.graph.OwnerGraph;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,8 +26,10 @@ public class GUI extends JFrame {
     private final JButton browseButton = new JButton(GUIConstants.BROWSE_BUTTON_TEXT);
     private final JButton importButton = new JButton(GUIConstants.IMPORT_BUTTON_TEXT);
     private final JButton showMore = new JButton(GUIConstants.SHOW_MORE_BUTTON_TEXT);
-    private final JButton viewGraphButton = new JButton(GUIConstants.VIEW_GRAPH_BUTTON_TEXT);
-    private final JButton calculateAverageButton = new JButton(GUIConstants.AVERAGE_AREA_BUTTON_TEXT);
+    private final JButton viewPropertyGraphButton = new JButton(GUIConstants.VIEW_PROPERTY_GRAPH_BUTTON_TEXT);
+    private final JButton viewOwnerGraphButton = new JButton(GUIConstants.VIEW_OWNER_GRAPH_BUTTON_TEXT);
+    private final JButton calculatePropertyAverageButton = new JButton(GUIConstants.AVERAGE_PROPERTY_AREA_BUTTON_TEXT);
+    private final JButton calculateOwnerAverageButton = new JButton(GUIConstants.AVERAGE_OWNER_AREA_BUTTON_TEXT);
     private final JPanel resultsPanel = new JPanel();
     private int cadastrosResultPointer;
     private final List<JButton> sortButtons = new ArrayList<>();
@@ -45,6 +48,14 @@ public class GUI extends JFrame {
             setSize(GUIConstants.WINDOW_WIDTH, GUIConstants.WINDOW_HEIGHT);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setLayout(new BorderLayout());
+            
+            // Configurar o look and feel para o padrão do sistema
+            try {
+                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                SwingUtilities.updateComponentTreeUI(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             initializeComponents();
             setupLayout();
@@ -55,27 +66,94 @@ public class GUI extends JFrame {
     }
 
     private void initializeComponents() {
+        // Configurar o painel principal
+        getContentPane().setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+        
         csvPathInput.setEditable(false);
+        csvPathInput.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.decode(GUIConstants.BORDER_COLOR)),
+            BorderFactory.createEmptyBorder(8, 8, 8, 8)
+        ));
+        csvPathInput.setBackground(Color.WHITE);
+        csvPathInput.setForeground(Color.decode(GUIConstants.TEXT_COLOR));
+        
         resultsPanel.setLayout(new BoxLayout(resultsPanel, BoxLayout.Y_AXIS));
-        viewGraphButton.setEnabled(false);
-        calculateAverageButton.setEnabled(false);
+        resultsPanel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+        resultsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // Estilizar botões principais
+        styleButton(browseButton);
+        styleButton(importButton);
+        styleButton(viewPropertyGraphButton);
+        styleButton(viewOwnerGraphButton);
+        styleButton(calculatePropertyAverageButton);
+        styleButton(calculateOwnerAverageButton);
+        styleButton(showMore);
+        
+        viewPropertyGraphButton.setEnabled(false);
+        viewOwnerGraphButton.setEnabled(false);
+        calculatePropertyAverageButton.setEnabled(false);
+        calculateOwnerAverageButton.setEnabled(false);
+    }
+
+    private void styleButton(JButton button) {
+        button.setBackground(Color.decode(GUIConstants.PRIMARY_COLOR));
+        button.setForeground(Color.decode(GUIConstants.BUTTON_TEXT_COLOR));
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setOpaque(true);
+        button.setPreferredSize(new Dimension(button.getPreferredSize().width, 34));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setFont(button.getFont().deriveFont(Font.BOLD, 12f));
+        
+        // Adicionar efeito hover
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                if (button.isEnabled()) {
+                    button.setBackground(Color.decode(GUIConstants.HOVER_COLOR));
+                }
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                if (button.isEnabled()) {
+                    button.setBackground(Color.decode(GUIConstants.PRIMARY_COLOR));
+                }
+            }
+        });
+
+        // Estilo para botão desabilitado
+        if (!button.isEnabled()) {
+            button.setBackground(Color.decode(GUIConstants.DISABLED_COLOR));
+            button.setForeground(Color.decode(GUIConstants.BORDER_COLOR));
+        }
     }
 
     private void setupLayout() {
-        JPanel filePanel = new JPanel(new BorderLayout());
+        JPanel filePanel = new JPanel(new BorderLayout(GUIConstants.PADDING, 0));
+        filePanel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+        filePanel.setBorder(BorderFactory.createEmptyBorder(GUIConstants.PADDING, GUIConstants.PADDING, GUIConstants.PADDING, GUIConstants.PADDING));
+        
         JLabel fileLabel = new JLabel(GUIConstants.FILE_SELECTION_LABEL);
-        JPanel buttonPanel = new JPanel();
+        fileLabel.setFont(fileLabel.getFont().deriveFont(Font.BOLD));
+        fileLabel.setForeground(Color.decode(GUIConstants.TEXT_COLOR));
+        
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        buttonPanel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
         buttonPanel.add(browseButton);
         buttonPanel.add(importButton);
-        buttonPanel.add(viewGraphButton);
-        buttonPanel.add(calculateAverageButton);
+        buttonPanel.add(viewPropertyGraphButton);
+        buttonPanel.add(viewOwnerGraphButton);
+        buttonPanel.add(calculatePropertyAverageButton);
+        buttonPanel.add(calculateOwnerAverageButton);
 
         filePanel.add(fileLabel, BorderLayout.WEST);
         filePanel.add(csvPathInput, BorderLayout.CENTER);
         filePanel.add(buttonPanel, BorderLayout.EAST);
 
         JScrollPane scrollPane = new JScrollPane(resultsPanel);
+        scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
 
         add(filePanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
@@ -85,8 +163,10 @@ public class GUI extends JFrame {
         browseButton.addActionListener(this::browseFile);
         importButton.addActionListener(this::importCadastros);
         showMore.addActionListener(this::moreResults);
-        viewGraphButton.addActionListener(this::showGraphVisualization);
-        calculateAverageButton.addActionListener(this::showAverageAreaPanel);
+        viewPropertyGraphButton.addActionListener(this::showPropertyGraphVisualization);
+        viewOwnerGraphButton.addActionListener(this::showOwnerGraphVisualization);
+        calculatePropertyAverageButton.addActionListener(this::showPropertyAverageAreaPanel);
+        calculateOwnerAverageButton.addActionListener(this::showOwnerAverageAreaPanel);
     }
 
     /**
@@ -139,8 +219,10 @@ public class GUI extends JFrame {
             }
 
             // Habilitar os botões de visualização do grafo e cálculo de média
-            viewGraphButton.setEnabled(true);
-            calculateAverageButton.setEnabled(true);
+            viewPropertyGraphButton.setEnabled(true);
+            viewOwnerGraphButton.setEnabled(true);
+            calculatePropertyAverageButton.setEnabled(true);
+            calculateOwnerAverageButton.setEnabled(true);
 
             initializeSortButtons();
             displayResults();
@@ -279,29 +361,84 @@ public class GUI extends JFrame {
             }
 
             JButton cadastroButton = new JButton(GUIConstants.SHOW_SHAPE_BUTTON_TEXT);
+            styleButton(cadastroButton);
             cadastroButton.addActionListener(_ -> showShapeWindow(cadastro));
+            cadastroButton.setPreferredSize(new Dimension(130, 34));
 
-            JPanel cardPanel = new JPanel(new BorderLayout());
-            cardPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            JPanel cardPanel = new JPanel(new BorderLayout(GUIConstants.CARD_PADDING, GUIConstants.CARD_PADDING));
+            cardPanel.setBackground(Color.decode(GUIConstants.CARD_BACKGROUND));
+            
+            // Borda mais sutil com sombra
+            cardPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(105, 103, 115, 40), 1),
+                BorderFactory.createEmptyBorder(12, 15, 12, 15)
+            ));
 
             List<String> location = cadastro.getLocation();
             String district = location.size() > 0 ? location.get(0) : "N/A";
             String municipality = location.size() > 1 ? location.get(1) : "N/A";
             String county = location.size() > 2 ? location.get(2) : "N/A";
 
-            JLabel infoLabel = new JLabel(
-                    String.format(GUIConstants.CADASTRO_INFO_FORMAT,
-                            cadastro.getId(),
-                            cadastro.getOwner(),
-                            cadastro.getArea(),
-                            cadastro.getLength(),
-                            district,
-                            municipality,
-                            county));
+            // Criar um painel para as informações com GridBagLayout
+            JPanel infoPanel = new JPanel(new GridBagLayout());
+            infoPanel.setBackground(Color.decode(GUIConstants.CARD_BACKGROUND));
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.weightx = 1.0;
+            gbc.insets = new Insets(0, 5, 0, 5);
 
-            cardPanel.add(infoLabel, BorderLayout.CENTER);
-            cardPanel.add(cadastroButton, BorderLayout.SOUTH);
-            cardPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            // ID com destaque em amarelo
+            gbc.gridy = 0;
+            gbc.gridx = 0;
+            gbc.weightx = 0.15;
+            JLabel idLabel = new JLabel("ID: " + cadastro.getId());
+            idLabel.setFont(idLabel.getFont().deriveFont(Font.BOLD, 13f));
+            idLabel.setForeground(Color.decode(GUIConstants.ACCENT_COLOR));
+            infoPanel.add(idLabel, gbc);
+
+            // Proprietário
+            gbc.gridx = 1;
+            gbc.weightx = 0.35;
+            JLabel ownerLabel = new JLabel("Proprietário: " + cadastro.getOwner());
+            ownerLabel.setFont(ownerLabel.getFont().deriveFont(12f));
+            ownerLabel.setForeground(Color.decode(GUIConstants.TEXT_COLOR));
+            infoPanel.add(ownerLabel, gbc);
+
+            // Área
+            gbc.gridx = 2;
+            gbc.weightx = 0.25;
+            JLabel areaLabel = new JLabel("Área: " + cadastro.getArea());
+            areaLabel.setFont(areaLabel.getFont().deriveFont(12f));
+            areaLabel.setForeground(Color.decode(GUIConstants.TEXT_COLOR));
+            infoPanel.add(areaLabel, gbc);
+
+            // Comprimento
+            gbc.gridx = 3;
+            gbc.weightx = 0.25;
+            JLabel lengthLabel = new JLabel("Comprimento: " + cadastro.getLength());
+            lengthLabel.setFont(lengthLabel.getFont().deriveFont(12f));
+            lengthLabel.setForeground(Color.decode(GUIConstants.TEXT_COLOR));
+            infoPanel.add(lengthLabel, gbc);
+
+            // Localização com cor mais suave
+            gbc.gridy = 1;
+            gbc.gridx = 0;
+            gbc.gridwidth = 4;
+            gbc.weightx = 1.0;
+            JLabel locationLabel = new JLabel("Localização: " + district + ", " + municipality + ", " + county);
+            locationLabel.setFont(locationLabel.getFont().deriveFont(12f));
+            locationLabel.setForeground(Color.decode(GUIConstants.LABEL_COLOR));
+            infoPanel.add(locationLabel, gbc);
+
+            // Painel para o botão
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+            buttonPanel.setBackground(Color.decode(GUIConstants.CARD_BACKGROUND));
+            buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+            buttonPanel.add(cadastroButton);
+
+            cardPanel.add(infoPanel, BorderLayout.CENTER);
+            cardPanel.add(buttonPanel, BorderLayout.EAST);
 
             resultsPanel.add(cardPanel);
             resultsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -347,20 +484,22 @@ public class GUI extends JFrame {
      * 
      * @param e O evento de ação que disparou o método
      */
-    private void showGraphVisualization(ActionEvent e) {
+    private void showPropertyGraphVisualization(ActionEvent e) {
         try {
             if (cadastros == null || cadastros.isEmpty()) {
-                throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "visualizar grafo");
+                throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "visualizar grafo de propriedades");
             }
 
             // Criar a janela de carregamento
-            JFrame loadingFrame = new JFrame(GUIConstants.GRAPH_WINDOW_TITLE);
+            JFrame loadingFrame = new JFrame(GUIConstants.PROPERTY_GRAPH_WINDOW_TITLE);
             loadingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             loadingFrame.setSize(300, 100);
             loadingFrame.setLocationRelativeTo(this);
             
             JPanel loadingPanel = new JPanel(new BorderLayout());
+            loadingPanel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
             JLabel loadingLabel = new JLabel("A carregar...", SwingConstants.CENTER);
+            loadingLabel.setFont(loadingLabel.getFont().deriveFont(Font.BOLD));
             loadingPanel.add(loadingLabel, BorderLayout.CENTER);
             loadingFrame.add(loadingPanel);
             loadingFrame.setVisible(true);
@@ -369,7 +508,7 @@ public class GUI extends JFrame {
             SwingWorker<PropertyGraph, Void> worker = new SwingWorker<PropertyGraph, Void>() {
                 @Override
                 protected PropertyGraph doInBackground() {
-                    return new PropertyGraph(cadastros);
+                    return new PropertyGraph(cadastros); // false para grafo de propriedades
                 }
 
                 @Override
@@ -379,11 +518,13 @@ public class GUI extends JFrame {
                         PropertyGraph graph = get();
                         
                         // Criar a janela de visualização do grafo
-                        JFrame graphFrame = new JFrame(GUIConstants.GRAPH_WINDOW_TITLE);
+                        JFrame graphFrame = new JFrame(GUIConstants.PROPERTY_GRAPH_WINDOW_TITLE);
                         graphFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         
                         GraphPanel graphPanel = new GraphPanel(graph);
                         JScrollPane scrollPane = new JScrollPane(graphPanel);
+                        scrollPane.setBorder(null);
+                        scrollPane.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
                         
                         graphFrame.add(scrollPane);
                         graphFrame.setSize(800, 600);
@@ -391,7 +532,7 @@ public class GUI extends JFrame {
                         graphFrame.setVisible(true);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(GUI.this,
-                                "Erro ao visualizar grafo: " + ex.getMessage(),
+                                "Erro ao visualizar grafo de propriedades: " + ex.getMessage(),
                                 GUIConstants.ERROR_TITLE,
                                 JOptionPane.ERROR_MESSAGE);
                     }
@@ -401,35 +542,111 @@ public class GUI extends JFrame {
             worker.execute();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
-                    "Erro ao visualizar grafo: " + ex.getMessage(),
+                    "Erro ao visualizar grafo de propriedades: " + ex.getMessage(),
                     GUIConstants.ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
     }
 
     /**
-     * Exibe o painel para cálculo da área média.
+     * Exibe a visualização do grafo de proprietários em uma nova janela.
      * 
      * @param e O evento de ação que disparou o método
      */
-    private void showAverageAreaPanel(ActionEvent e) {
+    private void showOwnerGraphVisualization(ActionEvent e) {
+        // try {
+        //     if (cadastros == null || cadastros.isEmpty()) {
+        //         throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "visualizar grafo de proprietários");
+        //     }
+
+        //     // Criar a janela de carregamento
+        //     JFrame loadingFrame = new JFrame(GUIConstants.OWNER_GRAPH_WINDOW_TITLE);
+        //     loadingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //     loadingFrame.setSize(300, 100);
+        //     loadingFrame.setLocationRelativeTo(this);
+            
+        //     JPanel loadingPanel = new JPanel(new BorderLayout());
+        //     loadingPanel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+        //     JLabel loadingLabel = new JLabel("A carregar...", SwingConstants.CENTER);
+        //     loadingLabel.setFont(loadingLabel.getFont().deriveFont(Font.BOLD));
+        //     loadingPanel.add(loadingLabel, BorderLayout.CENTER);
+        //     loadingFrame.add(loadingPanel);
+        //     loadingFrame.setVisible(true);
+
+        //     // Criar o grafo em uma thread separada
+        //     SwingWorker<OwnerGraph, Void> worker = new SwingWorker<OwnerGraph, Void>() {
+        //         @Override
+        //         protected OwnerGraph doInBackground() {
+        //             return new OwnerGraph(cadastros); // true para grafo de proprietários
+        //         }
+
+        //         @Override
+        //         protected void done() {
+        //             try {
+        //                 loadingFrame.dispose();
+        //                 OwnerGraph graph = get();
+                        
+        //                 // Criar a janela de visualização do grafo
+        //                 JFrame graphFrame = new JFrame(GUIConstants.OWNER_GRAPH_WINDOW_TITLE);
+        //                 graphFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        
+        //                 GraphPanel graphPanel = new GraphPanel(graph);
+        //                 JScrollPane scrollPane = new JScrollPane(graphPanel);
+        //                 scrollPane.setBorder(null);
+        //                 scrollPane.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+                        
+        //                 graphFrame.add(scrollPane);
+        //                 graphFrame.setSize(800, 600);
+        //                 graphFrame.setLocationRelativeTo(GUI.this);
+        //                 graphFrame.setVisible(true);
+        //             } catch (Exception ex) {
+        //                 JOptionPane.showMessageDialog(GUI.this,
+        //                         "Erro ao visualizar grafo de proprietários: " + ex.getMessage(),
+        //                         GUIConstants.ERROR_TITLE,
+        //                         JOptionPane.ERROR_MESSAGE);
+        //             }
+        //         }
+        //     };
+
+        //     worker.execute();
+        // } catch (Exception ex) {
+        //     JOptionPane.showMessageDialog(this,
+        //             "Erro ao visualizar grafo de proprietários: " + ex.getMessage(),
+        //             GUIConstants.ERROR_TITLE,
+        //             JOptionPane.ERROR_MESSAGE);
+        // }
+    }
+
+    /**
+     * Exibe o painel para cálculo da área média de propriedades.
+     * 
+     * @param e O evento de ação que disparou o método
+     */
+    private void showPropertyAverageAreaPanel(ActionEvent e) {
         try {
             if (cadastros == null || cadastros.isEmpty()) {
-                throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "calcular área média");
+                throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "calcular área média de propriedades");
             }
 
-            JFrame averageFrame = new JFrame(GUIConstants.AVERAGE_AREA_WINDOW_TITLE);
+            JFrame averageFrame = new JFrame(GUIConstants.AVERAGE_PROPERTY_AREA_WINDOW_TITLE);
             averageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             averageFrame.setSize(400, 200);
             averageFrame.setLocationRelativeTo(this);
 
-            JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
-            panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            JPanel panel = new JPanel(new GridLayout(4, 2, GUIConstants.PADDING, GUIConstants.PADDING));
+            panel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+            panel.setBorder(BorderFactory.createEmptyBorder(GUIConstants.PADDING, GUIConstants.PADDING, GUIConstants.PADDING, GUIConstants.PADDING));
 
             JTextField districtField = new JTextField();
             JTextField municipalityField = new JTextField();
             JTextField countyField = new JTextField();
             JLabel resultLabel = new JLabel();
+            resultLabel.setFont(resultLabel.getFont().deriveFont(Font.BOLD));
+
+            // Estilizar campos de texto
+            styleTextField(districtField);
+            styleTextField(municipalityField);
+            styleTextField(countyField);
 
             panel.add(new JLabel(GUIConstants.DISTRICT_LABEL));
             panel.add(districtField);
@@ -438,14 +655,16 @@ public class GUI extends JFrame {
             panel.add(new JLabel(GUIConstants.COUNTY_LABEL));
             panel.add(countyField);
 
-            JButton calculateButton = new JButton(GUIConstants.AVERAGE_AREA_BUTTON_TEXT);
+            JButton calculateButton = new JButton(GUIConstants.AVERAGE_PROPERTY_AREA_BUTTON_TEXT);
+            styleButton(calculateButton);
             calculateButton.addActionListener(_ -> {
                 try {
                     String district = districtField.getText().isEmpty() ? null : districtField.getText();
                     String municipality = municipalityField.getText().isEmpty() ? null : municipalityField.getText();
                     String county = countyField.getText().isEmpty() ? null : countyField.getText();
 
-                    double averageArea = Cadastro.calculateAverageArea(cadastros, district, municipality, county);
+                    PropertyGraph graph = new PropertyGraph(cadastros);
+                    double averageArea = graph.calculateAverageArea(district, municipality, county);
                     resultLabel.setText(String.format(GUIConstants.AVERAGE_AREA_RESULT_FORMAT, averageArea));
                 } catch (IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(averageFrame,
@@ -466,5 +685,84 @@ public class GUI extends JFrame {
                     GUIConstants.ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    /**
+     * Exibe o painel para cálculo da área média de proprietários.
+     * 
+     * @param e O evento de ação que disparou o método
+     */
+    private void showOwnerAverageAreaPanel(ActionEvent e) {
+        try {
+            if (cadastros == null || cadastros.isEmpty()) {
+                throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "calcular área média de proprietários");
+            }
+
+            JFrame averageFrame = new JFrame(GUIConstants.AVERAGE_OWNER_AREA_WINDOW_TITLE);
+            averageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            averageFrame.setSize(400, 200);
+            averageFrame.setLocationRelativeTo(this);
+
+            JPanel panel = new JPanel(new GridLayout(4, 2, GUIConstants.PADDING, GUIConstants.PADDING));
+            panel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+            panel.setBorder(BorderFactory.createEmptyBorder(GUIConstants.PADDING, GUIConstants.PADDING, GUIConstants.PADDING, GUIConstants.PADDING));
+
+            JTextField districtField = new JTextField();
+            JTextField municipalityField = new JTextField();
+            JTextField countyField = new JTextField();
+            JLabel resultLabel = new JLabel();
+            resultLabel.setFont(resultLabel.getFont().deriveFont(Font.BOLD));
+
+            // Estilizar campos de texto
+            styleTextField(districtField);
+            styleTextField(municipalityField);
+            styleTextField(countyField);
+
+            panel.add(new JLabel(GUIConstants.DISTRICT_LABEL));
+            panel.add(districtField);
+            panel.add(new JLabel(GUIConstants.MUNICIPALITY_LABEL));
+            panel.add(municipalityField);
+            panel.add(new JLabel(GUIConstants.COUNTY_LABEL));
+            panel.add(countyField);
+
+            JButton calculateButton = new JButton(GUIConstants.AVERAGE_OWNER_AREA_BUTTON_TEXT);
+            styleButton(calculateButton);
+            calculateButton.addActionListener(_ -> {
+                try {
+                    String district = districtField.getText().isEmpty() ? null : districtField.getText();
+                    String municipality = municipalityField.getText().isEmpty() ? null : municipalityField.getText();
+                    String county = countyField.getText().isEmpty() ? null : countyField.getText();
+
+                    OwnerGraph graph = new OwnerGraph(cadastros);
+                    double averageArea = graph.calculateAverageArea(district, municipality, county);
+                    resultLabel.setText(String.format(GUIConstants.AVERAGE_AREA_RESULT_FORMAT, averageArea));
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(averageFrame,
+                            ex.getMessage(),
+                            GUIConstants.ERROR_TITLE,
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            });
+
+            panel.add(calculateButton);
+            panel.add(resultLabel);
+
+            averageFrame.add(panel);
+            averageFrame.setVisible(true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    GUIConstants.AVERAGE_AREA_ERROR + ": " + ex.getMessage(),
+                    GUIConstants.ERROR_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void styleTextField(JTextField textField) {
+        textField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.decode(GUIConstants.BORDER_COLOR)),
+            BorderFactory.createEmptyBorder(GUIConstants.TEXT_FIELD_PADDING, GUIConstants.TEXT_FIELD_PADDING, GUIConstants.TEXT_FIELD_PADDING, GUIConstants.TEXT_FIELD_PADDING)
+        ));
+        textField.setBackground(Color.WHITE);
+        textField.setForeground(Color.decode(GUIConstants.TEXT_COLOR));
     }
 }

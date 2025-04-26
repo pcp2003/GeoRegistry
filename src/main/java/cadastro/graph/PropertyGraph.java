@@ -186,4 +186,47 @@ public class PropertyGraph {
     public List<Cadastro> getProperties() {
         return cadastros;
     }
+
+    /**
+     * Calcula a área média das propriedades em uma determinada região.
+     * 
+     * @param district Distrito para filtrar (opcional)
+     * @param municipality Município para filtrar (opcional)
+     * @param county Concelho para filtrar (opcional)
+     * @return A área média das propriedades
+     * @throws IllegalArgumentException se não houver propriedades na área especificada
+     */
+    public double calculateAverageArea(String district, String municipality, String county) {
+        if (district == null && municipality == null && county == null) {
+            throw new IllegalArgumentException("Pelo menos um parâmetro de localização deve ser fornecido");
+        }
+
+        // Filtrar cadastros pela localização
+        List<Cadastro> filteredCadastros = cadastros.stream()
+            .filter(cadastro -> {
+                List<String> locations = cadastro.getLocation();
+                if (locations.size() < 3) return false;
+                
+                boolean matchesDistrict = district == null || locations.get(0).equals(district);
+                boolean matchesMunicipality = municipality == null || locations.get(1).equals(municipality);
+                boolean matchesCounty = county == null || locations.get(2).equals(county);
+                
+                return matchesDistrict && matchesMunicipality && matchesCounty;
+            })
+            .toList();
+
+        if (filteredCadastros.isEmpty()) {
+            StringBuilder areaInfo = new StringBuilder("Não há propriedades na área especificada: ");
+            if (district != null) areaInfo.append("Distrito=").append(district).append(" ");
+            if (municipality != null) areaInfo.append("Município=").append(municipality).append(" ");
+            if (county != null) areaInfo.append("Concelho=").append(county);
+            throw new IllegalArgumentException(areaInfo.toString());
+        }
+
+        // Calcular média por propriedade
+        return filteredCadastros.stream()
+                .mapToDouble(Cadastro::getArea)
+                .average()
+                .orElse(0.0);
+    }
 }
