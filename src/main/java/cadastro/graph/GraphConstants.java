@@ -6,7 +6,7 @@ package cadastro.graph;
  * @author [Lei-G]
  * @version 1.0
  */
-public class PropertyGraphConstants {
+public class GraphConstants {
     // Mensagens de erro para validação
     public static final String NULL_CADASTROS_ERROR = "Lista de cadastros não pode ser nula";
     public static final String EMPTY_CADASTROS_ERROR = "Lista de cadastros não pode estar vazia";

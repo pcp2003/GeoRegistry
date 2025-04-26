@@ -25,13 +25,13 @@ public class PropertyGraph {
      */
     public PropertyGraph(List<Cadastro> cadastros) {
         if (cadastros == null) {
-            throw new IllegalArgumentException(PropertyGraphConstants.NULL_CADASTROS_ERROR);
+            throw new IllegalArgumentException(GraphConstants.NULL_CADASTROS_ERROR);
         }
         if (cadastros.isEmpty()) {
-            throw new IllegalArgumentException(PropertyGraphConstants.EMPTY_CADASTROS_ERROR);
+            throw new IllegalArgumentException(GraphConstants.EMPTY_CADASTROS_ERROR);
         }
         if (cadastros.contains(null)) {
-            throw new IllegalArgumentException(PropertyGraphConstants.NULL_ELEMENTS_ERROR);
+            throw new IllegalArgumentException(GraphConstants.NULL_ELEMENTS_ERROR);
         }
 
         this.cadastros = cadastros;
@@ -56,7 +56,7 @@ public class PropertyGraph {
                 }
             }
         } catch (TopologyException e) {
-            throw new IllegalStateException(PropertyGraphConstants.GRAPH_BUILD_ERROR + e.getMessage(), e);
+            throw new IllegalStateException(GraphConstants.GRAPH_BUILD_ERROR + e.getMessage(), e);
         }
     }
 
@@ -71,7 +71,7 @@ public class PropertyGraph {
      */
     private boolean arePropertiesPhysicallyAdjacent(Cadastro prop1, Cadastro prop2) {
         if (prop1 == null || prop2 == null) {
-            throw new IllegalArgumentException(PropertyGraphConstants.NULL_PROPERTY_ERROR);
+            throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
         }
 
         try {
@@ -85,7 +85,7 @@ public class PropertyGraph {
             return shape1.touches(shape2) || 
                    (shape1.intersects(shape2) && !shape1.within(shape2) && !shape2.within(shape1));
         } catch (TopologyException e) {
-            throw new IllegalStateException(PropertyGraphConstants.ADJACENCY_ERROR + e.getMessage(), e);
+            throw new IllegalStateException(GraphConstants.ADJACENCY_ERROR + e.getMessage(), e);
         }
     }
     
@@ -98,7 +98,7 @@ public class PropertyGraph {
      */
     private void addAdjacency(Cadastro property1, Cadastro property2) {
         if (property1 == null || property2 == null) {
-            throw new IllegalArgumentException(PropertyGraphConstants.NULL_PROPERTY_ERROR);
+            throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
         }
 
         adjacencyList.computeIfAbsent(property1, _ -> new HashSet<>()).add(property2);
@@ -114,7 +114,7 @@ public class PropertyGraph {
      */
     public Set<Cadastro> getAdjacentProperties(Cadastro property) {
         if (property == null) {
-            throw new IllegalArgumentException(PropertyGraphConstants.NULL_PROPERTY_ERROR);
+            throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
         }
 
         return Collections.unmodifiableSet(adjacencyList.getOrDefault(property, new HashSet<>()));
@@ -130,7 +130,7 @@ public class PropertyGraph {
      */
     public boolean areAdjacent(Cadastro property1, Cadastro property2) {
         if (property1 == null || property2 == null) {
-            throw new IllegalArgumentException(PropertyGraphConstants.NULL_PROPERTY_ERROR);
+            throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
         }
 
         return adjacencyList.containsKey(property1) && adjacencyList.get(property1).contains(property2);
@@ -171,7 +171,7 @@ public class PropertyGraph {
         for (int i = 0; i < cadastros.size(); i++) {
             sb.append(cadastros.get(i).toString());
             if (i < cadastros.size() - 1) {
-                sb.append(PropertyGraphConstants.PROPERTY_SEPARATOR);
+                sb.append(GraphConstants.PROPERTY_SEPARATOR);
             }
         }
         sb.append("], adjacencies=[]}");
