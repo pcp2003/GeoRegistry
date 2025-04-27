@@ -1,7 +1,6 @@
 package cadastro.graph;
 
 import cadastro.importer.Cadastro;
-import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.TopologyException;
 
 import java.util.*;
@@ -13,10 +12,7 @@ import java.util.*;
  * @author [Lei-G]
  * @version 1.0
  */
-public class PropertyGraph {
-    private final List<Cadastro> cadastros;
-    private final Map<Cadastro, Set<Cadastro>> adjacencyList;
-
+public class PropertyGraph extends Graph {
     /**
      * Constrói um grafo de propriedades a partir de uma lista de cadastros.
      * 
@@ -24,18 +20,7 @@ public class PropertyGraph {
      * @throws IllegalArgumentException se a lista de cadastros for nula ou vazia
      */
     public PropertyGraph(List<Cadastro> cadastros) {
-        if (cadastros == null) {
-            throw new IllegalArgumentException(GraphConstants.NULL_CADASTROS_ERROR);
-        }
-        if (cadastros.isEmpty()) {
-            throw new IllegalArgumentException(GraphConstants.EMPTY_CADASTROS_ERROR);
-        }
-        if (cadastros.contains(null)) {
-            throw new IllegalArgumentException(GraphConstants.NULL_ELEMENTS_ERROR);
-        }
-
-        this.cadastros = cadastros;
-        this.adjacencyList = new HashMap<>();
+        super(cadastros);
         buildGraph();
     }
 
@@ -51,7 +36,7 @@ public class PropertyGraph {
                     Cadastro prop2 = cadastros.get(j);
                     
                     if (arePropertiesPhysicallyAdjacent(prop1, prop2)) {
-                        addAdjacency(prop1, prop2);
+                        addAdjacency(prop1, prop2, propertyAdjacencyList);
                     }
                 }
             }
@@ -60,50 +45,7 @@ public class PropertyGraph {
         }
     }
 
-    /**
-     * Verifica se duas propriedades são fisicamente adjacentes.
-     * 
-     * @param prop1 Primeira propriedade
-     * @param prop2 Segunda propriedade
-     * @return true se as propriedades são adjacentes, false caso contrário
-     * @throws IllegalArgumentException se alguma das propriedades for nula
-     * @throws TopologyException se ocorrer um erro durante a análise topológica
-     */
-    private boolean arePropertiesPhysicallyAdjacent(Cadastro prop1, Cadastro prop2) {
-        if (prop1 == null || prop2 == null) {
-            throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
-        }
-
-        try {
-            MultiPolygon shape1 = prop1.getShape();
-            MultiPolygon shape2 = prop2.getShape();
-            
-            if (shape1 == null || shape2 == null) {
-                return false;
-            }
-
-            return shape1.touches(shape2) || 
-                   (shape1.intersects(shape2) && !shape1.within(shape2) && !shape2.within(shape1));
-        } catch (TopologyException e) {
-            throw new IllegalStateException(GraphConstants.ADJACENCY_ERROR + e.getMessage(), e);
-        }
-    }
     
-    /**
-     * Adiciona uma adjacência entre duas propriedades no grafo.
-     * 
-     * @param property1 Primeira propriedade
-     * @param property2 Segunda propriedade
-     * @throws IllegalArgumentException se alguma das propriedades for nula
-     */
-    private void addAdjacency(Cadastro property1, Cadastro property2) {
-        if (property1 == null || property2 == null) {
-            throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
-        }
-
-        adjacencyList.computeIfAbsent(property1, _ -> new HashSet<>()).add(property2);
-        adjacencyList.computeIfAbsent(property2, _ -> new HashSet<>()).add(property1);
-    }
 
     /**
      * Retorna o conjunto de propriedades adjacentes a uma propriedade específica.
@@ -117,32 +59,7 @@ public class PropertyGraph {
             throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
         }
 
-        return Collections.unmodifiableSet(adjacencyList.getOrDefault(property, new HashSet<>()));
-    }
-    
-    /**
-     * Verifica se duas propriedades são adjacentes no grafo.
-     * 
-     * @param property1 Primeira propriedade
-     * @param property2 Segunda propriedade
-     * @return true se as propriedades são adjacentes, false caso contrário
-     * @throws IllegalArgumentException se alguma das propriedades for nula
-     */
-    public boolean areAdjacent(Cadastro property1, Cadastro property2) {
-        if (property1 == null || property2 == null) {
-            throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
-        }
-
-        return adjacencyList.containsKey(property1) && adjacencyList.get(property1).contains(property2);
-    }
-    
-    /**
-     * Retorna o número total de propriedades no grafo.
-     * 
-     * @return Número de propriedades
-     */
-    public int getNumberOfProperties() {
-        return cadastros.size();
+        return Collections.unmodifiableSet(propertyAdjacencyList.getOrDefault(property, new HashSet<>()));
     }
     
     /**
@@ -150,9 +67,9 @@ public class PropertyGraph {
      * 
      * @return Número de adjacências
      */
-    public int getNumberOfAdjacencies() {
+    public int getNumberOfAdjacenciesBetweenProperties() {
         int count = 0;
-        for (Set<Cadastro> adjacents : adjacencyList.values()) {
+        for (Set<Cadastro> adjacents : propertyAdjacencyList.values()) {
             count += adjacents.size();
         }
         return count / 2;
@@ -179,15 +96,6 @@ public class PropertyGraph {
     }
 
     /**
-     * Retorna a lista de todas as propriedades no grafo.
-     * 
-     * @return Lista de propriedades
-     */
-    public List<Cadastro> getProperties() {
-        return cadastros;
-    }
-
-    /**
      * Calcula a área média das propriedades em uma determinada região.
      * 
      * @param district Distrito para filtrar (opcional)
@@ -201,19 +109,7 @@ public class PropertyGraph {
             throw new IllegalArgumentException("Pelo menos um parâmetro de localização deve ser fornecido");
         }
 
-        // Filtrar cadastros pela localização
-        List<Cadastro> filteredCadastros = cadastros.stream()
-            .filter(cadastro -> {
-                List<String> locations = cadastro.getLocation();
-                if (locations.size() < 3) return false;
-                
-                boolean matchesDistrict = district == null || locations.get(0).equals(district);
-                boolean matchesMunicipality = municipality == null || locations.get(1).equals(municipality);
-                boolean matchesCounty = county == null || locations.get(2).equals(county);
-                
-                return matchesDistrict && matchesMunicipality && matchesCounty;
-            })
-            .toList();
+        List<Cadastro> filteredCadastros = filterCadastrosByLocation(cadastros, district, municipality, county);
 
         if (filteredCadastros.isEmpty()) {
             StringBuilder areaInfo = new StringBuilder("Não há propriedades na área especificada: ");
@@ -223,7 +119,6 @@ public class PropertyGraph {
             throw new IllegalArgumentException(areaInfo.toString());
         }
 
-        // Calcular média por propriedade
         return filteredCadastros.stream()
                 .mapToDouble(Cadastro::getArea)
                 .average()

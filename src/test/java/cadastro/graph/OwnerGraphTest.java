@@ -94,16 +94,24 @@ class OwnerGraphTest {
             int currentOwner = ownersList.get(i);
             TestLogger.log("Verificando vizinhanças para o proprietário: " + currentOwner);
             
-            Set<Integer> adjacent = graph.getAdjacentOwners(currentOwner);
-            assertNotNull(adjacent, "O conjunto de proprietários vizinhos não deve ser nulo");
-            
-            TestLogger.log("Número de proprietários vizinhos encontrados: " + adjacent.size());
-            if (!adjacent.isEmpty()) {
-                TestLogger.log("Proprietários vizinhos:");
-                for (Integer adj : adjacent) {
-                    TestLogger.log("  - " + adj);
+            // Verifica se o proprietário tem propriedades adjacentes
+            boolean hasAdjacentProperties = false;
+            for (Cadastro cadastro : cadastros) {
+                if (cadastro.getOwner() == currentOwner) {
+                    Set<Cadastro> adjacentProperties = Graph.getAdjacent(cadastro, graph.propertyAdjacencyList);
+                    for (Cadastro adjacent : adjacentProperties) {
+                        if (adjacent.getOwner() != currentOwner) {
+                            hasAdjacentProperties = true;
+                            break;
+                        }
+                    }
                 }
+                if (hasAdjacentProperties) break;
             }
+            
+            assertTrue(hasAdjacentProperties, "O proprietário deve ter pelo menos uma propriedade adjacente");
+            
+            TestLogger.log("Proprietário tem propriedades adjacentes: " + hasAdjacentProperties);
         }
         
         TestLogger.logSuccess("Verificação de vizinhanças realizada com sucesso para todos os proprietários testados");
@@ -135,7 +143,21 @@ class OwnerGraphTest {
                 TestLogger.log("  - Proprietário 1: " + owner1);
                 TestLogger.log("  - Proprietário 2: " + owner2);
                 
-                boolean areAdjacent = graph.areAdjacent(owner1, owner2);
+                // Verifica se os proprietários têm propriedades adjacentes
+                boolean areAdjacent = false;
+                for (Cadastro cadastro1 : cadastros) {
+                    if (cadastro1.getOwner() == owner1) {
+                        Set<Cadastro> adjacentProperties = Graph.getAdjacent(cadastro1, graph.propertyAdjacencyList);
+                        for (Cadastro adjacent : adjacentProperties) {
+                            if (adjacent.getOwner() == owner2) {
+                                areAdjacent = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (areAdjacent) break;
+                }
+                
                 TestLogger.log("Resultado: " + (areAdjacent ? "São vizinhos" : "Não são vizinhos"));
             }
         }
@@ -169,7 +191,21 @@ class OwnerGraphTest {
                 TestLogger.log("  - Proprietário 1: " + owner1);
                 TestLogger.log("  - Proprietário 2: " + owner2);
                 
-                boolean areAdjacent = graph.areAdjacent(owner1, owner2);
+                // Verifica se os proprietários têm propriedades adjacentes
+                boolean areAdjacent = false;
+                for (Cadastro cadastro1 : cadastros) {
+                    if (cadastro1.getOwner() == owner1) {
+                        Set<Cadastro> adjacentProperties = Graph.getAdjacent(cadastro1, graph.propertyAdjacencyList);
+                        for (Cadastro adjacent : adjacentProperties) {
+                            if (adjacent.getOwner() == owner2) {
+                                areAdjacent = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (areAdjacent) break;
+                }
+                
                 TestLogger.log("Resultado: " + (areAdjacent ? "São vizinhos" : "Não são vizinhos"));
             }
         }
@@ -211,7 +247,7 @@ class OwnerGraphTest {
         TestLogger.logTestStart("Contagem de vizinhanças");
         
         TestLogger.log("Obtendo número total de vizinhanças no grafo");
-        int numberOfAdjacencies = graph.getNumberOfAdjacencies();
+        int numberOfAdjacencies = graph.getNumberOfAdjacenciesBetweenOwners();
         TestLogger.log("Número de vizinhanças encontrado: " + numberOfAdjacencies);
         
         assertNotNull(numberOfAdjacencies, "O número de vizinhanças não deve ser nulo");

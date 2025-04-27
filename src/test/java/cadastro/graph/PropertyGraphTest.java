@@ -77,7 +77,7 @@ class PropertyGraphTest {
             Cadastro currentCadastro = cadastros.get(i);
             TestLogger.log("Verificando adjacências para o cadastro: " + currentCadastro.toString());
             
-            Set<Cadastro> adjacent = graph.getAdjacentProperties(currentCadastro);
+            Set<Cadastro> adjacent = Graph.getAdjacent(currentCadastro, graph.propertyAdjacencyList);
             assertNotNull(adjacent, "O conjunto de propriedades adjacentes não deve ser nulo");
             
             TestLogger.log("Número de propriedades adjacentes encontradas: " + adjacent.size());
@@ -112,7 +112,7 @@ class PropertyGraphTest {
                 TestLogger.log("  - Cadastro 1: " + cadastro1.toString());
                 TestLogger.log("  - Cadastro 2: " + cadastro2.toString());
                 
-                boolean areAdjacent = graph.areAdjacent(cadastro1, cadastro2);
+                boolean areAdjacent = Graph.areAdjacent(cadastro1, cadastro2, graph.propertyAdjacencyList);
                 TestLogger.log("Resultado: " + (areAdjacent ? "São adjacentes" : "Não são adjacentes"));
             }
         }
@@ -140,7 +140,7 @@ class PropertyGraphTest {
                 TestLogger.log("  - Cadastro 1: " + cadastro1.toString());
                 TestLogger.log("  - Cadastro 2: " + cadastro2.toString());
                 
-                boolean areAdjacent = graph.areAdjacent(cadastro1, cadastro2);
+                boolean areAdjacent = Graph.areAdjacent(cadastro1, cadastro2, graph.propertyAdjacencyList);
                 TestLogger.log("Resultado: " + (areAdjacent ? "São adjacentes" : "Não são adjacentes"));
             }
         }
@@ -175,7 +175,7 @@ class PropertyGraphTest {
         TestLogger.logTestStart("Contagem de adjacências");
         
         TestLogger.log("Obtendo número total de adjacências no grafo");
-        int numberOfAdjacencies = graph.getNumberOfAdjacencies();
+        int numberOfAdjacencies = graph.getNumberOfAdjacenciesBetweenProperties();
         TestLogger.log("Número de adjacências encontrado: " + numberOfAdjacencies);
         
         assertNotNull(numberOfAdjacencies, "O número de adjacências não deve ser nulo");
