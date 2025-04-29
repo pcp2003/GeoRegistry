@@ -553,67 +553,67 @@ public class Gui extends JFrame {
      * @param e O evento de ação que disparou o método
      */
     private void showOwnerGraphVisualization(ActionEvent e) {
-        // try {
-        //     if (cadastros == null || cadastros.isEmpty()) {
-        //         throw new IllegalStateException(Constants.EMPTY_LIST_ERROR + "visualizar grafo de proprietários");
-        //     }
+        try {
+            if (cadastros == null || cadastros.isEmpty()) {
+                throw new IllegalStateException(Constants.EMPTY_LIST_ERROR + "visualizar grafo de proprietários");
+            }
 
-        //     // Criar a janela de carregamento
-        //     JFrame loadingFrame = new JFrame(Constants.OWNER_GRAPH_WINDOW_TITLE);
-        //     loadingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //     loadingFrame.setSize(300, 100);
-        //     loadingFrame.setLocationRelativeTo(this);
+            // Criar a janela de carregamento
+            JFrame loadingFrame = new JFrame(Constants.OWNER_GRAPH_WINDOW_TITLE);
+            loadingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            loadingFrame.setSize(300, 100);
+            loadingFrame.setLocationRelativeTo(this);
             
-        //     JPanel loadingPanel = new JPanel(new BorderLayout());
-        //     loadingPanel.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
-        //     JLabel loadingLabel = new JLabel("A carregar...", SwingConstants.CENTER);
-        //     loadingLabel.setFont(loadingLabel.getFont().deriveFont(Font.BOLD));
-        //     loadingPanel.add(loadingLabel, BorderLayout.CENTER);
-        //     loadingFrame.add(loadingPanel);
-        //     loadingFrame.setVisible(true);
+            JPanel loadingPanel = new JPanel(new BorderLayout());
+            loadingPanel.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
+            JLabel loadingLabel = new JLabel("A carregar...", SwingConstants.CENTER);
+            loadingLabel.setFont(loadingLabel.getFont().deriveFont(Font.BOLD));
+            loadingPanel.add(loadingLabel, BorderLayout.CENTER);
+            loadingFrame.add(loadingPanel);
+            loadingFrame.setVisible(true);
 
-        //     // Criar o grafo em uma thread separada
-        //     SwingWorker<OwnerGraph, Void> worker = new SwingWorker<OwnerGraph, Void>() {
-        //         @Override
-        //         protected OwnerGraph doInBackground() {
-        //             return new OwnerGraph(cadastros);
-        //         }
+            // Criar o grafo em uma thread separada
+            SwingWorker<OwnerGraph, Void> worker = new SwingWorker<OwnerGraph, Void>() {
+                @Override
+                protected OwnerGraph doInBackground() {
+                    return new OwnerGraph(cadastros);
+                }
 
-        //         @Override
-        //         protected void done() {
-        //             try {
-        //                 loadingFrame.dispose();
-        //                 OwnerGraph graph = get();
+                @Override
+                protected void done() {
+                    try {
+                        loadingFrame.dispose();
+                        OwnerGraph graph = get();
                         
-        //                 // Criar a janela de visualização do grafo
-        //                 JFrame graphFrame = new JFrame(Constants.OWNER_GRAPH_WINDOW_TITLE);
-        //                 graphFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        // Criar a janela de visualização do grafo
+                        JFrame graphFrame = new JFrame(Constants.OWNER_GRAPH_WINDOW_TITLE);
+                        graphFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         
-        //                 GraphPanel graphPanel = new GraphPanel(graph);
-        //                 JScrollPane scrollPane = new JScrollPane(graphPanel);
-        //                 scrollPane.setBorder(null);
-        //                 scrollPane.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
+                        OwnerGraphPanel graphPanel = new OwnerGraphPanel(graph);
+                        JScrollPane scrollPane = new JScrollPane(graphPanel);
+                        scrollPane.setBorder(null);
+                        scrollPane.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
                         
-        //                 graphFrame.add(scrollPane);
-        //                 graphFrame.setSize(800, 600);
-        //                 graphFrame.setLocationRelativeTo(GUI.this);
-        //                 graphFrame.setVisible(true);
-        //             } catch (Exception ex) {
-        //                 JOptionPane.showMessageDialog(GUI.this,
-        //                         "Erro ao visualizar grafo de proprietários: " + ex.getMessage(),
-        //                         Constants.ERROR_TITLE,
-        //                         JOptionPane.ERROR_MESSAGE);
-        //             }
-        //         }
-        //     };
+                        graphFrame.add(scrollPane);
+                        graphFrame.setSize(800, 600);
+                        graphFrame.setLocationRelativeTo(Gui.this);
+                        graphFrame.setVisible(true);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(Gui.this,
+                                "Erro ao visualizar grafo de proprietários: " + ex.getMessage(),
+                                Constants.ERROR_TITLE,
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            };
 
-        //     worker.execute();
-        // } catch (Exception ex) {
-        //     JOptionPane.showMessageDialog(this,
-        //             "Erro ao visualizar grafo de proprietários: " + ex.getMessage(),
-        //             Constants.ERROR_TITLE,
-        //             JOptionPane.ERROR_MESSAGE);
-        // }
+            worker.execute();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao visualizar grafo de proprietários: " + ex.getMessage(),
+                    Constants.ERROR_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
