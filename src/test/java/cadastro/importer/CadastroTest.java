@@ -8,6 +8,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import cadastro.TestLogger;
+import cadastro.Constants;
 
 import java.io.File;
 import java.io.FileReader;
@@ -582,7 +583,7 @@ class CadastroTest {
     void sortCadastros1() throws Exception {
         TestLogger.logTestStart("sortCadastros1");
         List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, CadastroConstants.SORT_BY_ID);
+        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, Constants.SORT_BY_ID);
         assertNotNull(sorted, "A lista ordenada não deve ser nula");
         TestLogger.logSuccess("Teste sortCadastros1 concluído com sucesso");
         TestLogger.logTestEnd("sortCadastros1");
@@ -592,7 +593,7 @@ class CadastroTest {
     void sortCadastros2() throws Exception {
         TestLogger.logTestStart("sortCadastros2");
         List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, CadastroConstants.SORT_BY_LENGTH);
+        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, Constants.SORT_BY_LENGTH);
         assertNotNull(sorted, "A lista ordenada não deve ser nula");
         TestLogger.logSuccess("Teste sortCadastros2 concluído com sucesso");
         TestLogger.logTestEnd("sortCadastros2");
@@ -602,7 +603,7 @@ class CadastroTest {
     void sortCadastros3() throws Exception {
         TestLogger.logTestStart("sortCadastros3");
         List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, CadastroConstants.SORT_BY_AREA);
+        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, Constants.SORT_BY_AREA);
         assertNotNull(sorted, "A lista ordenada não deve ser nula");
         TestLogger.logSuccess("Teste sortCadastros3 concluído com sucesso");
         TestLogger.logTestEnd("sortCadastros3");
@@ -612,7 +613,7 @@ class CadastroTest {
     void sortCadastros4() throws Exception {
         TestLogger.logTestStart("sortCadastros4");
         List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, CadastroConstants.SORT_BY_OWNER);
+        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, Constants.SORT_BY_OWNER);
         assertNotNull(sorted, "A lista ordenada não deve ser nula");
         TestLogger.logSuccess("Teste sortCadastros4 concluído com sucesso");
         TestLogger.logTestEnd("sortCadastros4");
@@ -687,7 +688,7 @@ class CadastroTest {
         assertFalse(locations.isEmpty(), "A lista de localizações não deve estar vazia");
         
         // Verificar se não há valores "NA" na lista
-        assertFalse(locations.contains(CadastroConstants.NA_VALUE), 
+        assertFalse(locations.contains(Constants.NA_VALUE), 
             "A lista de localizações não deve conter valores 'NA'");
         
         // Verificar se a ordem das localizações está correta

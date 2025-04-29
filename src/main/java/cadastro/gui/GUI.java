@@ -1,9 +1,8 @@
 package cadastro.gui;
-
 import cadastro.importer.Cadastro;
-import cadastro.importer.CadastroConstants;
 import cadastro.graph.PropertyGraph;
 import cadastro.graph.OwnerGraph;
+import cadastro.Constants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,16 +19,16 @@ import java.util.List;
  * @author [Lei-G]
  * @version 1.0
  */
-public class GUI extends JFrame {
+public class Gui extends JFrame {
     // Declaração dos componentes da interface
     private final JTextField csvPathInput = new JTextField(20);
-    private final JButton browseButton = new JButton(GUIConstants.BROWSE_BUTTON_TEXT);
-    private final JButton importButton = new JButton(GUIConstants.IMPORT_BUTTON_TEXT);
-    private final JButton showMore = new JButton(GUIConstants.SHOW_MORE_BUTTON_TEXT);
-    private final JButton viewPropertyGraphButton = new JButton(GUIConstants.VIEW_PROPERTY_GRAPH_BUTTON_TEXT);
-    private final JButton viewOwnerGraphButton = new JButton(GUIConstants.VIEW_OWNER_GRAPH_BUTTON_TEXT);
-    private final JButton calculatePropertyAverageButton = new JButton(GUIConstants.AVERAGE_PROPERTY_AREA_BUTTON_TEXT);
-    private final JButton calculateOwnerAverageButton = new JButton(GUIConstants.AVERAGE_OWNER_AREA_BUTTON_TEXT);
+    private final JButton browseButton = new JButton(Constants.BROWSE_BUTTON_TEXT);
+    private final JButton importButton = new JButton(Constants.IMPORT_BUTTON_TEXT);
+    private final JButton showMore = new JButton(Constants.SHOW_MORE_BUTTON_TEXT);
+    private final JButton viewPropertyGraphButton = new JButton(Constants.VIEW_PROPERTY_GRAPH_BUTTON_TEXT);
+    private final JButton viewOwnerGraphButton = new JButton(Constants.VIEW_OWNER_GRAPH_BUTTON_TEXT);
+    private final JButton calculatePropertyAverageButton = new JButton(Constants.AVERAGE_PROPERTY_AREA_BUTTON_TEXT);
+    private final JButton calculateOwnerAverageButton = new JButton(Constants.AVERAGE_OWNER_AREA_BUTTON_TEXT);
     private final JPanel resultsPanel = new JPanel();
     private int cadastrosResultPointer;
     private final List<JButton> sortButtons = new ArrayList<>();
@@ -42,10 +41,10 @@ public class GUI extends JFrame {
      * 
      * @throws RuntimeException se houver erro na inicialização da interface
      */
-    public GUI() {
+    public Gui() {
         try {
-            setTitle(GUIConstants.WINDOW_TITLE);
-            setSize(GUIConstants.WINDOW_WIDTH, GUIConstants.WINDOW_HEIGHT);
+            setTitle(Constants.WINDOW_TITLE);
+            setSize(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setLayout(new BorderLayout());
             
@@ -67,18 +66,18 @@ public class GUI extends JFrame {
 
     private void initializeComponents() {
         // Configurar o painel principal
-        getContentPane().setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+        getContentPane().setBackground(Color.decode(Constants.BACKGROUND_COLOR));
         
         csvPathInput.setEditable(false);
         csvPathInput.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.decode(GUIConstants.BORDER_COLOR)),
+            BorderFactory.createLineBorder(Color.decode(Constants.BORDER_COLOR)),
             BorderFactory.createEmptyBorder(8, 8, 8, 8)
         ));
         csvPathInput.setBackground(Color.WHITE);
-        csvPathInput.setForeground(Color.decode(GUIConstants.TEXT_COLOR));
+        csvPathInput.setForeground(Color.decode(Constants.TEXT_COLOR));
         
         resultsPanel.setLayout(new BoxLayout(resultsPanel, BoxLayout.Y_AXIS));
-        resultsPanel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+        resultsPanel.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
         resultsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
         // Estilizar botões principais
@@ -97,8 +96,8 @@ public class GUI extends JFrame {
     }
 
     private void styleButton(JButton button) {
-        button.setBackground(Color.decode(GUIConstants.PRIMARY_COLOR));
-        button.setForeground(Color.decode(GUIConstants.BUTTON_TEXT_COLOR));
+        button.setBackground(Color.decode(Constants.PRIMARY_COLOR));
+        button.setForeground(Color.decode(Constants.BUTTON_TEXT_COLOR));
         button.setFocusPainted(false);
         button.setBorderPainted(false);
         button.setOpaque(true);
@@ -110,35 +109,35 @@ public class GUI extends JFrame {
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 if (button.isEnabled()) {
-                    button.setBackground(Color.decode(GUIConstants.HOVER_COLOR));
+                    button.setBackground(Color.decode(Constants.HOVER_COLOR));
                 }
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 if (button.isEnabled()) {
-                    button.setBackground(Color.decode(GUIConstants.PRIMARY_COLOR));
+                    button.setBackground(Color.decode(Constants.PRIMARY_COLOR));
                 }
             }
         });
 
         // Estilo para botão desabilitado
         if (!button.isEnabled()) {
-            button.setBackground(Color.decode(GUIConstants.DISABLED_COLOR));
-            button.setForeground(Color.decode(GUIConstants.BORDER_COLOR));
+            button.setBackground(Color.decode(Constants.DISABLED_COLOR));
+            button.setForeground(Color.decode(Constants.BORDER_COLOR));
         }
     }
 
     private void setupLayout() {
-        JPanel filePanel = new JPanel(new BorderLayout(GUIConstants.PADDING, 0));
-        filePanel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
-        filePanel.setBorder(BorderFactory.createEmptyBorder(GUIConstants.PADDING, GUIConstants.PADDING, GUIConstants.PADDING, GUIConstants.PADDING));
+        JPanel filePanel = new JPanel(new BorderLayout(Constants.PADDING, 0));
+        filePanel.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
+        filePanel.setBorder(BorderFactory.createEmptyBorder(Constants.PADDING, Constants.PADDING, Constants.PADDING, Constants.PADDING));
         
-        JLabel fileLabel = new JLabel(GUIConstants.FILE_SELECTION_LABEL);
+        JLabel fileLabel = new JLabel(Constants.FILE_SELECTION_LABEL);
         fileLabel.setFont(fileLabel.getFont().deriveFont(Font.BOLD));
-        fileLabel.setForeground(Color.decode(GUIConstants.TEXT_COLOR));
+        fileLabel.setForeground(Color.decode(Constants.TEXT_COLOR));
         
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        buttonPanel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+        buttonPanel.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
         buttonPanel.add(browseButton);
         buttonPanel.add(importButton);
         buttonPanel.add(viewPropertyGraphButton);
@@ -153,7 +152,7 @@ public class GUI extends JFrame {
         JScrollPane scrollPane = new JScrollPane(resultsPanel);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        scrollPane.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+        scrollPane.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
 
         add(filePanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
@@ -184,14 +183,14 @@ public class GUI extends JFrame {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
                 if (!selectedFile.exists()) {
-                    throw new IllegalArgumentException(GUIConstants.FILE_NOT_FOUND_ERROR);
+                    throw new IllegalArgumentException(Constants.FILE_NOT_FOUND_ERROR);
                 }
                 csvPathInput.setText(selectedFile.getAbsolutePath());
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "Erro ao selecionar arquivo: " + ex.getMessage(),
-                    GUIConstants.ERROR_TITLE,
+                    Constants.ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -205,8 +204,8 @@ public class GUI extends JFrame {
         String path = csvPathInput.getText();
         if (path.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    GUIConstants.SELECT_FILE_WARNING,
-                    GUIConstants.WARNING_TITLE,
+                    Constants.SELECT_FILE_WARNING,
+                    Constants.WARNING_TITLE,
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -215,7 +214,7 @@ public class GUI extends JFrame {
             cadastros = Cadastro.getCadastros(path);
             
             if (cadastros == null || cadastros.isEmpty()) {
-                throw new IllegalStateException(GUIConstants.EMPTY_FILE_ERROR);
+                throw new IllegalStateException(Constants.EMPTY_FILE_ERROR);
             }
 
             // Habilitar os botões de visualização do grafo e cálculo de média
@@ -229,7 +228,7 @@ public class GUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "Erro ao importar: " + ex.getMessage(),
-                    GUIConstants.ERROR_TITLE,
+                    Constants.ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -237,17 +236,17 @@ public class GUI extends JFrame {
     private void initializeSortButtons() {
         sortButtons.clear();
         int[] sortTypes = {
-            CadastroConstants.SORT_BY_ID, 
-            CadastroConstants.SORT_BY_LENGTH, 
-            CadastroConstants.SORT_BY_AREA, 
-            CadastroConstants.SORT_BY_OWNER,
-            CadastroConstants.SORT_BY_DISTRICT,
-            CadastroConstants.SORT_BY_MUNICIPALITY,
-            CadastroConstants.SORT_BY_COUNTY
+            Constants.SORT_BY_ID, 
+            Constants.SORT_BY_LENGTH, 
+            Constants.SORT_BY_AREA, 
+            Constants.SORT_BY_OWNER,
+            Constants.SORT_BY_DISTRICT,
+            Constants.SORT_BY_MUNICIPALITY,
+            Constants.SORT_BY_COUNTY
         };
 
-        for (int i = 0; i < GUIConstants.SORT_BUTTON_LABELS.length; i++) {
-            JButton button = new JButton(GUIConstants.SORT_BUTTON_LABELS[i]);
+        for (int i = 0; i < Constants.SORT_BUTTON_LABELS.length; i++) {
+            JButton button = new JButton(Constants.SORT_BUTTON_LABELS[i]);
             final int sortType = sortTypes[i];
             button.addActionListener(evento -> sortResults(evento, sortType));
             sortButtons.add(button);
@@ -263,7 +262,7 @@ public class GUI extends JFrame {
     private void sortResults(ActionEvent e, int sortType) {
         try {
             if (cadastros == null || cadastros.isEmpty()) {
-                throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "ordenar");
+                throw new IllegalStateException(Constants.EMPTY_LIST_ERROR + "ordenar");
             }
 
             cadastros = Cadastro.sortCadastros(cadastros, sortType);
@@ -271,7 +270,7 @@ public class GUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "Erro ao ordenar: " + ex.getMessage(),
-                    GUIConstants.ERROR_TITLE,
+                    Constants.ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -291,7 +290,7 @@ public class GUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "Erro ao exibir resultados: " + ex.getMessage(),
-                    GUIConstants.ERROR_TITLE,
+                    Constants.ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -313,10 +312,10 @@ public class GUI extends JFrame {
     private void moreResults(ActionEvent e) {
         try {
             if (cadastros == null || cadastros.isEmpty()) {
-                throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "exibir");
+                throw new IllegalStateException(Constants.EMPTY_LIST_ERROR + "exibir");
             }
 
-            int toLoad = cadastrosResultPointer + GUIConstants.DEFAULT_CADASTROS_LOAD;
+            int toLoad = cadastrosResultPointer + Constants.DEFAULT_CADASTROS_LOAD;
             if (toLoad > cadastros.size()) {
                 showMore.setEnabled(false);
             }
@@ -329,7 +328,7 @@ public class GUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "Erro ao carregar mais resultados: " + ex.getMessage(),
-                    GUIConstants.ERROR_TITLE,
+                    Constants.ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -339,7 +338,7 @@ public class GUI extends JFrame {
      */
     private void addResults() {
         try {
-            int toLoad = Math.min(cadastrosResultPointer + GUIConstants.DEFAULT_CADASTROS_LOAD, cadastros.size());
+            int toLoad = Math.min(cadastrosResultPointer + Constants.DEFAULT_CADASTROS_LOAD, cadastros.size());
             for (int i = cadastrosResultPointer; i < toLoad; i++) {
                 showCadastroResult(cadastros.get(i));
             }
@@ -357,16 +356,16 @@ public class GUI extends JFrame {
     private void showCadastroResult(Cadastro cadastro) {
         try {
             if (cadastro == null) {
-                throw new IllegalArgumentException(GUIConstants.NULL_CADASTRO_ERROR);
+                throw new IllegalArgumentException(Constants.NULL_CADASTRO_ERROR);
             }
 
-            JButton cadastroButton = new JButton(GUIConstants.SHOW_SHAPE_BUTTON_TEXT);
+            JButton cadastroButton = new JButton(Constants.SHOW_SHAPE_BUTTON_TEXT);
             styleButton(cadastroButton);
             cadastroButton.addActionListener(_ -> showShapeWindow(cadastro));
             cadastroButton.setPreferredSize(new Dimension(130, 34));
 
-            JPanel cardPanel = new JPanel(new BorderLayout(GUIConstants.CARD_PADDING, GUIConstants.CARD_PADDING));
-            cardPanel.setBackground(Color.decode(GUIConstants.CARD_BACKGROUND));
+            JPanel cardPanel = new JPanel(new BorderLayout(Constants.CARD_PADDING, Constants.CARD_PADDING));
+            cardPanel.setBackground(Color.decode(Constants.CARD_BACKGROUND));
             
             // Borda mais sutil com sombra
             cardPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -381,7 +380,7 @@ public class GUI extends JFrame {
 
             // Criar um painel para as informações com GridBagLayout
             JPanel infoPanel = new JPanel(new GridBagLayout());
-            infoPanel.setBackground(Color.decode(GUIConstants.CARD_BACKGROUND));
+            infoPanel.setBackground(Color.decode(Constants.CARD_BACKGROUND));
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.anchor = GridBagConstraints.WEST;
@@ -394,7 +393,7 @@ public class GUI extends JFrame {
             gbc.weightx = 0.15;
             JLabel idLabel = new JLabel("ID: " + cadastro.getId());
             idLabel.setFont(idLabel.getFont().deriveFont(Font.BOLD, 13f));
-            idLabel.setForeground(Color.decode(GUIConstants.ACCENT_COLOR));
+            idLabel.setForeground(Color.decode(Constants.ACCENT_COLOR));
             infoPanel.add(idLabel, gbc);
 
             // Proprietário
@@ -402,7 +401,7 @@ public class GUI extends JFrame {
             gbc.weightx = 0.35;
             JLabel ownerLabel = new JLabel("Proprietário: " + cadastro.getOwner());
             ownerLabel.setFont(ownerLabel.getFont().deriveFont(12f));
-            ownerLabel.setForeground(Color.decode(GUIConstants.TEXT_COLOR));
+            ownerLabel.setForeground(Color.decode(Constants.TEXT_COLOR));
             infoPanel.add(ownerLabel, gbc);
 
             // Área
@@ -410,7 +409,7 @@ public class GUI extends JFrame {
             gbc.weightx = 0.25;
             JLabel areaLabel = new JLabel("Área: " + cadastro.getArea());
             areaLabel.setFont(areaLabel.getFont().deriveFont(12f));
-            areaLabel.setForeground(Color.decode(GUIConstants.TEXT_COLOR));
+            areaLabel.setForeground(Color.decode(Constants.TEXT_COLOR));
             infoPanel.add(areaLabel, gbc);
 
             // Comprimento
@@ -418,7 +417,7 @@ public class GUI extends JFrame {
             gbc.weightx = 0.25;
             JLabel lengthLabel = new JLabel("Comprimento: " + cadastro.getLength());
             lengthLabel.setFont(lengthLabel.getFont().deriveFont(12f));
-            lengthLabel.setForeground(Color.decode(GUIConstants.TEXT_COLOR));
+            lengthLabel.setForeground(Color.decode(Constants.TEXT_COLOR));
             infoPanel.add(lengthLabel, gbc);
 
             // Localização com cor mais suave
@@ -428,12 +427,12 @@ public class GUI extends JFrame {
             gbc.weightx = 1.0;
             JLabel locationLabel = new JLabel("Localização: " + district + ", " + municipality + ", " + county);
             locationLabel.setFont(locationLabel.getFont().deriveFont(12f));
-            locationLabel.setForeground(Color.decode(GUIConstants.LABEL_COLOR));
+            locationLabel.setForeground(Color.decode(Constants.LABEL_COLOR));
             infoPanel.add(locationLabel, gbc);
 
             // Painel para o botão
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-            buttonPanel.setBackground(Color.decode(GUIConstants.CARD_BACKGROUND));
+            buttonPanel.setBackground(Color.decode(Constants.CARD_BACKGROUND));
             buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
             buttonPanel.add(cadastroButton);
 
@@ -443,7 +442,7 @@ public class GUI extends JFrame {
             resultsPanel.add(cardPanel);
             resultsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-            if (cadastrosResultPointer % GUIConstants.DEFAULT_CADASTROS_LOAD == 0) {
+            if (cadastrosResultPointer % Constants.DEFAULT_CADASTROS_LOAD == 0) {
                 resultsPanel.revalidate();
                 resultsPanel.repaint();
             }
@@ -460,11 +459,11 @@ public class GUI extends JFrame {
     private void showShapeWindow(Cadastro cadastro) {
         try {
             if (cadastro == null) {
-                throw new IllegalArgumentException(GUIConstants.NULL_CADASTRO_ERROR);
+                throw new IllegalArgumentException(Constants.NULL_CADASTRO_ERROR);
             }
 
-            JFrame shapeFrame = new JFrame(GUIConstants.SHAPE_WINDOW_TITLE + cadastro.getId());
-            shapeFrame.setSize(GUIConstants.SHAPE_WINDOW_SIZE, GUIConstants.SHAPE_WINDOW_SIZE);
+            JFrame shapeFrame = new JFrame(Constants.SHAPE_WINDOW_TITLE + cadastro.getId());
+            shapeFrame.setSize(Constants.SHAPE_WINDOW_SIZE, Constants.SHAPE_WINDOW_SIZE);
             shapeFrame.setLocationRelativeTo(this);
 
             ShapePanel shapePanel = new ShapePanel(cadastro.getShape());
@@ -474,7 +473,7 @@ public class GUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "Erro ao exibir shape: " + ex.getMessage(),
-                    GUIConstants.ERROR_TITLE,
+                    Constants.ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -487,17 +486,17 @@ public class GUI extends JFrame {
     private void showPropertyGraphVisualization(ActionEvent e) {
         try {
             if (cadastros == null || cadastros.isEmpty()) {
-                throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "visualizar grafo de propriedades");
+                throw new IllegalStateException(Constants.EMPTY_LIST_ERROR + "visualizar grafo de propriedades");
             }
 
             // Criar a janela de carregamento
-            JFrame loadingFrame = new JFrame(GUIConstants.PROPERTY_GRAPH_WINDOW_TITLE);
+            JFrame loadingFrame = new JFrame(Constants.PROPERTY_GRAPH_WINDOW_TITLE);
             loadingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             loadingFrame.setSize(300, 100);
             loadingFrame.setLocationRelativeTo(this);
             
             JPanel loadingPanel = new JPanel(new BorderLayout());
-            loadingPanel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+            loadingPanel.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
             JLabel loadingLabel = new JLabel("A carregar...", SwingConstants.CENTER);
             loadingLabel.setFont(loadingLabel.getFont().deriveFont(Font.BOLD));
             loadingPanel.add(loadingLabel, BorderLayout.CENTER);
@@ -508,7 +507,7 @@ public class GUI extends JFrame {
             SwingWorker<PropertyGraph, Void> worker = new SwingWorker<PropertyGraph, Void>() {
                 @Override
                 protected PropertyGraph doInBackground() {
-                    return new PropertyGraph(cadastros); // false para grafo de propriedades
+                    return new PropertyGraph(cadastros);
                 }
 
                 @Override
@@ -518,22 +517,22 @@ public class GUI extends JFrame {
                         PropertyGraph graph = get();
                         
                         // Criar a janela de visualização do grafo
-                        JFrame graphFrame = new JFrame(GUIConstants.PROPERTY_GRAPH_WINDOW_TITLE);
+                        JFrame graphFrame = new JFrame(Constants.PROPERTY_GRAPH_WINDOW_TITLE);
                         graphFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         
-                        GraphPanel graphPanel = new GraphPanel(graph);
+                        PropertyGraphPanel graphPanel = new PropertyGraphPanel(graph);
                         JScrollPane scrollPane = new JScrollPane(graphPanel);
                         scrollPane.setBorder(null);
-                        scrollPane.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+                        scrollPane.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
                         
                         graphFrame.add(scrollPane);
                         graphFrame.setSize(800, 600);
-                        graphFrame.setLocationRelativeTo(GUI.this);
+                        graphFrame.setLocationRelativeTo(Gui.this);
                         graphFrame.setVisible(true);
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(GUI.this,
+                        JOptionPane.showMessageDialog(Gui.this,
                                 "Erro ao visualizar grafo de propriedades: " + ex.getMessage(),
-                                GUIConstants.ERROR_TITLE,
+                                Constants.ERROR_TITLE,
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -543,7 +542,7 @@ public class GUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "Erro ao visualizar grafo de propriedades: " + ex.getMessage(),
-                    GUIConstants.ERROR_TITLE,
+                    Constants.ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -556,17 +555,17 @@ public class GUI extends JFrame {
     private void showOwnerGraphVisualization(ActionEvent e) {
         // try {
         //     if (cadastros == null || cadastros.isEmpty()) {
-        //         throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "visualizar grafo de proprietários");
+        //         throw new IllegalStateException(Constants.EMPTY_LIST_ERROR + "visualizar grafo de proprietários");
         //     }
 
         //     // Criar a janela de carregamento
-        //     JFrame loadingFrame = new JFrame(GUIConstants.OWNER_GRAPH_WINDOW_TITLE);
+        //     JFrame loadingFrame = new JFrame(Constants.OWNER_GRAPH_WINDOW_TITLE);
         //     loadingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //     loadingFrame.setSize(300, 100);
         //     loadingFrame.setLocationRelativeTo(this);
             
         //     JPanel loadingPanel = new JPanel(new BorderLayout());
-        //     loadingPanel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+        //     loadingPanel.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
         //     JLabel loadingLabel = new JLabel("A carregar...", SwingConstants.CENTER);
         //     loadingLabel.setFont(loadingLabel.getFont().deriveFont(Font.BOLD));
         //     loadingPanel.add(loadingLabel, BorderLayout.CENTER);
@@ -577,7 +576,7 @@ public class GUI extends JFrame {
         //     SwingWorker<OwnerGraph, Void> worker = new SwingWorker<OwnerGraph, Void>() {
         //         @Override
         //         protected OwnerGraph doInBackground() {
-        //             return new OwnerGraph(cadastros); // true para grafo de proprietários
+        //             return new OwnerGraph(cadastros);
         //         }
 
         //         @Override
@@ -587,13 +586,13 @@ public class GUI extends JFrame {
         //                 OwnerGraph graph = get();
                         
         //                 // Criar a janela de visualização do grafo
-        //                 JFrame graphFrame = new JFrame(GUIConstants.OWNER_GRAPH_WINDOW_TITLE);
+        //                 JFrame graphFrame = new JFrame(Constants.OWNER_GRAPH_WINDOW_TITLE);
         //                 graphFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         
         //                 GraphPanel graphPanel = new GraphPanel(graph);
         //                 JScrollPane scrollPane = new JScrollPane(graphPanel);
         //                 scrollPane.setBorder(null);
-        //                 scrollPane.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
+        //                 scrollPane.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
                         
         //                 graphFrame.add(scrollPane);
         //                 graphFrame.setSize(800, 600);
@@ -602,7 +601,7 @@ public class GUI extends JFrame {
         //             } catch (Exception ex) {
         //                 JOptionPane.showMessageDialog(GUI.this,
         //                         "Erro ao visualizar grafo de proprietários: " + ex.getMessage(),
-        //                         GUIConstants.ERROR_TITLE,
+        //                         Constants.ERROR_TITLE,
         //                         JOptionPane.ERROR_MESSAGE);
         //             }
         //         }
@@ -612,7 +611,7 @@ public class GUI extends JFrame {
         // } catch (Exception ex) {
         //     JOptionPane.showMessageDialog(this,
         //             "Erro ao visualizar grafo de proprietários: " + ex.getMessage(),
-        //             GUIConstants.ERROR_TITLE,
+        //             Constants.ERROR_TITLE,
         //             JOptionPane.ERROR_MESSAGE);
         // }
     }
@@ -625,17 +624,17 @@ public class GUI extends JFrame {
     private void showPropertyAverageAreaPanel(ActionEvent e) {
         try {
             if (cadastros == null || cadastros.isEmpty()) {
-                throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "calcular área média de propriedades");
+                throw new IllegalStateException(Constants.EMPTY_LIST_ERROR + "calcular área média de propriedades");
             }
 
-            JFrame averageFrame = new JFrame(GUIConstants.AVERAGE_PROPERTY_AREA_WINDOW_TITLE);
+            JFrame averageFrame = new JFrame(Constants.AVERAGE_PROPERTY_AREA_WINDOW_TITLE);
             averageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             averageFrame.setSize(400, 200);
             averageFrame.setLocationRelativeTo(this);
 
-            JPanel panel = new JPanel(new GridLayout(4, 2, GUIConstants.PADDING, GUIConstants.PADDING));
-            panel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
-            panel.setBorder(BorderFactory.createEmptyBorder(GUIConstants.PADDING, GUIConstants.PADDING, GUIConstants.PADDING, GUIConstants.PADDING));
+            JPanel panel = new JPanel(new GridLayout(4, 2, Constants.PADDING, Constants.PADDING));
+            panel.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
+            panel.setBorder(BorderFactory.createEmptyBorder(Constants.PADDING, Constants.PADDING, Constants.PADDING, Constants.PADDING));
 
             JTextField districtField = new JTextField();
             JTextField municipalityField = new JTextField();
@@ -648,14 +647,14 @@ public class GUI extends JFrame {
             styleTextField(municipalityField);
             styleTextField(countyField);
 
-            panel.add(new JLabel(GUIConstants.DISTRICT_LABEL));
+            panel.add(new JLabel(Constants.DISTRICT_LABEL));
             panel.add(districtField);
-            panel.add(new JLabel(GUIConstants.MUNICIPALITY_LABEL));
+            panel.add(new JLabel(Constants.MUNICIPALITY_LABEL));
             panel.add(municipalityField);
-            panel.add(new JLabel(GUIConstants.COUNTY_LABEL));
+            panel.add(new JLabel(Constants.COUNTY_LABEL));
             panel.add(countyField);
 
-            JButton calculateButton = new JButton(GUIConstants.AVERAGE_PROPERTY_AREA_BUTTON_TEXT);
+            JButton calculateButton = new JButton(Constants.AVERAGE_PROPERTY_AREA_BUTTON_TEXT);
             styleButton(calculateButton);
             calculateButton.addActionListener(_ -> {
                 try {
@@ -665,11 +664,11 @@ public class GUI extends JFrame {
 
                     PropertyGraph graph = new PropertyGraph(cadastros);
                     double averageArea = graph.calculateAverageArea(district, municipality, county);
-                    resultLabel.setText(String.format(GUIConstants.AVERAGE_AREA_RESULT_FORMAT, averageArea));
+                    resultLabel.setText(String.format(Constants.AVERAGE_AREA_RESULT_FORMAT, averageArea));
                 } catch (IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(averageFrame,
                             ex.getMessage(),
-                            GUIConstants.ERROR_TITLE,
+                            Constants.ERROR_TITLE,
                             JOptionPane.ERROR_MESSAGE);
                 }
             });
@@ -681,8 +680,8 @@ public class GUI extends JFrame {
             averageFrame.setVisible(true);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
-                    GUIConstants.AVERAGE_AREA_ERROR + ": " + ex.getMessage(),
-                    GUIConstants.ERROR_TITLE,
+                    Constants.AVERAGE_AREA_ERROR + ": " + ex.getMessage(),
+                    Constants.ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -695,17 +694,17 @@ public class GUI extends JFrame {
     private void showOwnerAverageAreaPanel(ActionEvent e) {
         try {
             if (cadastros == null || cadastros.isEmpty()) {
-                throw new IllegalStateException(GUIConstants.EMPTY_LIST_ERROR + "calcular área média de proprietários");
+                throw new IllegalStateException(Constants.EMPTY_LIST_ERROR + "calcular área média de proprietários");
             }
 
-            JFrame averageFrame = new JFrame(GUIConstants.AVERAGE_OWNER_AREA_WINDOW_TITLE);
+            JFrame averageFrame = new JFrame(Constants.AVERAGE_OWNER_AREA_WINDOW_TITLE);
             averageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             averageFrame.setSize(400, 200);
             averageFrame.setLocationRelativeTo(this);
 
-            JPanel panel = new JPanel(new GridLayout(4, 2, GUIConstants.PADDING, GUIConstants.PADDING));
-            panel.setBackground(Color.decode(GUIConstants.BACKGROUND_COLOR));
-            panel.setBorder(BorderFactory.createEmptyBorder(GUIConstants.PADDING, GUIConstants.PADDING, GUIConstants.PADDING, GUIConstants.PADDING));
+            JPanel panel = new JPanel(new GridLayout(4, 2, Constants.PADDING, Constants.PADDING));
+            panel.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
+            panel.setBorder(BorderFactory.createEmptyBorder(Constants.PADDING, Constants.PADDING, Constants.PADDING, Constants.PADDING));
 
             JTextField districtField = new JTextField();
             JTextField municipalityField = new JTextField();
@@ -718,14 +717,14 @@ public class GUI extends JFrame {
             styleTextField(municipalityField);
             styleTextField(countyField);
 
-            panel.add(new JLabel(GUIConstants.DISTRICT_LABEL));
+            panel.add(new JLabel(Constants.DISTRICT_LABEL));
             panel.add(districtField);
-            panel.add(new JLabel(GUIConstants.MUNICIPALITY_LABEL));
+            panel.add(new JLabel(Constants.MUNICIPALITY_LABEL));
             panel.add(municipalityField);
-            panel.add(new JLabel(GUIConstants.COUNTY_LABEL));
+            panel.add(new JLabel(Constants.COUNTY_LABEL));
             panel.add(countyField);
 
-            JButton calculateButton = new JButton(GUIConstants.AVERAGE_OWNER_AREA_BUTTON_TEXT);
+            JButton calculateButton = new JButton(Constants.AVERAGE_OWNER_AREA_BUTTON_TEXT);
             styleButton(calculateButton);
             calculateButton.addActionListener(_ -> {
                 try {
@@ -735,11 +734,11 @@ public class GUI extends JFrame {
 
                     OwnerGraph graph = new OwnerGraph(cadastros);
                     double averageArea = graph.calculateAverageArea(district, municipality, county);
-                    resultLabel.setText(String.format(GUIConstants.AVERAGE_AREA_RESULT_FORMAT, averageArea));
+                    resultLabel.setText(String.format(Constants.AVERAGE_AREA_RESULT_FORMAT, averageArea));
                 } catch (IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(averageFrame,
                             ex.getMessage(),
-                            GUIConstants.ERROR_TITLE,
+                            Constants.ERROR_TITLE,
                             JOptionPane.ERROR_MESSAGE);
                 }
             });
@@ -751,18 +750,18 @@ public class GUI extends JFrame {
             averageFrame.setVisible(true);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
-                    GUIConstants.AVERAGE_AREA_ERROR + ": " + ex.getMessage(),
-                    GUIConstants.ERROR_TITLE,
+                    Constants.AVERAGE_AREA_ERROR + ": " + ex.getMessage(),
+                    Constants.ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void styleTextField(JTextField textField) {
         textField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.decode(GUIConstants.BORDER_COLOR)),
-            BorderFactory.createEmptyBorder(GUIConstants.TEXT_FIELD_PADDING, GUIConstants.TEXT_FIELD_PADDING, GUIConstants.TEXT_FIELD_PADDING, GUIConstants.TEXT_FIELD_PADDING)
+            BorderFactory.createLineBorder(Color.decode(Constants.BORDER_COLOR)),
+            BorderFactory.createEmptyBorder(Constants.TEXT_FIELD_PADDING, Constants.TEXT_FIELD_PADDING, Constants.TEXT_FIELD_PADDING, Constants.TEXT_FIELD_PADDING)
         ));
         textField.setBackground(Color.WHITE);
-        textField.setForeground(Color.decode(GUIConstants.TEXT_COLOR));
+        textField.setForeground(Color.decode(Constants.TEXT_COLOR));
     }
 }

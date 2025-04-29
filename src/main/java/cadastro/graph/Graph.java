@@ -1,6 +1,7 @@
 package cadastro.graph;
 
 import cadastro.importer.Cadastro;
+import cadastro.Constants;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.TopologyException;
 
@@ -25,13 +26,13 @@ public class Graph {
      */
     public Graph(List<Cadastro> cadastros) {
         if (cadastros == null) {
-            throw new IllegalArgumentException(GraphConstants.NULL_CADASTROS_ERROR);
+            throw new IllegalArgumentException(Constants.NULL_CADASTROS_ERROR);
         }
         if (cadastros.isEmpty()) {
-            throw new IllegalArgumentException(GraphConstants.EMPTY_CADASTROS_ERROR);
+            throw new IllegalArgumentException(Constants.EMPTY_CADASTROS_ERROR);
         }
         if (cadastros.contains(null)) {
-            throw new IllegalArgumentException(GraphConstants.NULL_ELEMENTS_ERROR);
+            throw new IllegalArgumentException(Constants.NULL_ELEMENTS_ERROR);
         }
 
         this.cadastros = cadastros;
@@ -49,14 +50,14 @@ public class Graph {
      */
     public static <T> void addAdjacency(T element1, T element2, Map<T, Set<T>> adjacencyMap) {
         if (element1 == null || element2 == null) {
-            throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
+            throw new IllegalArgumentException(Constants.NULL_PROPERTY_ERROR);
         }
 
         if (element1 instanceof Integer && element2 instanceof Integer) {
             int owner1 = (Integer) element1;
             int owner2 = (Integer) element2;
             if (owner1 <= 0 || owner2 <= 0) {
-                throw new IllegalArgumentException(GraphConstants.INVALID_OWNER_ERROR);
+                throw new IllegalArgumentException(Constants.INVALID_OWNER_ERROR);
             }
         }
 
@@ -75,7 +76,7 @@ public class Graph {
      */
     public static boolean arePropertiesPhysicallyAdjacent(Cadastro prop1, Cadastro prop2) {
         if (prop1 == null || prop2 == null) {
-            throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
+            throw new IllegalArgumentException(Constants.NULL_PROPERTY_ERROR);
         }
 
         try {
@@ -89,7 +90,7 @@ public class Graph {
             return shape1.touches(shape2) || 
                    (shape1.intersects(shape2) && !shape1.within(shape2) && !shape2.within(shape1));
         } catch (TopologyException e) {
-            throw new IllegalStateException(GraphConstants.ADJACENCY_ERROR + e.getMessage(), e);
+            throw new IllegalStateException(Constants.ADJACENCY_ERROR + e.getMessage(), e);
         }
     }
 
@@ -105,7 +106,7 @@ public class Graph {
      */
     public static <T> boolean areAdjacent(T element1, T element2, Map<T, Set<T>> adjacencyMap) {
         if (element1 == null || element2 == null) {
-            throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
+            throw new IllegalArgumentException(Constants.NULL_PROPERTY_ERROR);
         }
 
         return adjacencyMap.containsKey(element1) && adjacencyMap.get(element1).contains(element2);
@@ -146,7 +147,7 @@ public class Graph {
      */
     public static <T> Set<T> getAdjacent(T element, Map<T, Set<T>> adjacencyMap) {
         if (element == null) {
-            throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
+            throw new IllegalArgumentException(Constants.NULL_PROPERTY_ERROR);
         }
 
         return Collections.unmodifiableSet(adjacencyMap.getOrDefault(element, new HashSet<>()));

@@ -1,6 +1,7 @@
 package cadastro.graph;
 
 import cadastro.importer.Cadastro;
+import cadastro.Constants;
 import org.locationtech.jts.geom.TopologyException;
 
 import java.util.*;
@@ -47,7 +48,7 @@ public class OwnerGraph extends Graph {
                 }
             }
         } catch (TopologyException e) {
-            throw new IllegalStateException(GraphConstants.GRAPH_BUILD_ERROR + e.getMessage(), e);
+            throw new IllegalStateException(Constants.GRAPH_BUILD_ERROR + e.getMessage(), e);
         }
     }
 
@@ -116,7 +117,7 @@ public class OwnerGraph extends Graph {
      */
     public Set<Cadastro> getAdjacentProperties(Cadastro property) {
         if (property == null) {
-            throw new IllegalArgumentException(GraphConstants.NULL_PROPERTY_ERROR);
+            throw new IllegalArgumentException(Constants.NULL_PROPERTY_ERROR);
         }
 
         return Collections.unmodifiableSet(propertyAdjacencyList.getOrDefault(property, new HashSet<>()));
@@ -157,7 +158,7 @@ public class OwnerGraph extends Graph {
         for (int i = 0; i < adjacencyList.size(); i++) {
             sb.append(adjacencyList.keySet().toArray()[i]);
             if (i < adjacencyList.size() - 1) {
-                sb.append(GraphConstants.PROPERTY_SEPARATOR);
+                sb.append(Constants.PROPERTY_SEPARATOR);
             }
         }
         sb.append("], adjacencies=[]}");

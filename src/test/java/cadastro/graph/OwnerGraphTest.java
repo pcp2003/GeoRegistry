@@ -32,7 +32,7 @@ class OwnerGraphTest {
 
     @BeforeAll
     static void setUp() throws Exception {
-        TestLogger.init("owner_graph_test");
+        TestLogger.init("OwnerGraphTest");
         TestLogger.log("=== Iniciando setup dos testes ===\n");
 
         String filePath = "Dados/Madeira-Moodle-1.1.csv";

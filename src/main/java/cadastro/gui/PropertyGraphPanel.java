@@ -2,6 +2,7 @@ package cadastro.gui;
 
 import cadastro.graph.PropertyGraph;
 import cadastro.importer.Cadastro;
+import cadastro.Constants;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 
@@ -21,22 +22,10 @@ import java.util.Set;
  * @author [Lei-G]
  * @version 1.0
  */
-public class GraphPanel extends JPanel {
+public class PropertyGraphPanel extends JPanel {
     /** O grafo de propriedades a ser visualizado */
     private final PropertyGraph propertyGraph;
     
-    /** Cor de preenchimento das propriedades (azul semi-transparente) */
-    private final Color PROPERTY_FILL = new Color(70, 130, 180, 150);
-    
-    /** Cor da borda das propriedades (azul) */
-    private final Color PROPERTY_BORDER = Color.BLUE;
-    
-    /** Cor das linhas de adjacência (laranja semi-transparente) */
-    private final Color ADJACENCY_LINE = new Color(255, 69, 0, 180);
-    
-    /** Espessura das linhas de adjacência */
-    private final float ADJACENCY_STROKE_WIDTH = 2.0f;
-
     /**
      * Constrói um GraphPanel com o grafo de propriedades especificado.
      * O painel será dimensionado para 800x600 pixels e terá fundo branco.
@@ -44,13 +33,13 @@ public class GraphPanel extends JPanel {
      * @param propertyGraph O grafo de propriedades a ser visualizado
      * @throws IllegalArgumentException se o grafo for nulo
      */
-    public GraphPanel(PropertyGraph propertyGraph) {
+    public PropertyGraphPanel(PropertyGraph propertyGraph) {
         if (propertyGraph == null) {
-            throw new IllegalArgumentException("Grafo de propriedades não pode ser nulo");
+            throw new IllegalArgumentException(Constants.NULL_GRAPH_ERROR);
         }
         this.propertyGraph = propertyGraph;
         setBackground(Color.WHITE);
-        setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(Constants.GRAPH_PANEL_SIZE);
     }
 
     /**
@@ -89,7 +78,7 @@ public class GraphPanel extends JPanel {
      */
     private void drawError(Graphics g) {
         g.setColor(Color.RED);
-        g.drawString("Erro ao renderizar grafo de propriedades", 10, 20);
+        g.drawString(Constants.RENDER_ERROR, 10, 20);
     }
 
     /**
@@ -122,8 +111,8 @@ public class GraphPanel extends JPanel {
         double width = maxX - minX;
         double height = maxY - minY;
 
-        double scaleX = (getWidth() * 0.8) / width;
-        double scaleY = (getHeight() * 0.8) / height;
+        double scaleX = (getWidth() * Constants.GRAPH_SCALE_FACTOR) / width;
+        double scaleY = (getHeight() * Constants.GRAPH_SCALE_FACTOR) / height;
         double scale = Math.min(scaleX, scaleY);
 
         AffineTransform transform = new AffineTransform();
@@ -147,9 +136,9 @@ public class GraphPanel extends JPanel {
         MultiPolygon shape = cadastro.getShape();
         if (shape != null) {
             Path2D path = toPath2D(shape);
-            g2d.setColor(PROPERTY_FILL);
+            g2d.setColor(Constants.PROPERTY_FILL);
             g2d.fill(path);
-            g2d.setColor(PROPERTY_BORDER);
+            g2d.setColor(Constants.PROPERTY_BORDER);
             g2d.draw(path);
         }
     }
@@ -162,8 +151,8 @@ public class GraphPanel extends JPanel {
      * @param g2d O objeto Graphics2D usado para desenho
      */
     private void drawAdjacencies(Graphics2D g2d) {
-        g2d.setColor(ADJACENCY_LINE);
-        g2d.setStroke(new BasicStroke(ADJACENCY_STROKE_WIDTH));
+        g2d.setColor(Constants.ADJACENCY_LINE);
+        g2d.setStroke(new BasicStroke(Constants.ADJACENCY_STROKE_WIDTH));
 
         for (Cadastro cadastro : propertyGraph.getProperties()) {
             Set<Cadastro> adjacents = propertyGraph.getAdjacentProperties(cadastro);

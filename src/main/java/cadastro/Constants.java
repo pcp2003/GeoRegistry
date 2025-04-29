@@ -1,5 +1,8 @@
 package cadastro;
 
+import java.awt.Color;
+import java.awt.Dimension;
+
 /**
  * Classe que contém todas as constantes utilizadas no sistema de cadastro.
  * 
@@ -161,4 +164,50 @@ public class Constants {
     public static final int BUTTON_PADDING = 8;
     public static final int TEXT_FIELD_PADDING = 6;
     public static final int CARD_PADDING = 6;
+
+    // ================ Constantes do PropertyGraphPanel ================
+    /** Mensagem de erro para grafo nulo */
+    public static final String NULL_GRAPH_ERROR = "Grafo de propriedades não pode ser nulo";
+    /** Mensagem de erro para renderização */
+    public static final String RENDER_ERROR = "Erro ao renderizar grafo de propriedades";
+    /** Dimensão padrão do painel do grafo */
+    public static final Dimension GRAPH_PANEL_SIZE = new Dimension(800, 600);
+    /** Fator de escala para o grafo */
+    public static final double GRAPH_SCALE_FACTOR = 0.8;
+    /** Cor de preenchimento das propriedades (azul semi-transparente) */
+    public static final Color PROPERTY_FILL = new Color(70, 130, 180, 150);
+    /** Cor da borda das propriedades (azul) */
+    public static final Color PROPERTY_BORDER = Color.BLUE;
+    /** Cor das linhas de adjacência (laranja semi-transparente) */
+    public static final Color ADJACENCY_LINE = new Color(255, 69, 0, 180);
+    /** Espessura das linhas de adjacência */
+    public static final float ADJACENCY_STROKE_WIDTH = 2.0f;
+
+    // ================ Constantes do ShapePanel ================
+    /** Mensagem de erro para geometria nula */
+    public static final String NULL_GEOMETRY_ERROR = "Geometria não pode ser nula";
+    /** Mensagem de erro para renderização */
+    public static final String RENDER_GEOMETRY_ERROR = "Erro ao renderizar forma geométrica";
+    /** Mensagem de erro para coordenadas inválidas */
+    public static final String INVALID_COORDINATES_ERROR = "Coordenadas inválidas na geometria";
+    /** Mensagem de erro para dimensões inválidas */
+    public static final String INVALID_DIMENSIONS_ERROR = "Dimensões inválidas na geometria";
+    /** Mensagem de erro para transformação */
+    public static final String TRANSFORM_ERROR = "Erro ao calcular transformação: ";
+    /** Mensagem de erro para geometria não suportada */
+    public static final String UNSUPPORTED_GEOMETRY_ERROR = "Tipo de geometria não suportado: ";
+    /** Mensagem de erro para desenho de geometria */
+    public static final String DRAW_GEOMETRY_ERROR = "Erro ao desenhar geometria";
+    /** Mensagem de erro para desenho de polígono */
+    public static final String DRAW_POLYGON_ERROR = "Erro ao desenhar polígono";
+    /** Mensagem de erro para conversão de geometria */
+    public static final String CONVERT_GEOMETRY_ERROR = "Erro ao converter geometria para Path2D";
+    /** Fator de escala para o shape */
+    public static final double SHAPE_SCALE_FACTOR = 0.8;
+    /** Cor de preenchimento do polígono (azul semi-transparente) */
+    public static final Color POLYGON_FILL = new Color(70, 130, 180, 150);
+    /** Cor da borda do polígono (azul) */
+    public static final Color POLYGON_BORDER = Color.BLUE;
+    /** Cor da borda dos buracos (vermelho) */
+    public static final Color HOLE_BORDER = Color.RED;
 } 

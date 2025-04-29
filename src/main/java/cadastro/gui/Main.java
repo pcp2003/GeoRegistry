@@ -14,7 +14,7 @@ public class Main {
      * @param args Argumentos da linha de comando (não utilizados)
      */
     public static void main(String[] args) {
-        GUI visualizador = new GUI();
+        Gui visualizador = new Gui();
         visualizador.setVisible(true);
     }
 }
