@@ -8,8 +8,14 @@ import org.locationtech.jts.geom.MultiPolygon;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.util.Set;
 
 /**
@@ -18,13 +24,24 @@ import java.util.Set;
  * - As propriedades são representadas por polígonos preenchidos em azul
  * - As adjacências são representadas por linhas em laranja
  * - O grafo é automaticamente dimensionado e centralizado no painel
+ * - Suporta zoom in/out usando a roda do mouse
+ * - Suporta pan (mover a tela) arrastando com o mouse
  * 
  * @author [Lei-G]
  * @version 1.0
  */
-public class PropertyGraphPanel extends JPanel {
+public class PropertyGraphPanel extends JPanel implements MouseWheelListener, MouseListener, MouseMotionListener {
     /** O grafo de propriedades a ser visualizado */
     private final PropertyGraph propertyGraph;
+    
+    /** Fator de zoom atual */
+    private double zoomFactor = 1.0;
+    
+    /** Ponto de referência para o pan */
+    private Point2D lastPoint;
+    
+    /** Deslocamento atual do pan */
+    private Point2D panOffset = new Point2D.Double(0, 0);
     
     /**
      * Constrói um GraphPanel com o grafo de propriedades especificado.
@@ -40,6 +57,9 @@ public class PropertyGraphPanel extends JPanel {
         this.propertyGraph = propertyGraph;
         setBackground(Color.WHITE);
         setPreferredSize(Constants.GRAPH_PANEL_SIZE);
+        addMouseWheelListener(this);
+        addMouseListener(this);
+        addMouseMotionListener(this);
     }
 
     /**
@@ -72,6 +92,86 @@ public class PropertyGraphPanel extends JPanel {
     }
 
     /**
+     * Manipula o evento da roda do mouse para controlar o zoom.
+     * 
+     * @param e O evento da roda do mouse
+     */
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        double oldZoom = zoomFactor;
+        
+        // Calcula o novo fator de zoom
+        if (e.getWheelRotation() < 0) {
+            // Zoom in
+            zoomFactor = Math.min(zoomFactor + Constants.ZOOM_STEP, Constants.MAX_ZOOM);
+        } else {
+            // Zoom out
+            zoomFactor = Math.max(zoomFactor - Constants.ZOOM_STEP, Constants.MIN_ZOOM);
+        }
+        
+        // Se o zoom mudou, repinta o painel
+        if (oldZoom != zoomFactor) {
+            repaint();
+        }
+    }
+
+    /**
+     * Manipula o evento de pressionar o botão do mouse.
+     * Inicia o pan quando o botão esquerdo é pressionado.
+     * 
+     * @param e O evento do mouse
+     */
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            lastPoint = e.getPoint();
+        }
+    }
+
+    /**
+     * Manipula o evento de soltar o botão do mouse.
+     * Finaliza o pan quando o botão esquerdo é solto.
+     * 
+     * @param e O evento do mouse
+     */
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            lastPoint = null;
+        }
+    }
+
+    /**
+     * Manipula o evento de arrastar o mouse.
+     * Atualiza o pan quando o mouse é arrastado com o botão esquerdo pressionado.
+     * 
+     * @param e O evento do mouse
+     */
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (lastPoint != null) {
+            double dx = e.getX() - lastPoint.getX();
+            double dy = e.getY() - lastPoint.getY();
+            
+            // Atualiza o deslocamento do pan
+            panOffset.setLocation(panOffset.getX() + dx, panOffset.getY() + dy);
+            lastPoint = e.getPoint();
+            
+            repaint();
+        }
+    }
+
+    // Métodos não utilizados da interface MouseListener
+    @Override
+    public void mouseClicked(MouseEvent e) {}
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+    @Override
+    public void mouseExited(MouseEvent e) {}
+    @Override
+    public void mouseMoved(MouseEvent e) {}
+
+    /**
      * Desenha uma mensagem de erro no painel.
      * 
      * @param g O objeto Graphics usado para pintura
@@ -88,6 +188,8 @@ public class PropertyGraphPanel extends JPanel {
      * 2. Inversão do eixo Y (coordenadas do mundo para coordenadas da tela)
      * 3. Escala para caber no painel
      * 4. Translação para a origem do grafo
+     * 5. Aplicação do fator de zoom
+     * 6. Aplicação do deslocamento do pan
      *
      * @return O objeto AffineTransform representando a transformação
      */
@@ -116,9 +218,9 @@ public class PropertyGraphPanel extends JPanel {
         double scale = Math.min(scaleX, scaleY);
 
         AffineTransform transform = new AffineTransform();
-        transform.translate(getWidth() / 2, getHeight() / 2);
+        transform.translate(getWidth() / 2 + panOffset.getX(), getHeight() / 2 + panOffset.getY());
         transform.scale(1, -1);
-        transform.scale(scale, scale);
+        transform.scale(scale * zoomFactor, scale * zoomFactor);
         transform.translate(-(minX + width / 2), -(minY + height / 2));
 
         return transform;

@@ -183,6 +183,18 @@ public class Constants {
     /** Espessura das linhas de adjacência */
     public static final float ADJACENCY_STROKE_WIDTH = 2.0f;
 
+    // ================ Constantes de Zoom e Pan ================
+    /** Fator mínimo de zoom */
+    public static final double MIN_ZOOM = 0.1;
+    /** Fator máximo de zoom */
+    public static final double MAX_ZOOM = 100.0;
+    /** Fator de incremento/decremento do zoom */
+    public static final double ZOOM_STEP = 1.0;
+    /** Cor do cursor de pan (cinza semi-transparente) */
+    public static final Color PAN_CURSOR_COLOR = new Color(128, 128, 128, 128);
+    /** Espessura da linha do cursor de pan */
+    public static final float PAN_CURSOR_STROKE_WIDTH = 1.0f;
+
     // ================ Constantes do ShapePanel ================
     /** Mensagem de erro para geometria nula */
     public static final String NULL_GEOMETRY_ERROR = "Geometria não pode ser nula";
