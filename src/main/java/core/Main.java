@@ -1,4 +1,6 @@
-package cadastro.gui;
+package core;
+
+import ui.Gui;
 
 /**
  * Classe principal que serve como ponto de entrada da aplicação.

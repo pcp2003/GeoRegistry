@@ -1,8 +1,8 @@
-package cadastro.gui;
-import cadastro.importer.Cadastro;
-import cadastro.graph.PropertyGraph;
-import cadastro.graph.OwnerGraph;
-import cadastro.Constants;
+package ui;
+import model.Cadastro;
+import service.OwnerGraph;
+import service.PropertyGraph;
+import core.Constants;
 
 import javax.swing.*;
 import java.awt.*;

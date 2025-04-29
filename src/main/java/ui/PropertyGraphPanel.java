@@ -1,8 +1,8 @@
-package cadastro.gui;
+package ui;
 
-import cadastro.graph.PropertyGraph;
-import cadastro.importer.Cadastro;
-import cadastro.Constants;
+import service.PropertyGraph;
+import model.Cadastro;
+import core.Constants;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 

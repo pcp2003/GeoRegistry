@@ -1,7 +1,7 @@
-package cadastro.graph;
+package service;
 
-import cadastro.importer.Cadastro;
-import cadastro.Constants;
+import model.Cadastro;
+import core.Constants;
 import org.locationtech.jts.geom.TopologyException;
 
 import java.util.*;

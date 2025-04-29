@@ -1,4 +1,4 @@
-package cadastro.importer;
+package model;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -7,8 +7,8 @@ import org.locationtech.jts.geom.MultiPolygon;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import cadastro.TestLogger;
-import cadastro.Constants;
+import util.TestLogger;
+import core.Constants;
 
 import java.io.File;
 import java.io.FileReader;

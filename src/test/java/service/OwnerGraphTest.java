@@ -1,6 +1,7 @@
-package cadastro.graph;
-import cadastro.importer.Cadastro;
-import cadastro.TestLogger;
+package service;
+import util.TestLogger;
+import model.Cadastro;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -98,7 +99,7 @@ class OwnerGraphTest {
             boolean hasAdjacentProperties = false;
             for (Cadastro cadastro : cadastros) {
                 if (cadastro.getOwner() == currentOwner) {
-                    Set<Cadastro> adjacentProperties = Graph.getAdjacent(cadastro, graph.propertyAdjacencyList);
+                    Set<Cadastro> adjacentProperties = graph.getAdjacentProperties(cadastro);
                     for (Cadastro adjacent : adjacentProperties) {
                         if (adjacent.getOwner() != currentOwner) {
                             hasAdjacentProperties = true;
@@ -147,7 +148,7 @@ class OwnerGraphTest {
                 boolean areAdjacent = false;
                 for (Cadastro cadastro1 : cadastros) {
                     if (cadastro1.getOwner() == owner1) {
-                        Set<Cadastro> adjacentProperties = Graph.getAdjacent(cadastro1, graph.propertyAdjacencyList);
+                        Set<Cadastro> adjacentProperties = graph.getAdjacentProperties(cadastro1);
                         for (Cadastro adjacent : adjacentProperties) {
                             if (adjacent.getOwner() == owner2) {
                                 areAdjacent = true;
@@ -195,7 +196,7 @@ class OwnerGraphTest {
                 boolean areAdjacent = false;
                 for (Cadastro cadastro1 : cadastros) {
                     if (cadastro1.getOwner() == owner1) {
-                        Set<Cadastro> adjacentProperties = Graph.getAdjacent(cadastro1, graph.propertyAdjacencyList);
+                        Set<Cadastro> adjacentProperties = graph.getAdjacentProperties(cadastro1);
                         for (Cadastro adjacent : adjacentProperties) {
                             if (adjacent.getOwner() == owner2) {
                                 areAdjacent = true;

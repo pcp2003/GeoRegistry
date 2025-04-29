@@ -1,5 +1,4 @@
-package cadastro.importer;
-
+package model;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -7,7 +6,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-import cadastro.Constants;
+import core.Constants;
 
 import java.io.FileReader;
 import java.io.IOException;

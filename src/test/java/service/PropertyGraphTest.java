@@ -1,6 +1,7 @@
-package cadastro.graph;
-import cadastro.importer.Cadastro;
-import cadastro.TestLogger;
+package service;
+import util.TestLogger;
+import model.Cadastro;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -77,7 +78,7 @@ class PropertyGraphTest {
             Cadastro currentCadastro = cadastros.get(i);
             TestLogger.log("Verificando adjacências para o cadastro: " + currentCadastro.toString());
             
-            Set<Cadastro> adjacent = Graph.getAdjacent(currentCadastro, graph.propertyAdjacencyList);
+            Set<Cadastro> adjacent = graph.getAdjacentProperties(currentCadastro);
             assertNotNull(adjacent, "O conjunto de propriedades adjacentes não deve ser nulo");
             
             TestLogger.log("Número de propriedades adjacentes encontradas: " + adjacent.size());
@@ -112,7 +113,7 @@ class PropertyGraphTest {
                 TestLogger.log("  - Cadastro 1: " + cadastro1.toString());
                 TestLogger.log("  - Cadastro 2: " + cadastro2.toString());
                 
-                boolean areAdjacent = Graph.areAdjacent(cadastro1, cadastro2, graph.propertyAdjacencyList);
+                boolean areAdjacent = graph.getAdjacentProperties(cadastro1).contains(cadastro2);
                 TestLogger.log("Resultado: " + (areAdjacent ? "São adjacentes" : "Não são adjacentes"));
             }
         }
@@ -140,7 +141,7 @@ class PropertyGraphTest {
                 TestLogger.log("  - Cadastro 1: " + cadastro1.toString());
                 TestLogger.log("  - Cadastro 2: " + cadastro2.toString());
                 
-                boolean areAdjacent = Graph.areAdjacent(cadastro1, cadastro2, graph.propertyAdjacencyList);
+                boolean areAdjacent = graph.getAdjacentProperties(cadastro1).contains(cadastro2);
                 TestLogger.log("Resultado: " + (areAdjacent ? "São adjacentes" : "Não são adjacentes"));
             }
         }
