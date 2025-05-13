@@ -102,9 +102,10 @@ public class PropertyExchangePanel extends JPanel {
             // Exibir as sugestões
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < suggestions.size(); i++) {
-                sb.append("Sugestão ").append(i + 1).append(":\n");
+                sb.append(Constants.SUGGESTION_SEPARATOR + "\n\nSugestão ").append(i + 1).append(":\n\n");
                 sb.append(suggestions.get(i).toString()).append("\n\n");
             }
+            sb.append(Constants.SUGGESTION_SEPARATOR);
             
             suggestionsArea.setText(sb.toString());
         } catch (Exception ex) {

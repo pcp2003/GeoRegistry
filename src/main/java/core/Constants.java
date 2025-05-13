@@ -121,6 +121,7 @@ public class Constants {
     public static final String AVERAGE_AREA_RESULT_FORMAT = "Área média: %.2f";
     public static final String GRAPH_STRING_FORMAT = "PropertyGraph{properties=[%s], adjacencies=[]}";
     public static final String PROPERTY_SEPARATOR = ", ";
+    public static final String SUGGESTION_SEPARATOR = "-----------------------------";
 
     // Títulos de janelas
     public static final String GRAPH_WINDOW_TITLE = "Visualização do Grafo de Propriedades";

@@ -14,19 +14,16 @@ import java.util.*;
  * @version 1.0
  */
 public class PropertyExchangeService {
-    private final OwnerGraph ownerGraph;
     private final PropertyGraph propertyGraph;
     private final List<Cadastro> cadastros;
 
     /**
      * Constrói o serviço de troca de propriedades.
      * 
-     * @param ownerGraph Grafo de proprietários
      * @param propertyGraph Grafo de propriedades
      * @param cadastros Lista de cadastros
      */
     public PropertyExchangeService(OwnerGraph ownerGraph, PropertyGraph propertyGraph, List<Cadastro> cadastros) {
-        this.ownerGraph = ownerGraph;
         this.propertyGraph = propertyGraph;
         this.cadastros = cadastros;
     }
@@ -36,8 +33,13 @@ public class PropertyExchangeService {
      * 
      * @param maxSuggestions Número máximo de sugestões a serem geradas
      * @return Lista de sugestões de troca ordenadas por viabilidade e melhoria na área média
+     * @throws IllegalArgumentException se o número máximo de sugestões for menor ou igual a zero
      */
     public List<PropertyExchange> generateExchangeSuggestions(int maxSuggestions) {
+        if (maxSuggestions <= 0) {
+            throw new IllegalArgumentException("O número máximo de sugestões deve ser maior que zero");
+        }
+
         List<PropertyExchange> suggestions = new ArrayList<>();
         Map<Integer, List<Cadastro>> propertiesByOwner = groupPropertiesByOwner();
 
@@ -48,7 +50,7 @@ public class PropertyExchangeService {
 
             for (Map.Entry<Integer, List<Cadastro>> entry2 : propertiesByOwner.entrySet()) {
                 int owner2 = entry2.getKey();
-                if (owner1 >= owner2) continue; // Evita duplicatas
+                if (owner1 >= owner2) continue; // Evita duplicados
 
                 List<Cadastro> properties2 = entry2.getValue();
 
@@ -86,8 +88,7 @@ public class PropertyExchangeService {
     private Map<Integer, List<Cadastro>> groupPropertiesByOwner() {
         Map<Integer, List<Cadastro>> propertiesByOwner = new HashMap<>();
         for (Cadastro cadastro : cadastros) {
-            propertiesByOwner.computeIfAbsent(cadastro.getOwner(), k -> new ArrayList<>())
-                           .add(cadastro);
+            propertiesByOwner.computeIfAbsent(cadastro.getOwner(), k -> new ArrayList<>()).add(cadastro);
         }
         return propertiesByOwner;
     }
@@ -124,15 +125,15 @@ public class PropertyExchangeService {
         // Calcula a área total atual de cada proprietário
         double totalArea1 = properties1.stream().mapToDouble(Cadastro::getArea).sum();
         double totalArea2 = properties2.stream().mapToDouble(Cadastro::getArea).sum();
-        
-        // Calcula a área total após a troca
-        double newTotalArea1 = totalArea1 - prop1.getArea() + prop2.getArea();
-        double newTotalArea2 = totalArea2 - prop2.getArea() + prop1.getArea();
-        
+
         // Calcula a área média atual por proprietário
         double currentAvgArea1 = totalArea1 / properties1.size();
         double currentAvgArea2 = totalArea2 / properties2.size();
         double currentAvgArea = (currentAvgArea1 + currentAvgArea2) / 2;
+        
+        // Calcula a área total após a troca
+        double newTotalArea1 = totalArea1 - prop1.getArea() + prop2.getArea();
+        double newTotalArea2 = totalArea2 - prop2.getArea() + prop1.getArea();
         
         // Calcula a nova área média por proprietário
         double newAvgArea1 = newTotalArea1 / properties1.size();
