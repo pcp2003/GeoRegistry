@@ -1,5 +1,4 @@
-package cadastro.importer;
-
+package model;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -7,6 +6,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
+import core.Constants;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,7 +14,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 /**
  * Classe que representa um cadastro de propriedade, contendo informações como
  * identificador, comprimento, área, forma geométrica, proprietário e
@@ -41,14 +40,14 @@ public class Cadastro {
      */
     public Cadastro(CSVRecord record) throws ParseException {
         try {
-            this.id = handleId(record.get(CadastroConstants.ID_INDEX));
-            this.length = handleLength(record.get(CadastroConstants.LENGTH_INDEX));
-            this.area = handleArea(record.get(CadastroConstants.AREA_INDEX));
-            this.shape = handleShape(record.get(CadastroConstants.SHAPE_INDEX));
-            this.owner = handleOwner(record.get(CadastroConstants.OWNER_INDEX));
+            this.id = handleId(record.get(Constants.ID_INDEX));
+            this.length = handleLength(record.get(Constants.LENGTH_INDEX));
+            this.area = handleArea(record.get(Constants.AREA_INDEX));
+            this.shape = handleShape(record.get(Constants.SHAPE_INDEX));
+            this.owner = handleOwner(record.get(Constants.OWNER_INDEX));
             this.location = handleLocation(record);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(CadastroConstants.NUMBER_CONVERSION_ERROR, e);
+            throw new IllegalArgumentException(Constants.NUMBER_CONVERSION_ERROR, e);
         }
     }
 
@@ -62,11 +61,11 @@ public class Cadastro {
      */
     private int handleId(String idStr) {
         if (idStr == null || idStr.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID" + CadastroConstants.NULL_OR_EMPTY_ERROR);
+            throw new IllegalArgumentException("ID" + Constants.NULL_OR_EMPTY_ERROR);
         }
         int id = Integer.parseInt(idStr);
         if (id <= 0) {
-            throw new IllegalArgumentException("ID" + CadastroConstants.ZERO_OR_NEGATIVE_ERROR);
+            throw new IllegalArgumentException("ID" + Constants.ZERO_OR_NEGATIVE_ERROR);
         }
         return id;
     }
@@ -81,11 +80,11 @@ public class Cadastro {
      */
     private double handleLength(String lengthStr) {
         if (lengthStr == null || lengthStr.trim().isEmpty()) {
-            throw new IllegalArgumentException("Comprimento" + CadastroConstants.NULL_OR_EMPTY_ERROR);
+            throw new IllegalArgumentException("Comprimento" + Constants.NULL_OR_EMPTY_ERROR);
         }
         double length = Double.parseDouble(lengthStr);
         if (length <= 0) {
-            throw new IllegalArgumentException("Comprimento" + CadastroConstants.ZERO_OR_NEGATIVE_ERROR);
+            throw new IllegalArgumentException("Comprimento" + Constants.ZERO_OR_NEGATIVE_ERROR);
         }
         return length;
     }
@@ -100,11 +99,11 @@ public class Cadastro {
      */
     private double handleArea(String areaStr) {
         if (areaStr == null || areaStr.trim().isEmpty()) {
-            throw new IllegalArgumentException("Área" + CadastroConstants.NULL_OR_EMPTY_ERROR);
+            throw new IllegalArgumentException("Área" + Constants.NULL_OR_EMPTY_ERROR);
         }
         double area = Double.parseDouble(areaStr);
         if (area <= 0) {
-            throw new IllegalArgumentException("Área" + CadastroConstants.ZERO_OR_NEGATIVE_ERROR);
+            throw new IllegalArgumentException("Área" + Constants.ZERO_OR_NEGATIVE_ERROR);
         }
         return area;
     }
@@ -124,7 +123,7 @@ public class Cadastro {
             if (geometry instanceof MultiPolygon multiPolygon) {
                 return multiPolygon;
             } else {
-                throw new IllegalArgumentException(record + CadastroConstants.INVALID_GEOMETRY_ERROR);
+                throw new IllegalArgumentException(record + Constants.INVALID_GEOMETRY_ERROR);
             }
         } catch (ParseException e) {
             throw e;
@@ -141,11 +140,11 @@ public class Cadastro {
      */
     private int handleOwner(String ownerStr) {
         if (ownerStr == null || ownerStr.trim().isEmpty()) {
-            throw new IllegalArgumentException("Owner" + CadastroConstants.NULL_OR_EMPTY_ERROR);
+            throw new IllegalArgumentException("Owner" + Constants.NULL_OR_EMPTY_ERROR);
         }
         int owner = Integer.parseInt(ownerStr);
         if (owner <= 0) {
-            throw new IllegalArgumentException("Owner" + CadastroConstants.ZERO_OR_NEGATIVE_ERROR);
+            throw new IllegalArgumentException("Owner" + Constants.ZERO_OR_NEGATIVE_ERROR);
         }
         return owner;
     }
@@ -157,10 +156,24 @@ public class Cadastro {
      * @return Lista de localizações processadas
      */
     private List<String> handleLocation(CSVRecord record) {
-        return record.stream()
-                .skip(CadastroConstants.LOCATION_START_INDEX)
-                .filter(s -> !s.equals(CadastroConstants.NA_VALUE))
-                .toList();
+        // Obter as localizações usando os índices específicos
+        String freguesia = record.get(Constants.DISTRICT_INDEX);
+        String municipio = record.get(Constants.MUNICIPALITY_INDEX);
+        String concelho = record.get(Constants.COUNTY_INDEX);
+        
+        // Verificar se alguma localização é nula
+        if (freguesia.equals(Constants.NA_VALUE) || municipio.equals(Constants.NA_VALUE) || concelho.equals(Constants.NA_VALUE)) {
+            throw new IllegalArgumentException("Localizações não podem ser nulas para o registro: " + id);
+        }
+        
+        List<String> locations = new ArrayList<>();
+
+        // Adicionar apenas valores não-NA
+        locations.add(freguesia);
+        locations.add(municipio);
+        locations.add(concelho);
+        
+        return locations;
     }
 
     /**
@@ -190,14 +203,14 @@ public class Cadastro {
             }
 
             if (cadastros.isEmpty()) {
-                throw new IllegalStateException(CadastroConstants.EMPTY_FILE_ERROR);
+                throw new IllegalStateException(Constants.EMPTY_FILE_ERROR);
             }
 
             System.out.println("Total de cadastros: " + cadastros.size());  
             System.out.println("Total de registros ignorados: " + skippedRecords);
             return cadastros;
         } catch (IOException e) {
-            throw new Exception(CadastroConstants.FILE_READ_ERROR, e);
+            throw new Exception(Constants.FILE_READ_ERROR, e);
         }
     }
 
@@ -211,22 +224,45 @@ public class Cadastro {
      */
     public static List<Cadastro> sortCadastros(List<Cadastro> cadastros, int sortType) throws Exception {
         switch (sortType) {
-            case CadastroConstants.SORT_BY_ID:
+            case Constants.SORT_BY_ID:
                 cadastros.sort(Comparator.comparingInt(Cadastro::getId));
                 break;
-            case CadastroConstants.SORT_BY_LENGTH:
+            case Constants.SORT_BY_LENGTH:
                 cadastros.sort(Comparator.comparingDouble(Cadastro::getLength));
                 break;
-            case CadastroConstants.SORT_BY_AREA:
+            case Constants.SORT_BY_AREA:
                 cadastros.sort(Comparator.comparingDouble(Cadastro::getArea));
                 break;
-            case CadastroConstants.SORT_BY_OWNER:
+            case Constants.SORT_BY_OWNER:
                 cadastros.sort(Comparator.comparingInt(Cadastro::getOwner));
                 break;
+            case Constants.SORT_BY_DISTRICT:
+                cadastros.sort((c1, c2) -> {
+                    String district1 = c1.getLocation().get(0);
+                    String district2 = c2.getLocation().get(0);
+                    return district1.compareToIgnoreCase(district2);
+                });
+                break;
+            case Constants.SORT_BY_MUNICIPALITY:
+                cadastros.sort((c1, c2) -> {
+                    String municipality1 = c1.getLocation().get(1);
+                    String municipality2 = c2.getLocation().get(1);
+                    return municipality1.compareToIgnoreCase(municipality2);
+                });
+                break;
+            case Constants.SORT_BY_COUNTY:
+                cadastros.sort((c1, c2) -> {
+                    String county1 = c1.getLocation().get(2);
+                    String county2 = c2.getLocation().get(2);
+                    return county1.compareToIgnoreCase(county2);
+                });
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid sort type: " + sortType);
         }
         return cadastros;
     }
-
+    
     /**
      * Retorna uma representação em string do cadastro.
      * 

@@ -1,4 +1,6 @@
-package cadastro.gui;
+package core;
+
+import ui.Gui;
 
 /**
  * Classe principal que serve como ponto de entrada da aplicação.
@@ -14,7 +16,7 @@ public class Main {
      * @param args Argumentos da linha de comando (não utilizados)
      */
     public static void main(String[] args) {
-        GUI visualizador = new GUI();
+        Gui visualizador = new Gui();
         visualizador.setVisible(true);
     }
 }

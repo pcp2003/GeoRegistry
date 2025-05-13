@@ -1,12 +1,14 @@
-package cadastro.importer;
+package model;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import util.TestLogger;
+import core.Constants;
 
 import java.io.File;
 import java.io.FileReader;
@@ -41,66 +43,64 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class CadastroTest {
     private static final String CSV_PATH = new File("Dados/Madeira-Moodle-1.1.csv").getAbsolutePath();
+    private static CSVRecord validRecord;
 
-    private CSVRecord validRecord;
-
-    @BeforeEach
-    void setUp() throws Exception {
-        CadastroTestLogger.log("Iniciando setup do teste");
-        CadastroTestLogger.log("Caminho do arquivo CSV: " + CSV_PATH);
-
+    @BeforeAll
+    static void setUp() throws Exception {
+        TestLogger.init("CadastroTest");
+        TestLogger.log("=== Iniciando setup dos testes ===");
+        TestLogger.log("Carregando arquivo: " + CSV_PATH);
+        
         File csvFile = new File(CSV_PATH);
         if (!csvFile.exists()) {
-            CadastroTestLogger.logError("Arquivo CSV não encontrado em: " + CSV_PATH);
-            throw new IllegalStateException("Arquivo CSV não encontrado");
+            throw new IllegalStateException("Arquivo CSV não encontrado em: " + CSV_PATH);
         }
-
-        // Lê o arquivo CSV
+        
         try (FileReader reader = new FileReader(csvFile);
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-
-            CadastroTestLogger.logSuccess("Arquivo CSV aberto com sucesso");
+             CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
+            
             List<CSVRecord> records = parser.getRecords();
-            CadastroTestLogger.log("Total de registros lidos: " + records.size());
-
-            if (records.size() >= 3) { // Pelo menos 2 registros + cabeçalho
-                CadastroTestLogger.log("Criando registros de teste");
-                validRecord = records.get(1);
-                CadastroTestLogger.logSuccess("Registros criados com sucesso");
+            TestLogger.log("Registros encontrados: " + records.size());
+            
+            if (records.size() > 1) {
+                validRecord = records.get(1);   
+                TestLogger.logSuccess("Cadastros de teste criados com sucesso");
             } else {
-                CadastroTestLogger.logError("Arquivo CSV não contém registros suficientes");
                 throw new IllegalStateException("Arquivo CSV não contém registros suficientes");
             }
-        } catch (Exception e) {
-            CadastroTestLogger.logError("Erro ao ler arquivo CSV: " + e.getMessage());
-            throw e;
         }
+        
+        TestLogger.log("=== Setup concluído ===\n");
     }
 
     @AfterAll
     static void tearDown() {
-        CadastroTestLogger.close();
+        TestLogger.close();
     }
 
     @Test
     void constructor() throws Exception {
-        CadastroTestLogger.logTestStart("constructor");
+        TestLogger.logTestStart("Construtor do Cadastro");
+        
+        TestLogger.log("Criando cadastro com registro válido");
         Cadastro cadastro = new Cadastro(validRecord);
-
+        
+        TestLogger.log("Verificando atributos do cadastro");
         assertNotNull(cadastro, "O cadastro deve ser criado");
         assertNotNull(cadastro.getId(), "O ID deve ser definido");
         assertNotNull(cadastro.getOwner(), "O proprietário deve ser definido");
         assertNotNull(cadastro.getArea(), "A área deve ser definida");
         assertNotNull(cadastro.getLength(), "O comprimento deve ser definido");
         assertNotNull(cadastro.getShape(), "A forma deve ser definida");
-        CadastroTestLogger.logSuccess("Teste constructor concluído com sucesso");
-        CadastroTestLogger.logTestEnd("constructor");
+        
+        TestLogger.logSuccess("Cadastro criado com sucesso");
+        TestLogger.logTestEnd("Construtor do Cadastro");
     }
 
     @Test
     void constructorInvalid1() {
-        CadastroTestLogger.logTestStart("constructorInvalid1");
-        // Cria um registro CSV inválido manualmente
+        TestLogger.logTestStart("Construtor com ID inválido");
+        
         String[] invalidValues = {
                 "a", // id invalido
                 "7343148", // random par_id
@@ -112,23 +112,29 @@ class CadastroTest {
                 "Lisboa", // location1
                 "Portugal" // location2
         };
+        
+        TestLogger.log("Testando criação com ID inválido: " + invalidValues[0]);
+        
         try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
+             CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
+            
             CSVRecord invalidRecord = parser.getRecords().get(0);
-
             assertThrows(IllegalArgumentException.class, () -> {
                 new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
+            }, "Deve lançar exceção ao criar cadastro com ID inválido");
+            
+            TestLogger.logSuccess("Exceção lançada corretamente para ID inválido");
         } catch (Exception e) {
+            TestLogger.logError("Erro ao criar registro CSV inválido: " + e.getMessage());
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste constructorInvalid1 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("constructorInvalid1");
+        
+        TestLogger.logTestEnd("Construtor com ID inválido");
     }
 
     @Test
     void constructorInvalid2() {
-        CadastroTestLogger.logTestStart("constructorInvalid2");
+        TestLogger.logTestStart("constructorInvalid2");
         // Cria um registro CSV inválido manualmente
         String[] invalidValues = {
                 "1", // id
@@ -151,13 +157,13 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste constructorInvalid2 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("constructorInvalid2");
+        TestLogger.logSuccess("Teste constructorInvalid2 concluído com sucesso");
+        TestLogger.logTestEnd("constructorInvalid2");
     }
 
     @Test
     void constructorInvalid3() {
-        CadastroTestLogger.logTestStart("constructorInvalid3");
+        TestLogger.logTestStart("constructorInvalid3");
         // Cria um registro CSV inválido manualmente
         String[] invalidValues = {
                 "1", // id
@@ -180,13 +186,13 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste constructorInvalid3 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("constructorInvalid3");
+        TestLogger.logSuccess("Teste constructorInvalid3 concluído com sucesso");
+        TestLogger.logTestEnd("constructorInvalid3");
     }
 
     @Test
     void constructorInvalid4() {
-        CadastroTestLogger.logTestStart("constructorInvalid4");
+        TestLogger.logTestStart("constructorInvalid4");
         // Cria um registro CSV inválido manualmente
         String[] invalidValues = {
                 "1", // id
@@ -209,13 +215,13 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste constructorInvalid4 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("constructorInvalid4");
+        TestLogger.logSuccess("Teste constructorInvalid4 concluído com sucesso");
+        TestLogger.logTestEnd("constructorInvalid4");
     }
 
     @Test
     void handleId1() {
-        CadastroTestLogger.logTestStart("handleId1");
+        TestLogger.logTestStart("handleId1");
         // Cria um registro CSV inválido manualmente
         String[] invalidValues = {
                 "0", // id a zero
@@ -238,13 +244,13 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste handleId1 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("handleId1");
+        TestLogger.logSuccess("Teste handleId1 concluído com sucesso");
+        TestLogger.logTestEnd("handleId1");
     }
 
     @Test
     void handleId2() {
-        CadastroTestLogger.logTestStart("handleId2");
+        TestLogger.logTestStart("handleId2");
         // Cria um registro CSV inválido manualmente
         String[] invalidValues = {
                 " ", // id vazio
@@ -267,13 +273,13 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste handleId2 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("handleId2");
+        TestLogger.logSuccess("Teste handleId2 concluído com sucesso");
+        TestLogger.logTestEnd("handleId2");
     }
 
     @Test
     void handleLength1() {
-        CadastroTestLogger.logTestStart("handleLength1");
+        TestLogger.logTestStart("handleLength1");
         // Cria um registro CSV inválido manualmente
         String[] invalidValues = {
                 "1", // id
@@ -296,13 +302,13 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste handleLength1 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("handleLength1");
+        TestLogger.logSuccess("Teste handleLength1 concluído com sucesso");
+        TestLogger.logTestEnd("handleLength1");
     }
 
     @Test
     void handleLength2() {
-        CadastroTestLogger.logTestStart("handleLength2");
+        TestLogger.logTestStart("handleLength2");
         // Cria um registro CSV inválido manualmente
         String[] invalidValues = {
                 "1", // id
@@ -325,13 +331,13 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste handleLength2 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("handleLength2");
+        TestLogger.logSuccess("Teste handleLength2 concluído com sucesso");
+        TestLogger.logTestEnd("handleLength2");
     }
 
     @Test
     void handleArea1() {
-        CadastroTestLogger.logTestStart("handleArea1");
+        TestLogger.logTestStart("handleArea1");
         // Cria um registro CSV inválido manualmente
         String[] invalidValues = {
                 "1", // id
@@ -354,13 +360,13 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste handleArea1 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("handleArea1");
+        TestLogger.logSuccess("Teste handleArea1 concluído com sucesso");
+        TestLogger.logTestEnd("handleArea1");
     }
 
     @Test
     void handleArea2() {
-        CadastroTestLogger.logTestStart("handleArea2");
+        TestLogger.logTestStart("handleArea2");
         // Cria um registro CSV inválido manualmente
         String[] invalidValues = {
                 "1", // id
@@ -383,13 +389,13 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste handleArea2 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("handleArea2");
+        TestLogger.logSuccess("Teste handleArea2 concluído com sucesso");
+        TestLogger.logTestEnd("handleArea2");
     }
 
     @Test
     void handleOwner1() {
-        CadastroTestLogger.logTestStart("handleOwner1");
+        TestLogger.logTestStart("handleOwner1");
         // Cria um registro CSV inválido manualmente
         String[] invalidValues = {
                 "1", // id
@@ -412,13 +418,13 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste handleOwner1 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("handleOwner1");
+        TestLogger.logSuccess("Teste handleOwner1 concluído com sucesso");
+        TestLogger.logTestEnd("handleOwner1");
     }
 
     @Test
     void handleOwner2() {
-        CadastroTestLogger.logTestStart("handleOwner2");
+        TestLogger.logTestStart("handleOwner2");
         // Cria um registro CSV inválido manualmente
         String[] invalidValues = {
                 "1", // id
@@ -441,22 +447,22 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV inválido: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste handleOwner2 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("handleOwner2");
+        TestLogger.logSuccess("Teste handleOwner2 concluído com sucesso");
+        TestLogger.logTestEnd("handleOwner2");
     }
 
     @Test
     void handleShape1() throws Exception {
-        CadastroTestLogger.logTestStart("handleShape1");
+        TestLogger.logTestStart("handleShape1");
         Cadastro cadastro = new Cadastro(validRecord);
         assertNotNull(cadastro.getShape(), "A forma deve ser processada");
-        CadastroTestLogger.logSuccess("Teste handleShape1 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("handleShape1");
+        TestLogger.logSuccess("Teste handleShape1 concluído com sucesso");
+        TestLogger.logTestEnd("handleShape1");
     }
 
     @Test
     void handleShape2() {
-        CadastroTestLogger.logTestStart("handleShape2");
+        TestLogger.logTestStart("handleShape2");
         // Cria um registro CSV com forma inválida
         String[] invalidShapeValues = {
                 "1", // id
@@ -479,13 +485,13 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV com forma inválida: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste handleShape2 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("handleShape2");
+        TestLogger.logSuccess("Teste handleShape2 concluído com sucesso");
+        TestLogger.logTestEnd("handleShape2");
     }
 
     @Test
     void handleShape3() {
-        CadastroTestLogger.logTestStart("handleShape3");
+        TestLogger.logTestStart("handleShape3");
         // Cria um registro CSV com forma inválida
         String[] invalidShapeValues = {
                 "1", // id
@@ -508,155 +514,206 @@ class CadastroTest {
         } catch (Exception e) {
             fail("Erro ao criar registro CSV com forma inválida: " + e.getMessage());
         }
-        CadastroTestLogger.logSuccess("Teste handleShape3 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("handleShape3");
+        TestLogger.logSuccess("Teste handleShape3 concluído com sucesso");
+        TestLogger.logTestEnd("handleShape3");
     }
 
     @Test
     void getShape() throws Exception {
-        CadastroTestLogger.logTestStart("getShape");
+        TestLogger.logTestStart("getShape");
         Cadastro cadastro = new Cadastro(validRecord);
         MultiPolygon shape = cadastro.getShape();
         assertNotNull(shape, "A forma deve ser processada");
-        CadastroTestLogger.logSuccess("Teste getShape concluído com sucesso");
-        CadastroTestLogger.logTestEnd("getShape");
+        TestLogger.logSuccess("Teste getShape concluído com sucesso");
+        TestLogger.logTestEnd("getShape");
     }
 
     @Test
     void toStringTest() throws Exception {
-        CadastroTestLogger.logTestStart("toString");
+        TestLogger.logTestStart("toString");
         Cadastro cadastro = new Cadastro(validRecord);
         String result = cadastro.toString();
         assertNotNull(result, "A representação em string não deve ser nula");
         assertTrue(result.contains("Cadastro"), "A string deve conter 'Cadastro'");
-        CadastroTestLogger.logSuccess("Teste toString concluído com sucesso");
-        CadastroTestLogger.logTestEnd("toString");
+        TestLogger.logSuccess("Teste toString concluído com sucesso");
+        TestLogger.logTestEnd("toString");
     }
 
     @Test
     void handleLocation() throws Exception {
-        CadastroTestLogger.logTestStart("handleLocation");
+        TestLogger.logTestStart("handleLocation");
         Cadastro cadastro = new Cadastro(validRecord);
         List<String> locations = cadastro.getLocation();
         assertNotNull(locations, "As localizações devem ser processadas");
         assertFalse(locations.isEmpty(), "A lista de localizações não deve estar vazia");
-        CadastroTestLogger.logSuccess("Teste handleLocation concluído com sucesso");
-        CadastroTestLogger.logTestEnd("handleLocation");
+        TestLogger.logSuccess("Teste handleLocation concluído com sucesso");
+        TestLogger.logTestEnd("handleLocation");
     }
 
     @Test
     void getCadastros1() throws Exception {
-        CadastroTestLogger.logTestStart("getCadastros1");
+        TestLogger.logTestStart("getCadastros1");
         List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
         assertNotNull(cadastros, "A lista de cadastros deve ser criada");
         assertFalse(cadastros.isEmpty(), "A lista não deve estar vazia");
-        CadastroTestLogger.logSuccess("Teste getCadastros1 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("getCadastros1");
+        TestLogger.logSuccess("Teste getCadastros1 concluído com sucesso");
+        TestLogger.logTestEnd("getCadastros1");
     }
 
     @Test
     void getCadastros2() {
-        CadastroTestLogger.logTestStart("getCadastros2");
+        TestLogger.logTestStart("getCadastros2");
         assertThrows(Exception.class, () -> {
             Cadastro.getCadastros("arquivo_inexistente.csv");
         }, "Deve lançar exceção ao ler arquivo inválido");
-        CadastroTestLogger.logSuccess("Teste getCadastros2 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("getCadastros2");
+        TestLogger.logSuccess("Teste getCadastros2 concluído com sucesso");
+        TestLogger.logTestEnd("getCadastros2");
     }
 
     @Test
     void getCadastros3() throws Exception {
-        CadastroTestLogger.logTestStart("getCadastros3");
+        TestLogger.logTestStart("getCadastros3");
         List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
         assertNotNull(cadastros, "A lista de cadastros deve ser criada");
-        CadastroTestLogger.logSuccess("Teste getCadastros3 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("getCadastros3");
+        TestLogger.logSuccess("Teste getCadastros3 concluído com sucesso");
+        TestLogger.logTestEnd("getCadastros3");
     }
 
     @Test
     void sortCadastros1() throws Exception {
-        CadastroTestLogger.logTestStart("sortCadastros1");
+        TestLogger.logTestStart("sortCadastros1");
         List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, CadastroConstants.SORT_BY_ID);
+        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, Constants.SORT_BY_ID);
         assertNotNull(sorted, "A lista ordenada não deve ser nula");
-        CadastroTestLogger.logSuccess("Teste sortCadastros1 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("sortCadastros1");
+        TestLogger.logSuccess("Teste sortCadastros1 concluído com sucesso");
+        TestLogger.logTestEnd("sortCadastros1");
     }
 
     @Test
     void sortCadastros2() throws Exception {
-        CadastroTestLogger.logTestStart("sortCadastros2");
+        TestLogger.logTestStart("sortCadastros2");
         List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, CadastroConstants.SORT_BY_LENGTH);
+        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, Constants.SORT_BY_LENGTH);
         assertNotNull(sorted, "A lista ordenada não deve ser nula");
-        CadastroTestLogger.logSuccess("Teste sortCadastros2 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("sortCadastros2");
+        TestLogger.logSuccess("Teste sortCadastros2 concluído com sucesso");
+        TestLogger.logTestEnd("sortCadastros2");
     }
 
     @Test
     void sortCadastros3() throws Exception {
-        CadastroTestLogger.logTestStart("sortCadastros3");
+        TestLogger.logTestStart("sortCadastros3");
         List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, CadastroConstants.SORT_BY_AREA);
+        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, Constants.SORT_BY_AREA);
         assertNotNull(sorted, "A lista ordenada não deve ser nula");
-        CadastroTestLogger.logSuccess("Teste sortCadastros3 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("sortCadastros3");
+        TestLogger.logSuccess("Teste sortCadastros3 concluído com sucesso");
+        TestLogger.logTestEnd("sortCadastros3");
     }
 
     @Test
     void sortCadastros4() throws Exception {
-        CadastroTestLogger.logTestStart("sortCadastros4");
+        TestLogger.logTestStart("sortCadastros4");
         List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, CadastroConstants.SORT_BY_OWNER);
+        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, Constants.SORT_BY_OWNER);
         assertNotNull(sorted, "A lista ordenada não deve ser nula");
-        CadastroTestLogger.logSuccess("Teste sortCadastros4 concluído com sucesso");
-        CadastroTestLogger.logTestEnd("sortCadastros4");
+        TestLogger.logSuccess("Teste sortCadastros4 concluído com sucesso");
+        TestLogger.logTestEnd("sortCadastros4");
     }
 
     @Test
     void getId() throws Exception {
-        CadastroTestLogger.logTestStart("getId");
+        TestLogger.logTestStart("getId");
         Cadastro cadastro = new Cadastro(validRecord);
         assertNotNull(cadastro.getId(), "O ID deve ser definido");
-        CadastroTestLogger.logSuccess("Teste getId concluído com sucesso");
-        CadastroTestLogger.logTestEnd("getId");
+        TestLogger.logSuccess("Teste getId concluído com sucesso");
+        TestLogger.logTestEnd("getId");
     }
 
     @Test
     void getLength() throws Exception {
-        CadastroTestLogger.logTestStart("getLength");
+        TestLogger.logTestStart("getLength");
         Cadastro cadastro = new Cadastro(validRecord);
         assertNotNull(cadastro.getLength(), "O comprimento deve ser definido");
-        CadastroTestLogger.logSuccess("Teste getLength concluído com sucesso");
-        CadastroTestLogger.logTestEnd("getLength");
+        TestLogger.logSuccess("Teste getLength concluído com sucesso");
+        TestLogger.logTestEnd("getLength");
     }
 
     @Test
     void getArea() throws Exception {
-        CadastroTestLogger.logTestStart("getArea");
+        TestLogger.logTestStart("getArea");
         Cadastro cadastro = new Cadastro(validRecord);
         assertNotNull(cadastro.getArea(), "A área deve ser definida");
-        CadastroTestLogger.logSuccess("Teste getArea concluído com sucesso");
-        CadastroTestLogger.logTestEnd("getArea");
+        TestLogger.logSuccess("Teste getArea concluído com sucesso");
+        TestLogger.logTestEnd("getArea");
     }
 
     @Test
     void getOwner() throws Exception {
-        CadastroTestLogger.logTestStart("getOwner");
+        TestLogger.logTestStart("getOwner");
         Cadastro cadastro = new Cadastro(validRecord);
         assertNotNull(cadastro.getOwner(), "O proprietário deve ser definido");
-        CadastroTestLogger.logSuccess("Teste getOwner concluído com sucesso");
-        CadastroTestLogger.logTestEnd("getOwner");
+        TestLogger.logSuccess("Teste getOwner concluído com sucesso");
+        TestLogger.logTestEnd("getOwner");
     }
 
     @Test
     void getLocation() throws Exception {
-        CadastroTestLogger.logTestStart("getLocation");
+        TestLogger.logTestStart("getLocation");
         Cadastro cadastro = new Cadastro(validRecord);
         List<String> locations = cadastro.getLocation();
         assertNotNull(locations, "As localizações devem ser processadas");
         assertFalse(locations.isEmpty(), "A lista de localizações não deve estar vazia");
-        CadastroTestLogger.logSuccess("Teste getLocation concluído com sucesso");
-        CadastroTestLogger.logTestEnd("getLocation");
+        TestLogger.logSuccess("Teste getLocation concluído com sucesso");
+        TestLogger.logTestEnd("getLocation");
+    }
+
+    @Test
+    void testHandleLocation() throws Exception {
+        TestLogger.logTestStart("testHandleLocation");
+        
+        // Obter cadastros do arquivo CSV
+        List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
+        TestLogger.log("Total de cadastros carregados: " + cadastros.size());
+        
+        // Verificar se temos cadastros
+        assertNotNull(cadastros, "A lista de cadastros não deve ser nula");
+        assertFalse(cadastros.isEmpty(), "A lista de cadastros não deve estar vazia");
+        
+        // Testar o primeiro cadastro
+        Cadastro cadastro = cadastros.get(0);
+        List<String> locations = cadastro.getLocation();
+        TestLogger.log("Localizações do primeiro cadastro: " + locations);
+        
+        // Verificar se as localizações foram extraídas corretamente
+        assertNotNull(locations, "A lista de localizações não deve ser nula");
+        assertFalse(locations.isEmpty(), "A lista de localizações não deve estar vazia");
+        
+        // Verificar se não há valores "NA" na lista
+        assertFalse(locations.contains(Constants.NA_VALUE), 
+            "A lista de localizações não deve conter valores 'NA'");
+        
+        // Verificar se a ordem das localizações está correta
+        // Assumindo que o CSV tem a ordem: Freguesia, Municipio, Concelho
+        if (locations.size() >= 3) {
+            TestLogger.log("Freguesia: " + locations.get(0));
+            TestLogger.log("Municipio: " + locations.get(1));
+            TestLogger.log("Concelho: " + locations.get(2));
+            
+            assertNotNull(locations.get(0), "Freguesia não deve ser nula");
+            assertNotNull(locations.get(1), "Municipio não deve ser nulo");
+            assertNotNull(locations.get(2), "Concelho não deve ser nulo");
+        } else {
+            TestLogger.logError("Lista de localizações tem menos de 3 elementos: " + locations.size());
+            fail("A lista de localizações deve ter pelo menos 3 elementos (Freguesia, Municipio, Concelho)");
+        }
+        
+        // Verificar se os valores não estão vazios
+        for (int i = 0; i < locations.size(); i++) {
+            String location = locations.get(i);
+            assertFalse(location.trim().isEmpty(), 
+                "Localização " + i + " não deve estar vazia: " + location);
+        }
+        
+        TestLogger.logSuccess("Teste testHandleLocation concluído com sucesso");
+        TestLogger.logTestEnd("testHandleLocation");
     }
 }

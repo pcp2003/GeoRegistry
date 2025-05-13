@@ -1,8 +1,8 @@
-package cadastro.gui;
-
+package ui;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Polygon;
+import core.Constants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +29,7 @@ public class ShapePanel extends JPanel {
      */
     public ShapePanel(Geometry geometry) {
         if (geometry == null) {
-            throw new IllegalArgumentException("Geometria não pode ser nula");
+            throw new IllegalArgumentException(Constants.NULL_GEOMETRY_ERROR);
         }
         this.geometry = geometry;
         setBackground(Color.WHITE);
@@ -63,7 +63,7 @@ public class ShapePanel extends JPanel {
      */
     private void drawError(Graphics g) {
         g.setColor(Color.RED);
-        g.drawString("Erro ao renderizar forma geométrica", 10, 20);
+        g.drawString(Constants.RENDER_GEOMETRY_ERROR, 10, 20);
     }
 
     /**
@@ -82,18 +82,18 @@ public class ShapePanel extends JPanel {
             
             if (Double.isInfinite(minX) || Double.isInfinite(maxX) || 
                 Double.isInfinite(minY) || Double.isInfinite(maxY)) {
-                throw new IllegalStateException("Coordenadas inválidas na geometria");
+                throw new IllegalStateException(Constants.INVALID_COORDINATES_ERROR);
             }
 
             double width = maxX - minX;
             double height = maxY - minY;
             
             if (width <= 0 || height <= 0) {
-                throw new IllegalStateException("Dimensões inválidas na geometria");
+                throw new IllegalStateException(Constants.INVALID_DIMENSIONS_ERROR);
             }
 
-            double scaleX = (getWidth() * 0.8) / width;
-            double scaleY = (getHeight() * 0.8) / height;
+            double scaleX = (getWidth() * Constants.SHAPE_SCALE_FACTOR) / width;
+            double scaleY = (getHeight() * Constants.SHAPE_SCALE_FACTOR) / height;
             double scale = Math.min(scaleX, scaleY);
 
             AffineTransform transform = new AffineTransform();
@@ -104,7 +104,7 @@ public class ShapePanel extends JPanel {
             
             return transform;
         } catch (Exception e) {
-            throw new IllegalStateException("Erro ao calcular transformação: " + e.getMessage(), e);
+            throw new IllegalStateException(Constants.TRANSFORM_ERROR + e.getMessage(), e);
         }
     }
 
@@ -126,10 +126,10 @@ public class ShapePanel extends JPanel {
             } else if (geom instanceof Polygon polygon) {
                 drawPolygon(g2d, polygon);
             } else {
-                throw new IllegalArgumentException("Tipo de geometria não suportado: " + geom.getClass().getSimpleName());
+                throw new IllegalArgumentException(Constants.UNSUPPORTED_GEOMETRY_ERROR + geom.getClass().getSimpleName());
             }
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao desenhar geometria", e);
+            throw new RuntimeException(Constants.DRAW_GEOMETRY_ERROR, e);
         }
     }
 
@@ -146,24 +146,24 @@ public class ShapePanel extends JPanel {
     private void drawPolygon(Graphics2D g2d, Polygon polygon) {
         try {
             if (polygon == null) {
-                throw new IllegalArgumentException("Polígono não pode ser nulo");
+                throw new IllegalArgumentException(Constants.NULL_GEOMETRY_ERROR);
             }
 
             Path2D path = toPath2D(polygon.getExteriorRing());
-            g2d.setColor(new Color(70, 130, 180, 150));
+            g2d.setColor(Constants.POLYGON_FILL);
             g2d.fill(path);
-            g2d.setColor(Color.BLUE);
+            g2d.setColor(Constants.POLYGON_BORDER);
             g2d.draw(path);
 
             for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
                 Path2D hole = toPath2D(polygon.getInteriorRingN(i));
                 g2d.setColor(getBackground());
                 g2d.fill(hole);
-                g2d.setColor(Color.RED);
+                g2d.setColor(Constants.HOLE_BORDER);
                 g2d.draw(hole);
             }
         } catch (Exception e) {
-            throw new IllegalStateException("Erro ao desenhar polígono", e);
+            throw new IllegalStateException(Constants.DRAW_POLYGON_ERROR, e);
         }
     }
 
@@ -178,7 +178,7 @@ public class ShapePanel extends JPanel {
     private Path2D toPath2D(Geometry geometry) {
         try {
             if (geometry == null) {
-                throw new IllegalArgumentException("Geometria não pode ser nula");
+                throw new IllegalArgumentException(Constants.NULL_GEOMETRY_ERROR);
             }
 
             Path2D path = new Path2D.Double();
@@ -187,7 +187,7 @@ public class ShapePanel extends JPanel {
                 double y = geometry.getCoordinates()[i].y;
                 
                 if (Double.isInfinite(x) || Double.isInfinite(y)) {
-                    throw new IllegalArgumentException("Coordenadas inválidas na geometria");
+                    throw new IllegalArgumentException(Constants.INVALID_COORDINATES_ERROR);
                 }
 
                 if (i == 0) {
@@ -199,7 +199,7 @@ public class ShapePanel extends JPanel {
             path.closePath();
             return path;
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao converter geometria para Path2D", e);
+            throw new RuntimeException(Constants.CONVERT_GEOMETRY_ERROR, e);
         }
     }
 }

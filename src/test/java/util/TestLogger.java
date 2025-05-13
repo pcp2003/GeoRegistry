@@ -1,4 +1,4 @@
-package cadastro.graph;
+package util;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,22 +8,34 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Classe responsável por gerenciar os logs dos testes do PropertyGraph
+ * Classe responsável por gerenciar os logs dos testes
  * 
  * @author Lei-G
  * @date 2024-04-06 21:30
  */
-public class PropertyGraphTestLogger {
-    private static final String LOG_FILE = "test-results/PropertyGraphTest.log";
+public class TestLogger {
+    private static final String LOG_DIR = "test-results";
     private static BufferedWriter writer;
     private static final String SEPARATOR = "=".repeat(80);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    static {
+    /**
+     * Inicializa o logger para um arquivo específico
+     * 
+     * @param logFile Nome do arquivo de log (sem extensão)
+     */
+    public static void init(String logFile) {
         try {
             // Cria o diretório se não existir
-            new File("test-results").mkdirs();
+            new File(LOG_DIR).mkdirs();
+            
+            // Fecha o writer anterior se existir
+            if (writer != null) {
+                writer.close();
+            }
+            
             // Inicializa o writer em modo append
-            writer = new BufferedWriter(new FileWriter(LOG_FILE, true));
+            writer = new BufferedWriter(new FileWriter(LOG_DIR + "/" + logFile + ".log", true));
         } catch (IOException e) {
             System.err.println("Erro ao inicializar o logger: " + e.getMessage());
         }
@@ -36,7 +48,7 @@ public class PropertyGraphTestLogger {
      */
     public static void log(String message) {
         try {
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String timestamp = LocalDateTime.now().format(formatter);
             writer.write(String.format("[%s] %s%n", timestamp, message));
             writer.flush();
         } catch (IOException e) {
@@ -99,6 +111,7 @@ public class PropertyGraphTestLogger {
         try {
             if (writer != null) {
                 writer.close();
+                writer = null;
             }
         } catch (IOException e) {
             System.err.println("Erro ao fechar o logger: " + e.getMessage());
