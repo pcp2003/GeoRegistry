@@ -83,8 +83,8 @@ public class Constants {
     // ================ Constantes da Interface Gráfica ================
     // Configuração da janela
     public static final String WINDOW_TITLE = "Gestão de Propriedades";
-    public static final int WINDOW_WIDTH = 1200;
-    public static final int WINDOW_HEIGHT = 700;
+    public static final int WINDOW_WIDTH = 1600;
+    public static final int WINDOW_HEIGHT = 900;
     public static final int SHAPE_WINDOW_SIZE = 600;
 
     // Botões
@@ -98,6 +98,7 @@ public class Constants {
     public static final String VIEW_OWNER_GRAPH_BUTTON_TEXT = "Grafo de Proprietários";
     public static final String VIEW_GRAPH_BUTTON_TEXT = "Visualizar Grafo";
     public static final String AVERAGE_AREA_BUTTON_TEXT = "Calcular Média";
+    public static final String PROPERTY_EXCHANGE_BUTTON_TEXT = "Sugestões de Troca";
 
     // Rótulos
     public static final String FILE_SELECTION_LABEL = "Selecione o arquivo CSV:";
@@ -128,6 +129,7 @@ public class Constants {
     public static final String AVERAGE_OWNER_AREA_WINDOW_TITLE = "Cálculo de Área Média de Proprietários";
     public static final String PROPERTY_GRAPH_WINDOW_TITLE = "Visualização do Grafo de Propriedades";
     public static final String OWNER_GRAPH_WINDOW_TITLE = "Visualização do Grafo de Proprietários";
+    public static final String PROPERTY_EXCHANGE_WINDOW_TITLE = "Sugestões de Troca de Propriedades";
 
     // Ordenação
     public static final String[] SORT_BUTTON_LABELS = {

@@ -29,6 +29,7 @@ public class Gui extends JFrame {
     private final JButton viewOwnerGraphButton = new JButton(Constants.VIEW_OWNER_GRAPH_BUTTON_TEXT);
     private final JButton calculatePropertyAverageButton = new JButton(Constants.AVERAGE_PROPERTY_AREA_BUTTON_TEXT);
     private final JButton calculateOwnerAverageButton = new JButton(Constants.AVERAGE_OWNER_AREA_BUTTON_TEXT);
+    private final JButton showPropertyExchangeButton = new JButton(Constants.PROPERTY_EXCHANGE_BUTTON_TEXT);
     private final JPanel resultsPanel = new JPanel();
     private int cadastrosResultPointer;
     private final List<JButton> sortButtons = new ArrayList<>();
@@ -87,12 +88,13 @@ public class Gui extends JFrame {
         styleButton(viewOwnerGraphButton);
         styleButton(calculatePropertyAverageButton);
         styleButton(calculateOwnerAverageButton);
-        styleButton(showMore);
+        styleButton(showPropertyExchangeButton);
         
         viewPropertyGraphButton.setEnabled(false);
         viewOwnerGraphButton.setEnabled(false);
         calculatePropertyAverageButton.setEnabled(false);
         calculateOwnerAverageButton.setEnabled(false);
+        showPropertyExchangeButton.setEnabled(false);
     }
 
     private void styleButton(JButton button) {
@@ -144,6 +146,7 @@ public class Gui extends JFrame {
         buttonPanel.add(viewOwnerGraphButton);
         buttonPanel.add(calculatePropertyAverageButton);
         buttonPanel.add(calculateOwnerAverageButton);
+        buttonPanel.add(showPropertyExchangeButton);
 
         filePanel.add(fileLabel, BorderLayout.WEST);
         filePanel.add(csvPathInput, BorderLayout.CENTER);
@@ -166,6 +169,7 @@ public class Gui extends JFrame {
         viewOwnerGraphButton.addActionListener(this::showOwnerGraphVisualization);
         calculatePropertyAverageButton.addActionListener(this::showPropertyAverageAreaPanel);
         calculateOwnerAverageButton.addActionListener(this::showOwnerAverageAreaPanel);
+        showPropertyExchangeButton.addActionListener(this::showPropertyExchangePanel);
     }
 
     /**
@@ -222,6 +226,7 @@ public class Gui extends JFrame {
             viewOwnerGraphButton.setEnabled(true);
             calculatePropertyAverageButton.setEnabled(true);
             calculateOwnerAverageButton.setEnabled(true);
+            showPropertyExchangeButton.setEnabled(true);
 
             initializeSortButtons();
             displayResults();
@@ -763,5 +768,63 @@ public class Gui extends JFrame {
         ));
         textField.setBackground(Color.WHITE);
         textField.setForeground(Color.decode(Constants.TEXT_COLOR));
+    }
+
+    private void showPropertyExchangePanel(ActionEvent e) {
+        try {
+            if (cadastros == null || cadastros.isEmpty()) {
+                throw new IllegalStateException(Constants.EMPTY_LIST_ERROR + "gerar sugestões de troca");
+            }
+
+            // Criar a janela de carregamento
+            JFrame loadingFrame = new JFrame(Constants.PROPERTY_EXCHANGE_WINDOW_TITLE);
+            loadingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            loadingFrame.setSize(300, 100);
+            loadingFrame.setLocationRelativeTo(this);
+
+            JPanel loadingPanel = new JPanel(new BorderLayout());
+            loadingPanel.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
+            JLabel loadingLabel = new JLabel("A carregar...", SwingConstants.CENTER);
+            loadingLabel.setFont(loadingLabel.getFont().deriveFont(Font.BOLD));
+            loadingPanel.add(loadingLabel, BorderLayout.CENTER);
+            loadingFrame.add(loadingPanel);
+            loadingFrame.setVisible(true);
+
+            // Criar o frame das sugestões fora do worker
+            JFrame exchangeFrame = new JFrame(Constants.PROPERTY_EXCHANGE_WINDOW_TITLE);
+            exchangeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            exchangeFrame.setSize(800, 600);
+            exchangeFrame.setLocationRelativeTo(Gui.this);
+
+            // Criar o painel em uma thread separada
+            SwingWorker<PropertyExchangePanel, Void> worker = new SwingWorker<PropertyExchangePanel, Void>() {
+                @Override
+                protected PropertyExchangePanel doInBackground() {
+                    return new PropertyExchangePanel(cadastros, exchangeFrame);
+                }
+
+                @Override
+                protected void done() {
+                    try {
+                        loadingFrame.dispose();
+                        PropertyExchangePanel exchangePanel = get();
+                        exchangeFrame.add(exchangePanel);
+                        exchangeFrame.setVisible(true);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(Gui.this,
+                                "Erro ao abrir painel de sugestões: " + ex.getMessage(),
+                                Constants.ERROR_TITLE,
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            };
+
+            worker.execute();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao abrir painel de sugestões: " + ex.getMessage(),
+                    Constants.ERROR_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
