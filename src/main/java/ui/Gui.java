@@ -34,6 +34,7 @@ public class Gui extends JFrame {
     private int cadastrosResultPointer;
     private final List<JButton> sortButtons = new ArrayList<>();
     private List<Cadastro> cadastros;
+    private boolean loadingCancelled = false;
     private SwingWorker<PropertyGraph, Void> propertyGraphWorker;
     private boolean ownerLoadingCancelled = false;
     private SwingWorker<OwnerGraph, Void> ownerGraphWorker;
