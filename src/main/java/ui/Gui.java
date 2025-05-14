@@ -34,6 +34,11 @@ public class Gui extends JFrame {
     private int cadastrosResultPointer;
     private final List<JButton> sortButtons = new ArrayList<>();
     private List<Cadastro> cadastros;
+    private SwingWorker<PropertyGraph, Void> propertyGraphWorker;
+    private boolean ownerLoadingCancelled = false;
+    private SwingWorker<OwnerGraph, Void> ownerGraphWorker;
+    private boolean exchangeLoadingCancelled = false;
+    private SwingWorker<PropertyExchangePanel, Void> exchangeWorker;
 
     /**
      * Construtor da classe GUI.
@@ -489,6 +494,8 @@ public class Gui extends JFrame {
      * @param e O evento de ação que disparou o método
      */
     private void showPropertyGraphVisualization(ActionEvent e) {
+        loadingCancelled = false; // Reset flag
+
         try {
             if (cadastros == null || cadastros.isEmpty()) {
                 throw new IllegalStateException(Constants.EMPTY_LIST_ERROR + "visualizar grafo de propriedades");
@@ -509,7 +516,7 @@ public class Gui extends JFrame {
             loadingFrame.setVisible(true);
 
             // Criar o grafo em uma thread separada
-            SwingWorker<PropertyGraph, Void> worker = new SwingWorker<PropertyGraph, Void>() {
+            propertyGraphWorker = new SwingWorker<PropertyGraph, Void>() {
                 @Override
                 protected PropertyGraph doInBackground() {
                     return new PropertyGraph(cadastros);
@@ -517,6 +524,7 @@ public class Gui extends JFrame {
 
                 @Override
                 protected void done() {
+                    if (isCancelled() || loadingCancelled) return; // Checa a flag!
                     try {
                         loadingFrame.dispose();
                         PropertyGraph graph = get();
@@ -543,7 +551,24 @@ public class Gui extends JFrame {
                 }
             };
 
-            worker.execute();
+            loadingFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    loadingCancelled = true;
+                    if (propertyGraphWorker != null && !propertyGraphWorker.isDone()) {
+                        propertyGraphWorker.cancel(true);
+                    }
+                }
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    loadingCancelled = true;
+                    if (propertyGraphWorker != null && !propertyGraphWorker.isDone()) {
+                        propertyGraphWorker.cancel(true);
+                    }
+                }
+            });
+
+            propertyGraphWorker.execute();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "Erro ao visualizar grafo de propriedades: " + ex.getMessage(),
@@ -558,6 +583,8 @@ public class Gui extends JFrame {
      * @param e O evento de ação que disparou o método
      */
     private void showOwnerGraphVisualization(ActionEvent e) {
+        ownerLoadingCancelled = false; // Reset flag
+
         try {
             if (cadastros == null || cadastros.isEmpty()) {
                 throw new IllegalStateException(Constants.EMPTY_LIST_ERROR + "visualizar grafo de proprietários");
@@ -578,7 +605,7 @@ public class Gui extends JFrame {
             loadingFrame.setVisible(true);
 
             // Criar o grafo em uma thread separada
-            SwingWorker<OwnerGraph, Void> worker = new SwingWorker<OwnerGraph, Void>() {
+            ownerGraphWorker = new SwingWorker<OwnerGraph, Void>() {
                 @Override
                 protected OwnerGraph doInBackground() {
                     return new OwnerGraph(cadastros);
@@ -586,6 +613,7 @@ public class Gui extends JFrame {
 
                 @Override
                 protected void done() {
+                    if (isCancelled() || ownerLoadingCancelled) return; // Checa a flag!
                     try {
                         loadingFrame.dispose();
                         OwnerGraph graph = get();
@@ -612,7 +640,24 @@ public class Gui extends JFrame {
                 }
             };
 
-            worker.execute();
+            loadingFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    ownerLoadingCancelled = true;
+                    if (ownerGraphWorker != null && !ownerGraphWorker.isDone()) {
+                        ownerGraphWorker.cancel(true);
+                    }
+                }
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    ownerLoadingCancelled = true;
+                    if (ownerGraphWorker != null && !ownerGraphWorker.isDone()) {
+                        ownerGraphWorker.cancel(true);
+                    }
+                }
+            });
+
+            ownerGraphWorker.execute();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "Erro ao visualizar grafo de proprietários: " + ex.getMessage(),
@@ -797,7 +842,7 @@ public class Gui extends JFrame {
             exchangeFrame.setLocationRelativeTo(Gui.this);
 
             // Criar o painel em uma thread separada
-            SwingWorker<PropertyExchangePanel, Void> worker = new SwingWorker<PropertyExchangePanel, Void>() {
+            exchangeWorker = new SwingWorker<PropertyExchangePanel, Void>() {
                 @Override
                 protected PropertyExchangePanel doInBackground() {
                     return new PropertyExchangePanel(cadastros, exchangeFrame);
@@ -805,6 +850,7 @@ public class Gui extends JFrame {
 
                 @Override
                 protected void done() {
+                    if (isCancelled() || exchangeLoadingCancelled) return; // Checa a flag!
                     try {
                         loadingFrame.dispose();
                         PropertyExchangePanel exchangePanel = get();
@@ -819,7 +865,24 @@ public class Gui extends JFrame {
                 }
             };
 
-            worker.execute();
+            loadingFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    exchangeLoadingCancelled = true;
+                    if (exchangeWorker != null && !exchangeWorker.isDone()) {
+                        exchangeWorker.cancel(true);
+                    }
+                }
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    exchangeLoadingCancelled = true;
+                    if (exchangeWorker != null && !exchangeWorker.isDone()) {
+                        exchangeWorker.cancel(true);
+                    }
+                }
+            });
+
+            exchangeWorker.execute();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "Erro ao abrir painel de sugestões: " + ex.getMessage(),
