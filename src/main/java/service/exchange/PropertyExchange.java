@@ -57,8 +57,6 @@ public class PropertyExchange {
     @Override
     public String toString() {
         return String.format("Propriedades a ser trocadas: %d (Proprietário %d) e %d (Proprietário %d)\n" +
-                           "Proprietário 1: %d\n" +
-                           "Proprietário 2: %d\n" +
                            "Diferença de área: %.2f\n" +
                            "Viabilidade: %.2f\n" +
                            "Melhoria na área média: %.2f",
