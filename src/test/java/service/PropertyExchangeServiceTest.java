@@ -1,9 +1,11 @@
-package service.exchange;
+package service;
 
 import util.TestLogger;
 import model.Cadastro;
 import service.OwnerGraph;
 import service.PropertyGraph;
+import service.exchange.PropertyExchange;
+import service.exchange.PropertyExchangeService;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
