@@ -8,39 +8,58 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.util.Random;
 
 /**
- * Painel responsável por renderizar formas geométricas em um JPanel.
- * Utiliza a biblioteca JTS para manipular dados geométricos e realiza
- * renderização personalizada.
+ * Painel para renderização de formas geométricas com estilo personalizado.
+ * Suporta vários tipos de geometria e fornece visualização interativa.
  * 
- * @author [Lei-G]
+ * @author Lei-G
  * @version 1.0
+ * @see javax.swing.JPanel
+ * @see org.locationtech.jts.geom.Geometry
+ * @see org.locationtech.jts.geom.Polygon
+ * @see org.locationtech.jts.geom.MultiPolygon
  */
 public class ShapePanel extends JPanel {
     
     private final Geometry geometry;
+    private final Color color;
+    private final String id;
 
     /**
-     * Constrói um ShapePanel com a geometria especificada.
-     *
-     * @param geometry A forma geométrica a ser renderizada
-     * @throws IllegalArgumentException se a geometria for nula
+     * Cria um novo painel para visualização de uma forma geométrica.
+     * 
+     * @param geometry A geometria a visualizar
+     * @param id Identificador único para geração de cor
      */
-    public ShapePanel(Geometry geometry) {
+    public ShapePanel(Geometry geometry, String id) {
         if (geometry == null) {
             throw new IllegalArgumentException("Geometria não pode ser nula");
         }
         this.geometry = geometry;
+        this.color = generateColorFromId(id);
+        this.id = id;
         setBackground(Color.WHITE);
     }
 
+
+    private Color generateColorFromId(String id) {
+        Random rand = new Random(id.hashCode()); // Semear com o ID para garantir cor consistente
+
+        int r = rand.nextInt(256); // 0-255
+        int g = rand.nextInt(256);
+        int b = rand.nextInt(256);
+
+        return new Color(r, g, b);
+    }
+
     /**
-     * Pinta o componente, renderizando a forma geométrica.
-     * Aplica transformações para centralizar e dimensionar a forma
-     * adequadamente no painel.
+     * Paints the component, rendering the geometric shape.
+     * Applies transformations to center and scale the shape
+     * appropriately on the panel.
      *
-     * @param g O objeto Graphics usado para pintura
+     * @param g Graphics object used for painting
      */
     @Override
     protected void paintComponent(Graphics g) {
@@ -56,10 +75,12 @@ public class ShapePanel extends JPanel {
         }
     }
 
+
+
     /**
-     * Desenha uma mensagem de erro no painel.
+     * Draws a message error on the panel.
      * 
-     * @param g O objeto Graphics usado para pintura
+     * @param g Graphics object used for painting
      */
     private void drawError(Graphics g) {
         g.setColor(Color.RED);
@@ -67,11 +88,11 @@ public class ShapePanel extends JPanel {
     }
 
     /**
-     * Calcula a transformação necessária para centralizar e dimensionar a forma.
-     * A transformação inclui translação, escala e inversão do eixo Y.
+     * Calculates the transformation needed to center and scale the shape.
+     * The transformation includes translation, scaling, and Y axis inversion.
      *
-     * @return O objeto AffineTransform representando a transformação
-     * @throws IllegalStateException se houver erro ao calcular a transformação
+     * @return AffineTransform object representing the transformation
+     * @throws IllegalStateException if there is an error calculating the transformation
      */
     private AffineTransform calculateTransform() {
         try {
@@ -109,12 +130,11 @@ public class ShapePanel extends JPanel {
     }
 
     /**
-     * Desenha a geometria no objeto Graphics2D.
-     * Suporta MultiPolygon e Polygon.
+     * Draws geometry on the Graphics2D object.
+     * Supports MultiPolygon and Polygon.
      *
-     * @param g2d O objeto Graphics2D usado para desenho
-     * @param geom A geometria a ser desenhada
-     * @throws IllegalArgumentException se a geometria não for suportada
+     * @param g2d Graphics context
+     * @param geom Geometry to draw
      */
     private void drawGeometry(Graphics2D g2d, Geometry geom) {
         try {
@@ -134,14 +154,12 @@ public class ShapePanel extends JPanel {
     }
 
     /**
-     * Desenha um polígono no objeto Graphics2D.
-     * O polígono é preenchido com uma cor azul semi-transparente
-     * e contornado em azul. Os buracos são preenchidos com a cor
-     * de fundo e contornados em vermelho.
+     * Draws a polygon with custom styling.
+     * Fills with semi-transparent blue, outlines in blue.
+     * Holes are filled with background color and outlined in red.
      *
-     * @param g2d O objeto Graphics2D usado para desenho
-     * @param polygon O polígono a ser desenhado
-     * @throws IllegalStateException se houver erro ao desenhar o polígono
+     * @param g2d Graphics context
+     * @param polygon Polygon to draw
      */
     private void drawPolygon(Graphics2D g2d, Polygon polygon) {
         try {
@@ -150,9 +168,15 @@ public class ShapePanel extends JPanel {
             }
 
             Path2D path = toPath2D(polygon.getExteriorRing());
+<<<<<<< HEAD:src/main/java/cadastro/gui/ShapePanel.java
             g2d.setColor(new Color(70, 130, 180, 150));
             g2d.fill(path);
             g2d.setColor(Color.BLUE);
+=======
+            g2d.setColor(color);
+            g2d.fill(path);
+            g2d.setColor(color);
+>>>>>>> tests:src/main/java/ui/ShapePanel.java
             g2d.draw(path);
 
             for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
@@ -168,12 +192,12 @@ public class ShapePanel extends JPanel {
     }
 
     /**
-     * Converte um objeto Geometry para um objeto Path2D.
-     * Cria um caminho fechado a partir das coordenadas da geometria.
+     * Converts a Geometry object to a Path2D object.
+     * Creates a closed path from the geometry coordinates.
      *
-     * @param geometry A geometria a ser convertida
-     * @return O objeto Path2D representando a geometria
-     * @throws IllegalArgumentException se a geometria for nula ou inválida
+     * @param geometry Geometry to convert
+     * @return Path2D object representing the geometry
+     * @throws IllegalArgumentException if the geometry is null or invalid
      */
     private Path2D toPath2D(Geometry geometry) {
         try {
