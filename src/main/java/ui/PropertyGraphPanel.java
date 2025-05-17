@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Painel para visualização de grafos de propriedades com funcionalidades interativas.
  * Suporta zoom, deslocamento e seleção de propriedades.
- * 
+ *
  * @author Lei-G
  * @version 1.0
  */
@@ -46,7 +46,7 @@ public class PropertyGraphPanel extends JPanel implements MouseWheelListener, Mo
 
     /**
      * Cria um novo painel para visualização do grafo de propriedades.
-     * 
+     *
      * @param propertyGraph O grafo de propriedades a visualizar
      */
     public PropertyGraphPanel(PropertyGraph propertyGraph) {
@@ -63,7 +63,7 @@ public class PropertyGraphPanel extends JPanel implements MouseWheelListener, Mo
         for (Cadastro cadastro : propertyGraph.getProperties()) {
             if (cadastro.getShape() != null) {
                 propertyPaths.put(cadastro.getId(), toPath2D(cadastro.getShape()));
-                propertyColors.put(cadastro.getId(), generateColorFromId(cadastro.getId()));
+                propertyColors.put(cadastro.getId(), generateColorFromId(cadastro.getOwner()));
             }
         }
     }
@@ -216,9 +216,12 @@ public class PropertyGraphPanel extends JPanel implements MouseWheelListener, Mo
     }
 
     private Color generateColorFromId(int id) {
-        int r = (id * 37) % 256;
-        int g = (id * 67) % 256;
-        int b = (id * 97) % 256;
+        Random rand = new Random(id); // Semear com o ID para garantir cor consistente
+
+        int r = rand.nextInt(256); // 0-255
+        int g = rand.nextInt(256);
+        int b = rand.nextInt(256);
+
         return new Color(r, g, b);
     }
 

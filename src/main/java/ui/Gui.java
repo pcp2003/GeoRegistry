@@ -533,7 +533,7 @@ public class Gui extends JFrame {
             shapeFrame.setSize(Constants.SHAPE_WINDOW_SIZE, Constants.SHAPE_WINDOW_SIZE);
             shapeFrame.setLocationRelativeTo(this);
 
-            ShapePanel shapePanel = new ShapePanel(cadastro.getShape(), Integer.toString(cadastro.getId()));
+            ShapePanel shapePanel = new ShapePanel(cadastro.getShape(), cadastro.getOwner());
             shapeFrame.add(shapePanel);
 
             shapeFrame.setVisible(true);

@@ -28,7 +28,7 @@ public class ShapePanel extends JPanel {
     /** Color used for rendering the shape */
     private final Color color;
     /** Unique identifier for the shape, used for color generation */
-    private final String id;
+    private final int id;
 
     /**
      * Cria um novo painel para visualização de uma forma geométrica.
@@ -36,7 +36,7 @@ public class ShapePanel extends JPanel {
      * @param geometry A geometria a visualizar
      * @param id Identificador único para geração de cor
      */
-    public ShapePanel(Geometry geometry, String id) {
+    public ShapePanel(Geometry geometry, int id) {
         if (geometry == null) {
             throw new IllegalArgumentException(Constants.NULL_GEOMETRY_ERROR);
         }
@@ -47,8 +47,8 @@ public class ShapePanel extends JPanel {
     }
 
 
-    private Color generateColorFromId(String id) {
-        Random rand = new Random(id.hashCode()); // Semear com o ID para garantir cor consistente
+    private Color generateColorFromId(int id) {
+        Random rand = new Random(id); // Semear com o ID para garantir cor consistente
 
         int r = rand.nextInt(256); // 0-255
         int g = rand.nextInt(256);
