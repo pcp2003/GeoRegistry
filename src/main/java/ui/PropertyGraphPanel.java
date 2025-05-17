@@ -137,7 +137,7 @@ public class PropertyGraphPanel extends JPanel implements MouseWheelListener, Mo
             }
         }
     }
-    
+
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {

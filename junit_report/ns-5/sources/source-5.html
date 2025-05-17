@@ -117,7 +117,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    /** Color used for rendering the shape */
 &nbsp;    private final Color color;
 &nbsp;    /** Unique identifier for the shape, used for color generation */
-&nbsp;    private final String id;
+&nbsp;    private final int id;
 &nbsp;
 &nbsp;    /**
 &nbsp;     * Cria um novo painel para visualização de uma forma geométrica.
@@ -125,7 +125,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;     * @param geometry A geometria a visualizar
 &nbsp;     * @param id Identificador único para geração de cor
 &nbsp;     */
-<b class="nc">&nbsp;    public ShapePanel(Geometry geometry, String id) {</b>
+<b class="nc">&nbsp;    public ShapePanel(Geometry geometry, int id) {</b>
 <b class="nc">&nbsp;        if (geometry == null) {</b>
 <b class="nc">&nbsp;            throw new IllegalArgumentException(Constants.NULL_GEOMETRY_ERROR);</b>
 &nbsp;        }
@@ -136,8 +136,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;
-&nbsp;    private Color generateColorFromId(String id) {
-<b class="nc">&nbsp;        Random rand = new Random(id.hashCode()); // Semear com o ID para garantir cor consistente</b>
+&nbsp;    private Color generateColorFromId(int id) {
+<b class="nc">&nbsp;        Random rand = new Random(id); // Semear com o ID para garantir cor consistente</b>
 &nbsp;
 <b class="nc">&nbsp;        int r = rand.nextInt(256); // 0-255</b>
 <b class="nc">&nbsp;        int g = rand.nextInt(256);</b>
@@ -336,7 +336,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-17 22:49</div>
+    <div style="float:right;">generated on 2025-05-17 23:56</div>
 </div>
 </body>
 </html>

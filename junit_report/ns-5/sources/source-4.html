@@ -75,7 +75,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     0%
   </span>
   <span class="absValue">
-    (0/130)
+    (0/131)
   </span>
 </td>
 </tr>
@@ -104,7 +104,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;/**
 &nbsp; * Painel para visualização de grafos de propriedades com funcionalidades interativas.
 &nbsp; * Suporta zoom, deslocamento e seleção de propriedades.
-&nbsp; * 
+&nbsp; *
 &nbsp; * @author Lei-G
 &nbsp; * @version 1.0
 &nbsp; */
@@ -135,7 +135,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    /**
 &nbsp;     * Cria um novo painel para visualização do grafo de propriedades.
-&nbsp;     * 
+&nbsp;     *
 &nbsp;     * @param propertyGraph O grafo de propriedades a visualizar
 &nbsp;     */
 <b class="nc">&nbsp;    public PropertyGraphPanel(PropertyGraph propertyGraph) {</b>
@@ -152,7 +152,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="nc">&nbsp;        for (Cadastro cadastro : propertyGraph.getProperties()) {</b>
 <b class="nc">&nbsp;            if (cadastro.getShape() != null) {</b>
 <b class="nc">&nbsp;                propertyPaths.put(cadastro.getId(), toPath2D(cadastro.getShape()));</b>
-<b class="nc">&nbsp;                propertyColors.put(cadastro.getId(), generateColorFromId(cadastro.getId()));</b>
+<b class="nc">&nbsp;                propertyColors.put(cadastro.getId(), generateColorFromId(cadastro.getOwner()));</b>
 &nbsp;            }
 &nbsp;        }
 &nbsp;    }
@@ -226,7 +226,6 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;            }
 &nbsp;        }
 &nbsp;    }
-&nbsp;
 &nbsp;
 &nbsp;    @Override
 &nbsp;    public void mousePressed(MouseEvent e) {
@@ -305,9 +304,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    private Color generateColorFromId(int id) {
-<b class="nc">&nbsp;        int r = (id * 37) % 256;</b>
-<b class="nc">&nbsp;        int g = (id * 67) % 256;</b>
-<b class="nc">&nbsp;        int b = (id * 97) % 256;</b>
+<b class="nc">&nbsp;        Random rand = new Random(id); // Semear com o ID para garantir cor consistente</b>
+&nbsp;
+<b class="nc">&nbsp;        int r = rand.nextInt(256); // 0-255</b>
+<b class="nc">&nbsp;        int g = rand.nextInt(256);</b>
+<b class="nc">&nbsp;        int b = rand.nextInt(256);</b>
+&nbsp;
 <b class="nc">&nbsp;        return new Color(r, g, b);</b>
 &nbsp;    }
 &nbsp;
@@ -376,7 +378,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-05-17 22:49</div>
+    <div style="float:right;">generated on 2025-05-17 23:56</div>
 </div>
 </body>
 </html>

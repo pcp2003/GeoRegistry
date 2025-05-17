@@ -94,7 +94,7 @@
       <recent name="core" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.All in property-management">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="core.Main" />
       <module name="property-management" />
@@ -108,17 +108,10 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GraphTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="ES-2024_25-2Sem-Quarta-LEI-G" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="service" />
-      <option name="MAIN_CLASS_NAME" value="service.GraphTest" />
-      <option name="TEST_OBJECT" value="class" />
+    <configuration name="All in property-management" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="property-management" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -163,11 +156,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.All in property-management" />
         <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.java in ES-2024_25-2Sem-Quarta-LEI-G" />
         <item itemvalue="JUnit.PropertyGraphTest" />
         <item itemvalue="JUnit.OwnerGraphTest" />
-        <item itemvalue="JUnit.GraphTest" />
       </list>
     </recent_temporary>
   </component>
