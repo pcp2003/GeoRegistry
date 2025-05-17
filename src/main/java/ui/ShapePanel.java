@@ -23,8 +23,11 @@ import java.util.Random;
  */
 public class ShapePanel extends JPanel {
     
+    /** The geometry to be rendered in this panel */
     private final Geometry geometry;
+    /** Color used for rendering the shape */
     private final Color color;
+    /** Unique identifier for the shape, used for color generation */
     private final String id;
 
     /**

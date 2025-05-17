@@ -1,32 +1,21 @@
 package service;
 
 import model.Cadastro;
-import model.Location;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.io.ParseException;
 import org.apache.commons.csv.CSVRecord;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.locationtech.jts.io.ParseException;
+import core.Constants;
+
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 /**
- * Test class for Graph
- *
- * @author [user.name]
- * @date [current date and time]
- * 
- * Cyclomatic Complexity by method:
- * - constructor: 4 (3 if conditions + 1 return)
- * - addAdjacency: 3 (2 if conditions + 1 return)
- * - arePropertiesPhysicallyAdjacent: 3 (2 if conditions + 1 return)
- * - areAdjacent: 2 (1 if condition + 1 return)
- * - filterCadastrosByLocation: 4 (3 if conditions + 1 return)
- * - getAdjacent: 2 (1 if condition + 1 return)
- * - getNumberOfProperties: 1 (1 return)
- * - getProperties: 1 (1 return)
- * - getCadastros: 1 (1 return)
+ * Classe de teste para a classe Graph.
+ * Contém testes unitários para todas as funcionalidades do grafo, incluindo construção,
+ * adição de adjacências e filtragem de propriedades.
  */
 class GraphTest {
     private List<Cadastro> testCadastros;
@@ -36,190 +25,229 @@ class GraphTest {
     void setUp() throws ParseException {
         testCadastros = new ArrayList<>();
         adjacencyMap = new HashMap<>();
-        
-        // Create mock cadastros for testing
-        CSVRecord mockRecord = mock(CSVRecord.class);
-        when(mockRecord.get(anyInt())).thenReturn("1");
-        testCadastros.add(new Cadastro(mockRecord));
+
+        // Criar primeira propriedade
+        CSVRecord mockRecord1 = mock(CSVRecord.class);
+        when(mockRecord1.get(Constants.ID_INDEX)).thenReturn("1"); // ID
+        when(mockRecord1.get(Constants.LENGTH_INDEX)).thenReturn("10.5"); // Comprimento
+        when(mockRecord1.get(Constants.AREA_INDEX)).thenReturn("100.0"); // Área
+        when(mockRecord1.get(Constants.SHAPE_INDEX)).thenReturn("MULTIPOLYGON (((0 0, 0 1, 1 1, 1 0, 0 0)))"); // Forma
+        when(mockRecord1.get(Constants.OWNER_INDEX)).thenReturn("1"); // Proprietário
+        when(mockRecord1.get(Constants.FREGUESIA_INDEX)).thenReturn("Santa Maria Maior"); // Freguesia
+        when(mockRecord1.get(Constants.CONCELHO_INDEX)).thenReturn("Lisboa"); // Concelho
+        when(mockRecord1.get(Constants.DISTRICT_INDEX)).thenReturn("Lisboa"); // Distrito
+
+        // Criar segunda propriedade com geometria adjacente
+        CSVRecord mockRecord2 = mock(CSVRecord.class);
+        when(mockRecord2.get(Constants.ID_INDEX)).thenReturn("2"); // ID
+        when(mockRecord2.get(Constants.LENGTH_INDEX)).thenReturn("10.5"); // Comprimento
+        when(mockRecord2.get(Constants.AREA_INDEX)).thenReturn("100.0"); // Área
+        when(mockRecord2.get(Constants.SHAPE_INDEX)).thenReturn("MULTIPOLYGON (((1 0, 1 1, 2 1, 2 0, 1 0)))"); // Forma Adjacente
+        when(mockRecord2.get(Constants.OWNER_INDEX)).thenReturn("2"); // Proprietário
+        when(mockRecord2.get(Constants.FREGUESIA_INDEX)).thenReturn("Santa Maria Maior"); // Freguesia
+        when(mockRecord2.get(Constants.CONCELHO_INDEX)).thenReturn("Lisboa"); // Concelho
+        when(mockRecord2.get(Constants.DISTRICT_INDEX)).thenReturn("Lisboa"); // Distrito
+
+        Cadastro cadastro1 = new Cadastro(mockRecord1);
+        Cadastro cadastro2 = new Cadastro(mockRecord2);
+        testCadastros.add(cadastro1);
+        testCadastros.add(cadastro2);
     }
 
     /**
-     * Test constructor - Cyclomatic Complexity: 4
+     * Testa o construtor com lista válida de cadastros
      */
     @Test
     void constructor1() {
         Graph graph = new Graph(testCadastros);
-        assertNotNull(graph, "Graph should be created with valid cadastros");
+        assertNotNull(graph);
     }
 
+    /**
+     * Testa o construtor com lista nula
+     */
     @Test
     void constructor2() {
-        assertThrows(IllegalArgumentException.class, () -> new Graph(null),
-                "Should throw IllegalArgumentException for null cadastros");
+        assertThrows(IllegalArgumentException.class, () -> new Graph(null));
     }
 
+    /**
+     * Testa o construtor com lista vazia
+     */
     @Test
     void constructor3() {
-        assertThrows(IllegalArgumentException.class, () -> new Graph(new ArrayList<>()),
-                "Should throw IllegalArgumentException for empty cadastros");
+        assertThrows(IllegalArgumentException.class, () -> new Graph(new ArrayList<>()));
     }
 
+    /**
+     * Testa o construtor com lista contendo elemento nulo
+     */
     @Test
     void constructor4() {
         List<Cadastro> cadastrosWithNull = new ArrayList<>();
         cadastrosWithNull.add(null);
-        assertThrows(IllegalArgumentException.class, () -> new Graph(cadastrosWithNull),
-                "Should throw IllegalArgumentException for cadastros containing null");
+        assertThrows(IllegalArgumentException.class, () -> new Graph(cadastrosWithNull));
     }
 
     /**
-     * Test addAdjacency - Cyclomatic Complexity: 3
+     * Testa adição de adjacência válida
      */
     @Test
     void addAdjacency1() {
         Cadastro prop1 = testCadastros.get(0);
-        Cadastro prop2 = testCadastros.get(0);
+        Cadastro prop2 = testCadastros.get(1);
         Graph.addAdjacency(prop1, prop2, adjacencyMap);
-        assertTrue(adjacencyMap.containsKey(prop1), "Adjacency map should contain first property");
-        assertTrue(adjacencyMap.containsKey(prop2), "Adjacency map should contain second property");
-    }
-
-    @Test
-    void addAdjacency2() {
-        assertThrows(IllegalArgumentException.class, 
-                () -> Graph.addAdjacency(null, testCadastros.get(0), adjacencyMap),
-                "Should throw IllegalArgumentException for null first property");
-    }
-
-    @Test
-    void addAdjacency3() {
-        assertThrows(IllegalArgumentException.class, 
-                () -> Graph.addAdjacency(testCadastros.get(0), null, adjacencyMap),
-                "Should throw IllegalArgumentException for null second property");
+        assertTrue(adjacencyMap.containsKey(prop1));
+        assertTrue(adjacencyMap.get(prop1).contains(prop2));
     }
 
     /**
-     * Test arePropertiesPhysicallyAdjacent - Cyclomatic Complexity: 3
+     * Testa adição de adjacência com primeira propriedade nula
+     */
+    @Test
+    void addAdjacency2() {
+        assertThrows(IllegalArgumentException.class,
+                () -> Graph.addAdjacency(null, testCadastros.get(0), adjacencyMap));
+    }
+
+    /**
+     * Testa adição de adjacência com segunda propriedade nula
+     */
+    @Test
+    void addAdjacency3() {
+        assertThrows(IllegalArgumentException.class,
+                () -> Graph.addAdjacency(testCadastros.get(0), null, adjacencyMap));
+    }
+
+    /**
+     * Testa verificação de adjacência física válida
      */
     @Test
     void arePropertiesPhysicallyAdjacent1() {
         Cadastro prop1 = testCadastros.get(0);
-        Cadastro prop2 = testCadastros.get(0);
-        assertTrue(Graph.arePropertiesPhysicallyAdjacent(prop1, prop2),
-                "Properties should be physically adjacent");
-    }
-
-    @Test
-    void arePropertiesPhysicallyAdjacent2() {
-        assertThrows(IllegalArgumentException.class,
-                () -> Graph.arePropertiesPhysicallyAdjacent(null, testCadastros.get(0)),
-                "Should throw IllegalArgumentException for null first property");
-    }
-
-    @Test
-    void arePropertiesPhysicallyAdjacent3() {
-        assertThrows(IllegalArgumentException.class,
-                () -> Graph.arePropertiesPhysicallyAdjacent(testCadastros.get(0), null),
-                "Should throw IllegalArgumentException for null second property");
+        Cadastro prop2 = testCadastros.get(1);
+        assertTrue(Graph.arePropertiesPhysicallyAdjacent(prop1, prop2));
     }
 
     /**
-     * Test areAdjacent - Cyclomatic Complexity: 2
+     * Testa verificação de adjacência física com primeira propriedade nula
+     */
+    @Test
+    void arePropertiesPhysicallyAdjacent2() {
+        assertThrows(IllegalArgumentException.class,
+                () -> Graph.arePropertiesPhysicallyAdjacent(null, testCadastros.get(0)));
+    }
+
+    /**
+     * Testa verificação de adjacência física com segunda propriedade nula
+     */
+    @Test
+    void arePropertiesPhysicallyAdjacent3() {
+        assertThrows(IllegalArgumentException.class,
+                () -> Graph.arePropertiesPhysicallyAdjacent(testCadastros.get(0), null));
+    }
+
+    /**
+     * Testa verificação de adjacência válida
      */
     @Test
     void areAdjacent1() {
         Cadastro prop1 = testCadastros.get(0);
-        Cadastro prop2 = testCadastros.get(0);
+        Cadastro prop2 = testCadastros.get(1);
         Graph.addAdjacency(prop1, prop2, adjacencyMap);
-        assertTrue(Graph.areAdjacent(prop1, prop2, adjacencyMap),
-                "Properties should be adjacent");
-    }
-
-    @Test
-    void areAdjacent2() {
-        assertThrows(IllegalArgumentException.class,
-                () -> Graph.areAdjacent(null, testCadastros.get(0), adjacencyMap),
-                "Should throw IllegalArgumentException for null property");
+        assertTrue(Graph.areAdjacent(prop1, prop2, adjacencyMap));
     }
 
     /**
-     * Test filterCadastrosByLocation - Cyclomatic Complexity: 4
+     * Testa verificação de adjacência com primeira propriedade nula
+     */
+    @Test
+    void areAdjacent2() {
+        assertThrows(IllegalArgumentException.class,
+                () -> Graph.areAdjacent(null, testCadastros.get(0), adjacencyMap));
+    }
+
+    /**
+     * Testa filtragem de cadastros sem critérios de localização
      */
     @Test
     void filterCadastrosByLocation1() {
         List<Cadastro> filtered = Graph.filterCadastrosByLocation(testCadastros, null, null, null);
-        assertEquals(testCadastros.size(), filtered.size(),
-                "Should return all cadastros when no filters are applied");
-    }
-
-    @Test
-    void filterCadastrosByLocation2() {
-        List<Cadastro> filtered = Graph.filterCadastrosByLocation(testCadastros, "test", null, null);
-        assertTrue(filtered.isEmpty(),
-                "Should return empty list when no cadastros match district filter");
-    }
-
-    @Test
-    void filterCadastrosByLocation3() {
-        List<Cadastro> filtered = Graph.filterCadastrosByLocation(testCadastros, null, "test", null);
-        assertTrue(filtered.isEmpty(),
-                "Should return empty list when no cadastros match municipality filter");
-    }
-
-    @Test
-    void filterCadastrosByLocation4() {
-        List<Cadastro> filtered = Graph.filterCadastrosByLocation(testCadastros, null, null, "test");
-        assertTrue(filtered.isEmpty(),
-                "Should return empty list when no cadastros match county filter");
+        assertEquals(testCadastros.size(), filtered.size());
     }
 
     /**
-     * Test getAdjacent - Cyclomatic Complexity: 2
+     * Testa filtragem de cadastros por freguesia inexistente
+     */
+    @Test
+    void filterCadastrosByLocation2() {
+        List<Cadastro> filtered = Graph.filterCadastrosByLocation(testCadastros, "test", null, null);
+        assertTrue(filtered.isEmpty());
+    }
+
+    /**
+     * Testa filtragem de cadastros por concelho inexistente
+     */
+    @Test
+    void filterCadastrosByLocation3() {
+        List<Cadastro> filtered = Graph.filterCadastrosByLocation(testCadastros, null, "test", null);
+        assertTrue(filtered.isEmpty());
+    }
+
+    /**
+     * Testa filtragem de cadastros por distrito inexistente
+     */
+    @Test
+    void filterCadastrosByLocation4() {
+        List<Cadastro> filtered = Graph.filterCadastrosByLocation(testCadastros, null, null, "test");
+        assertTrue(filtered.isEmpty());
+    }
+
+    /**
+     * Testa obtenção de propriedades adjacentes válida
      */
     @Test
     void getAdjacent1() {
         Cadastro prop1 = testCadastros.get(0);
-        Cadastro prop2 = testCadastros.get(0);
+        Cadastro prop2 = testCadastros.get(1);
         Graph.addAdjacency(prop1, prop2, adjacencyMap);
         Set<Cadastro> adjacent = Graph.getAdjacent(prop1, adjacencyMap);
-        assertTrue(adjacent.contains(prop2),
-                "Should return set containing adjacent property");
-    }
-
-    @Test
-    void getAdjacent2() {
-        assertThrows(IllegalArgumentException.class,
-                () -> Graph.getAdjacent(null, adjacencyMap),
-                "Should throw IllegalArgumentException for null property");
+        assertTrue(adjacent.contains(prop2));
     }
 
     /**
-     * Test getNumberOfProperties - Cyclomatic Complexity: 1
+     * Testa obtenção de propriedades adjacentes com propriedade nula
+     */
+    @Test
+    void getAdjacent2() {
+        assertThrows(IllegalArgumentException.class,
+                () -> Graph.getAdjacent(null, adjacencyMap));
+    }
+
+    /**
+     * Testa obtenção do número de propriedades
      */
     @Test
     void getNumberOfProperties() {
         Graph graph = new Graph(testCadastros);
-        assertEquals(testCadastros.size(), graph.getNumberOfProperties(),
-                "Should return correct number of properties");
+        assertEquals(testCadastros.size(), graph.getNumberOfProperties());
     }
 
     /**
-     * Test getProperties - Cyclomatic Complexity: 1
+     * Testa obtenção das propriedades
      */
     @Test
     void getProperties() {
         Graph graph = new Graph(testCadastros);
-        assertEquals(testCadastros, graph.getProperties(),
-                "Should return list of all properties");
+        assertEquals(testCadastros, graph.getProperties());
     }
 
     /**
-     * Test getCadastros - Cyclomatic Complexity: 1
+     * Testa obtenção dos cadastros
      */
     @Test
     void getCadastros() {
         Graph graph = new Graph(testCadastros);
-        assertEquals(testCadastros, graph.getCadastros(),
-                "Should return list of all cadastros");
+        assertEquals(testCadastros, graph.getCadastros());
     }
 }

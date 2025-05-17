@@ -1,0 +1,298 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Graph</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">service</a>
+</div>
+
+<h1>Coverage Summary for Class: Graph (service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Graph</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (39/52)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    93.5%
+  </span>
+  <span class="absValue">
+    (43/46)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package service;
+&nbsp;
+&nbsp;import model.Cadastro;
+&nbsp;import core.Constants;
+&nbsp;import model.Location;
+&nbsp;import org.locationtech.jts.geom.MultiPolygon;
+&nbsp;import org.locationtech.jts.geom.TopologyException;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;/**
+&nbsp; * Classe base para grafos de gestão de propriedades.
+&nbsp; * Implementa funcionalidades comuns para diferentes tipos de grafos no sistema.
+&nbsp; * 
+&nbsp; * @author Lei-G
+&nbsp; * @version 1.0
+&nbsp; */
+&nbsp;public class Graph {
+&nbsp;    /** Lista de todas as propriedades no grafo */
+&nbsp;    protected final List&lt;Cadastro&gt; cadastros;
+&nbsp;    
+&nbsp;    /** Mapa que armazena as relações de adjacência entre propriedades */
+&nbsp;    protected final Map&lt;Cadastro, Set&lt;Cadastro&gt;&gt; propertyAdjacencyList;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cria um grafo a partir de uma lista de propriedades.
+&nbsp;     * 
+&nbsp;     * @param cadastros Lista de propriedades para construir o grafo
+&nbsp;     * @throws IllegalArgumentException if list is null or empty
+&nbsp;     */
+<b class="fc">&nbsp;    public Graph(List&lt;Cadastro&gt; cadastros) {</b>
+<b class="fc">&nbsp;        if (cadastros == null) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(Constants.NULL_CADASTROS_ERROR);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (cadastros.isEmpty()) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(Constants.EMPTY_CADASTROS_ERROR);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (cadastros.contains(null)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(Constants.NULL_ELEMENTS_ERROR);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        this.cadastros = cadastros;</b>
+<b class="fc">&nbsp;        this.propertyAdjacencyList = new HashMap&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds an adjacency between two elements.
+&nbsp;     * 
+&nbsp;     * @param &lt;T&gt; Element type (Integer for owners, Cadastro for properties)
+&nbsp;     * @param element1 First element
+&nbsp;     * @param element2 Second element
+&nbsp;     * @param adjacencyMap Adjacency map to use
+&nbsp;     */
+&nbsp;    public static &lt;T&gt; void addAdjacency(T element1, T element2, Map&lt;T, Set&lt;T&gt;&gt; adjacencyMap) {
+<b class="fc">&nbsp;        if (element1 == null || element2 == null) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(Constants.NULL_PROPERTY_ERROR);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (element1 instanceof Integer &amp;&amp; element2 instanceof Integer) {</b>
+<b class="fc">&nbsp;            int owner1 = (Integer) element1;</b>
+<b class="fc">&nbsp;            int owner2 = (Integer) element2;</b>
+<b class="pc">&nbsp;            if (owner1 &lt;= 0 || owner2 &lt;= 0) {</b>
+<b class="nc">&nbsp;                throw new IllegalArgumentException(Constants.INVALID_OWNER_ERROR);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        adjacencyMap.computeIfAbsent(element1, _ -&gt; new HashSet&lt;&gt;()).add(element2);</b>
+<b class="fc">&nbsp;        adjacencyMap.computeIfAbsent(element2, _ -&gt; new HashSet&lt;&gt;()).add(element1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if two properties are physically adjacent.
+&nbsp;     * 
+&nbsp;     * @param prop1 First property
+&nbsp;     * @param prop2 Second property
+&nbsp;     * @return true if properties are adjacent
+&nbsp;     */
+&nbsp;    public static boolean arePropertiesPhysicallyAdjacent(Cadastro prop1, Cadastro prop2) {
+<b class="fc">&nbsp;        if (prop1 == null || prop2 == null) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(Constants.NULL_PROPERTY_ERROR);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            MultiPolygon shape1 = prop1.getShape();</b>
+<b class="fc">&nbsp;            MultiPolygon shape2 = prop2.getShape();</b>
+&nbsp;            
+<b class="pc">&nbsp;            if (shape1 == null || shape2 == null) {</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+&nbsp;
+<b class="pc">&nbsp;            return shape1.touches(shape2) || </b>
+<b class="nc">&nbsp;                   (shape1.intersects(shape2) &amp;&amp; !shape1.within(shape2) &amp;&amp; !shape2.within(shape1));</b>
+<b class="fc">&nbsp;        } catch (TopologyException e) {</b>
+<b class="fc">&nbsp;            throw new IllegalStateException(Constants.ADJACENCY_ERROR + e.getMessage(), e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifica se dois elementos são adjacentes no grafo.
+&nbsp;     * 
+&nbsp;     * @param &lt;T&gt; Tipo dos elementos
+&nbsp;     * @param element1 Primeiro elemento
+&nbsp;     * @param element2 Segundo elemento
+&nbsp;     * @param adjacencyMap Mapa de adjacência a ser utilizado
+&nbsp;     * @return true se os elementos são adjacentes, false caso contrário
+&nbsp;     * @throws IllegalArgumentException se algum dos elementos for nulo
+&nbsp;     */
+&nbsp;    public static &lt;T&gt; boolean areAdjacent(T element1, T element2, Map&lt;T, Set&lt;T&gt;&gt; adjacencyMap) {
+<b class="pc">&nbsp;        if (element1 == null || element2 == null) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(Constants.NULL_PROPERTY_ERROR);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        return adjacencyMap.containsKey(element1) &amp;&amp; adjacencyMap.get(element1).contains(element2);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Filtra os cadastros por localização.
+&nbsp;     * 
+&nbsp;     * @param cadastros Lista de cadastros a ser filtrada
+&nbsp;     * @param district Distrito
+&nbsp;     * @param municipality Município
+&nbsp;     * @param county Concelho
+&nbsp;     * @return Lista de cadastros filtrados
+&nbsp;     */
+&nbsp;    public static List&lt;Cadastro&gt; filterCadastrosByLocation(List&lt;Cadastro&gt; cadastros, String district, String municipality, String county) {
+<b class="fc">&nbsp;        return cadastros.stream()</b>
+<b class="fc">&nbsp;            .filter(cadastro -&gt; {</b>
+<b class="fc">&nbsp;                Location location = cadastro.getLocation();</b>
+<b class="pc">&nbsp;                if (location == null) return false;</b>
+&nbsp;                
+<b class="fc">&nbsp;                boolean matchesDistrict = district == null || location.freguesia().equals(district);</b>
+<b class="fc">&nbsp;                boolean matchesMunicipality = municipality == null || location.concelho().equals(municipality);</b>
+<b class="fc">&nbsp;                boolean matchesCounty = county == null || location.distrito().equals(county);</b>
+&nbsp;                
+<b class="fc">&nbsp;                return matchesDistrict &amp;&amp; matchesMunicipality &amp;&amp; matchesCounty;</b>
+&nbsp;            })
+<b class="fc">&nbsp;            .toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns adjacent elements for a given element.
+&nbsp;     * 
+&nbsp;     * @param &lt;T&gt; Element type
+&nbsp;     * @param element Target element
+&nbsp;     * @param adjacencyMap Adjacency map to use
+&nbsp;     * @return Set of adjacent elements
+&nbsp;     */
+&nbsp;    public static &lt;T&gt; Set&lt;T&gt; getAdjacent(T element, Map&lt;T, Set&lt;T&gt;&gt; adjacencyMap) {
+<b class="fc">&nbsp;        if (element == null) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(Constants.NULL_PROPERTY_ERROR);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return Collections.unmodifiableSet(adjacencyMap.getOrDefault(element, new HashSet&lt;&gt;()));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns total number of properties.
+&nbsp;     * 
+&nbsp;     * @return Number of properties
+&nbsp;     */
+&nbsp;    public int getNumberOfProperties() {
+<b class="fc">&nbsp;        return cadastros.size();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns list of all properties.
+&nbsp;     * 
+&nbsp;     * @return List of properties
+&nbsp;     */
+&nbsp;    public List&lt;Cadastro&gt; getProperties() {
+<b class="fc">&nbsp;        return cadastros;</b>
+&nbsp;    }
+&nbsp;     
+&nbsp;    /**
+&nbsp;     * Returns list of all cadastros.
+&nbsp;     * 
+&nbsp;     * @return List of cadastros
+&nbsp;     */
+&nbsp;    public List&lt;Cadastro&gt; getCadastros() {
+<b class="fc">&nbsp;        return cadastros;</b>
+&nbsp;    }
+&nbsp;} 
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-17 22:49</div>
+</div>
+</body>
+</html>

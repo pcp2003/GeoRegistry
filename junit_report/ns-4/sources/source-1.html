@@ -1,0 +1,200 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PropertyExchange</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">service.exchange</a>
+</div>
+
+<h1>Coverage Summary for Class: PropertyExchange (service.exchange)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PropertyExchange</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (16/16)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package service.exchange;
+&nbsp;
+&nbsp;import core.Constants;
+&nbsp;import model.Cadastro;
+&nbsp;
+&nbsp;/**
+&nbsp; * Representa uma sugestão de troca de propriedades entre dois proprietários.
+&nbsp; * Contém informações sobre as propriedades envolvidas e métricas para a troca.
+&nbsp; * 
+&nbsp; * @author Lei-G
+&nbsp; * @version 1.0
+&nbsp; */
+&nbsp;public class PropertyExchange {
+&nbsp;    private final Cadastro property1;
+&nbsp;    private final Cadastro property2;
+&nbsp;    private final double priceDifference;
+&nbsp;    private final double feasibilityScore;
+&nbsp;    private final double averageAreaImprovement;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cria uma sugestão de troca de propriedades.
+&nbsp;     * 
+&nbsp;     * @param property1 Primeira propriedade envolvida na troca
+&nbsp;     * @param property2 Segunda propriedade envolvida na troca
+&nbsp;     * @param priceDifference Diferença de preço entre as propriedades
+&nbsp;     * @param feasibilityScore Pontuação que indica a viabilidade da troca
+&nbsp;     * @param averageAreaImprovement Melhoria na área média após a troca
+&nbsp;     */
+&nbsp;    public PropertyExchange(Cadastro property1, Cadastro property2, 
+&nbsp;                          double priceDifference, double feasibilityScore,
+<b class="fc">&nbsp;                          double averageAreaImprovement) {</b>
+<b class="fc">&nbsp;        this.property1 = property1;</b>
+<b class="fc">&nbsp;        this.property2 = property2;</b>
+<b class="fc">&nbsp;        this.priceDifference = priceDifference;</b>
+<b class="fc">&nbsp;        this.feasibilityScore = feasibilityScore;</b>
+<b class="fc">&nbsp;        this.averageAreaImprovement = averageAreaImprovement;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Obtém a primeira propriedade envolvida na troca.
+&nbsp;     * 
+&nbsp;     * @return A primeira propriedade
+&nbsp;     */
+&nbsp;    public Cadastro getProperty1() {
+<b class="fc">&nbsp;        return property1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Obtém a segunda propriedade envolvida na troca.
+&nbsp;     * 
+&nbsp;     * @return A segunda propriedade
+&nbsp;     */
+&nbsp;    public Cadastro getProperty2() {
+<b class="fc">&nbsp;        return property2;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Obtém a diferença de preço entre as propriedades.
+&nbsp;     * 
+&nbsp;     * @return A diferença de preço em euros
+&nbsp;     */
+&nbsp;    public double getPriceDifference() {
+<b class="fc">&nbsp;        return priceDifference;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Obtém a pontuação de viabilidade da troca.
+&nbsp;     * Pontuações mais altas indicam trocas mais viáveis.
+&nbsp;     * 
+&nbsp;     * @return A pontuação de viabilidade
+&nbsp;     */
+&nbsp;    public double getFeasibilityScore() {
+<b class="fc">&nbsp;        return feasibilityScore;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Obtém a melhoria na área média após a troca.
+&nbsp;     * 
+&nbsp;     * @return A melhoria na área média
+&nbsp;     */
+&nbsp;    public double getAverageAreaImprovement() {
+<b class="fc">&nbsp;        return averageAreaImprovement;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String toString() {
+<b class="fc">&nbsp;        return String.format(&quot;Propriedades a ser trocadas: %d (Proprietário %d) e %d (Proprietário %d)\n&quot; +</b>
+&nbsp;                           &quot;Diferença de preço: %.2f€ (%.2f€ | %.2f€)\n&quot; +
+&nbsp;                           &quot;Viabilidade: %.2f\n&quot; +
+&nbsp;                           &quot;Melhoria na área média: %.2f\n&quot;,
+<b class="fc">&nbsp;                           property1.getId(), property1.getOwner(),</b>
+<b class="fc">&nbsp;                           property2.getId(), property2.getOwner(),</b>
+<b class="fc">&nbsp;                           priceDifference, property1.getPrice(),property2.getPrice(),feasibilityScore,</b>
+<b class="fc">&nbsp;                           averageAreaImprovement);</b>
+&nbsp;    }
+&nbsp;} 
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-17 22:49</div>
+</div>
+</body>
+</html>

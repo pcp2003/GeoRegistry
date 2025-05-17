@@ -21,25 +21,61 @@ import java.util.List;
  * @version 1.0
  */
 public class Gui extends JFrame {
-    // Declaração dos componentes da interface
+    /** Text field for entering the CSV file path */
     private final JTextField csvPathInput = new JTextField(20);
+
+    /** Button to open file browser dialog */
     private final JButton browseButton = new JButton(Constants.BROWSE_BUTTON_TEXT);
+
+    /** Button to import data from CSV file */
     private final JButton importButton = new JButton(Constants.IMPORT_BUTTON_TEXT);
+
+    /** Button to show more results */
     private final JButton showMore = new JButton(Constants.SHOW_MORE_BUTTON_TEXT);
+
+    /** Button to view property graph visualization */
     private final JButton viewPropertyGraphButton = new JButton(Constants.VIEW_PROPERTY_GRAPH_BUTTON_TEXT);
+
+    /** Button to view owner graph visualization */
     private final JButton viewOwnerGraphButton = new JButton(Constants.VIEW_OWNER_GRAPH_BUTTON_TEXT);
+
+    /** Button to calculate average property area */
     private final JButton calculatePropertyAverageButton = new JButton(Constants.AVERAGE_PROPERTY_AREA_BUTTON_TEXT);
+
+    /** Button to calculate average owner area */
     private final JButton calculateOwnerAverageButton = new JButton(Constants.AVERAGE_OWNER_AREA_BUTTON_TEXT);
+
+    /** Button to show property exchange panel */
     private final JButton showPropertyExchangeButton = new JButton(Constants.PROPERTY_EXCHANGE_BUTTON_TEXT);
+
+    /** Panel for displaying results */
     private final JPanel resultsPanel = new JPanel();
-    private int cadastrosResultPointer;
+
+    /** List of buttons for sorting results */
     private final List<JButton> sortButtons = new ArrayList<>();
+
+    /** Pointer to current position in cadastros results */
+    private int cadastrosResultPointer;
+
+    /** List of all cadastral properties */
     private List<Cadastro> cadastros;
+
+    /** Flag indicating if loading operation was cancelled */
     private boolean loadingCancelled = false;
+
+    /** Worker thread for property graph loading */
     private SwingWorker<PropertyGraph, Void> propertyGraphWorker;
+
+    /** Flag indicating if owner graph loading was cancelled */
     private boolean ownerLoadingCancelled = false;
+
+    /** Worker thread for owner graph loading */
     private SwingWorker<OwnerGraph, Void> ownerGraphWorker;
+
+    /** Flag indicating if exchange panel loading was cancelled */
     private boolean exchangeLoadingCancelled = false;
+
+    /** Worker thread for property exchange panel loading */
     private SwingWorker<PropertyExchangePanel, Void> exchangeWorker;
 
     /**
@@ -497,7 +533,7 @@ public class Gui extends JFrame {
             shapeFrame.setSize(Constants.SHAPE_WINDOW_SIZE, Constants.SHAPE_WINDOW_SIZE);
             shapeFrame.setLocationRelativeTo(this);
 
-            ShapePanel shapePanel = new ShapePanel(cadastro.getShape(), cadastro.getId());
+            ShapePanel shapePanel = new ShapePanel(cadastro.getShape(), Integer.toString(cadastro.getId()));
             shapeFrame.add(shapePanel);
 
             shapeFrame.setVisible(true);

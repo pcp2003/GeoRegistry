@@ -32,7 +32,7 @@ public class PropertyExchangeService {
     /**
      * Gera sugestões de troca de propriedades que maximizam a área média por proprietário.
      * 
-     * @param proprietario Proprietario a quem sugerir troca
+     * @param proprietario Proprietário a quem sugerir troca
      * @return Lista de sugestões de troca ordenadas por viabilidade e melhoria na área média
      * @throws IllegalArgumentException se o número máximo de sugestões for menor ou igual a zero
      */
@@ -45,23 +45,36 @@ public class PropertyExchangeService {
             return suggestions; // Nenhuma propriedade encontrada para esse proprietário
         }
 
+        for (Map.Entry<Integer, List<Cadastro>> entry : propertiesByOwner.entrySet()) {
+            int otherOwner = entry.getKey();
+            if (proprietario >= otherOwner) continue; // Evita duplicados e auto-troca
 
-            for (Map.Entry<Integer, List<Cadastro>> entry : propertiesByOwner.entrySet()) {
-                if (proprietario >= entry.getKey()) continue; // Evita duplicados
+            List<Cadastro> propriedadesProposta = entry.getValue();
 
-                List<Cadastro> propriedadesProposta = entry.getValue();
-
-                // Para cada par de propriedades dos dois proprietários
-                for (Cadastro prop1 : propriedadesProprietario) {
-                    for (Cadastro prop2 : propriedadesProposta) {
-                        if (propertyGraph.getAdjacentProperties(prop1).contains(prop2)) {
-                            double priceDiff = Math.abs(prop1.getPrice() - prop2.getPrice());
-                            double feasibilityScore = calculateFeasibilityScore(prop1, prop2);
-                            double avgAreaImprovement = calculateAverageAreaImprovement(prop1, prop2, propriedadesProprietario, propriedadesProposta);
-                            suggestions.add(new PropertyExchange(prop1, prop2, priceDiff, feasibilityScore, avgAreaImprovement));
-                        }
+            for (Cadastro prop1 : propriedadesProprietario) {
+                for (Cadastro prop2 : propriedadesProposta) {
+                    // Verifica se são propriedades adjacentes
+                    if (!propertyGraph.getAdjacentProperties(prop1).contains(prop2)) {
+                        continue;
                     }
+
+                    // Filtra propriedades do mesmo dono (embora já deva estar garantido pelo loop)
+                    if (prop1.getOwner() == prop2.getOwner()) {
+                        continue;
+                    }
+
+                    // Ignora trocas entre propriedades com áreas iguais (considerando precisão)
+                    if (Double.compare(prop1.getArea(), prop2.getArea()) == 0) {
+                        continue;
+                    }
+
+                    double priceDiff = Math.abs(prop1.getPrice() - prop2.getPrice());
+                    double feasibilityScore = calculateFeasibilityScore(prop1, prop2);
+                    double avgAreaImprovement = calculateAverageAreaImprovement(prop1, prop2, propriedadesProprietario, propriedadesProposta);
+
+                    suggestions.add(new PropertyExchange(prop1, prop2, priceDiff, feasibilityScore, avgAreaImprovement));
                 }
+            }
         }
 
         // Ordena as sugestões por viabilidade e melhoria na área média
@@ -71,7 +84,6 @@ public class PropertyExchangeService {
             return Double.compare(score2, score1); // Ordem decrescente
         });
 
-        // Retorna apenas o número máximo de sugestões solicitado
         return suggestions;
     }
 
@@ -99,7 +111,6 @@ public class PropertyExchangeService {
     private double calculateFeasibilityScore(Cadastro prop1, Cadastro prop2) {
         double areaPrice1 = prop1.getPrice();
         double areaPrice2 = prop2.getPrice();
-
 
         double maxPrice = Math.max(areaPrice1, areaPrice2);
         double minPrice = Math.min(areaPrice1, areaPrice2);

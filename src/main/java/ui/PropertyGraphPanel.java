@@ -20,14 +20,28 @@ import java.util.*;
  * @version 1.0
  */
 public class PropertyGraphPanel extends JPanel implements MouseWheelListener, MouseListener, MouseMotionListener {
+    /** Graph representing property adjacencies */
     private final PropertyGraph propertyGraph;
-    private double zoomFactor = 1.0;
+
+    /** Last point recorded during mouse interaction */
     private Point2D lastPoint;
+
+    /** Current pan offset for the view */
     private Point2D panOffset = new Point2D.Double(0, 0);
 
+    /** Current zoom factor for the view */
+    private double zoomFactor = 1.0;
+
+    /** Map of property IDs to their visual paths */
     private final Map<Integer, Path2D> propertyPaths = new HashMap<>();
+
+    /** Map of property IDs to their assigned colors */
     private final Map<Integer, Color> propertyColors = new HashMap<>();
+
+    /** Cached affine transform for rendering */
     private AffineTransform cachedTransform = null;
+
+    /** Flag indicating if the transform needs to be recalculated */
     private boolean transformDirty = true;
 
     /**

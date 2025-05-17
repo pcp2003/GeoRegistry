@@ -3,7 +3,11 @@ package model;
 import core.Constants;
 
 /**
- * Representa uma localização geográfica com freguesia, concelho e distrito.
+ * Record que representa uma localização com freguesia, concelho e distrito.
+ * 
+ * @param freguesia A freguesia (subdivisão administrativa mais pequena) da localização
+ * @param concelho O concelho (subdivisão administrativa intermédia) da localização
+ * @param distrito O distrito (subdivisão administrativa maior) da localização
  * 
  * @author Lei-G
  * @version 1.0

@@ -35,14 +35,16 @@ public class Cadastro {
     private int propriedadesNear;
 
     /**
-     * Constrói um objeto Cadastro a partir de um registro CSV.
+     * Constrói um objeto Cadastro a partir de um registo CSV.
      * 
-     * @param record O registro CSV contendo os dados do cadastro
+     * @param record O registo CSV contendo os dados do cadastro
      * @throws ParseException           Se houver erro ao processar a geometria WKT
-     * @throws IllegalArgumentException Se houver erro ao converter valores
-     *                                  numéricos
+     * @throws IllegalArgumentException Se houver erro ao converter valores numéricos
      */
     public Cadastro(CSVRecord record) throws ParseException {
+        if (record == null) {
+            throw new IllegalArgumentException("Record cannot be null");
+        }
         try {
             this.id = handleId(record.get(Constants.ID_INDEX));
             this.length = handleLength(record.get(Constants.LENGTH_INDEX));
@@ -59,10 +61,9 @@ public class Cadastro {
     /**
      * Verifica o campo id da propriedade.
      * 
-     * @param idStr A string contendo a id
+     * @param idStr A string contendo o id
      * @return O ID da propriedade do Cadastro correspondente
-     * @throws IllegalArgumentException Se o id for null ou se for menor ou igual
-     *                                  a zero
+     * @throws IllegalArgumentException Se o id for nulo ou se for menor ou igual a zero
      */
     private int handleId(String idStr) {
         if (idStr == null || idStr.trim().isEmpty()) {
@@ -76,12 +77,11 @@ public class Cadastro {
     }
 
     /**
-     * Verifica o campo length da propriedade.
+     * Verifica o campo comprimento da propriedade.
      * 
-     * @param lengthStr A string contendo a length
-     * @return A Length da propriedade do Cadastro correspondente
-     * @throws IllegalArgumentException Se o comprimento for null ou se for menor ou
-     *                                  igual a zero
+     * @param lengthStr A string contendo o comprimento
+     * @return O comprimento da propriedade do Cadastro correspondente
+     * @throws IllegalArgumentException Se o comprimento for nulo ou se for menor ou igual a zero
      */
     private double handleLength(String lengthStr) {
         if (lengthStr == null || lengthStr.trim().isEmpty()) {
@@ -95,12 +95,11 @@ public class Cadastro {
     }
 
     /**
-     * Verifica o campo area da propriedade.
+     * Verifica o campo área da propriedade.
      * 
-     * @param areaStr A string contendo a area
-     * @return A Área da propriedade do Cadastro correspondente
-     * @throws IllegalArgumentException Se a área for null ou se for menor ou igual
-     *                                  a zero
+     * @param areaStr A string contendo a área
+     * @return A área da propriedade do Cadastro correspondente
+     * @throws IllegalArgumentException Se a área for nula ou se for menor ou igual a zero
      */
     private double handleArea(String areaStr) {
         if (areaStr == null || areaStr.trim().isEmpty()) {
@@ -131,33 +130,32 @@ public class Cadastro {
                 throw new IllegalArgumentException(record + Constants.INVALID_GEOMETRY_ERROR);
             }
         } catch (ParseException e) {
-            throw e;
+            throw new IllegalArgumentException("Invalid WKT format: " + record, e);
         }
     }
 
     /**
-     * Verifica o campo owner da propriedade.
+     * Verifica o campo proprietário da propriedade.
      * 
-     * @param ownerStr A string contendo a owner
-     * @return O Owner da propriedade do Cadastro correspondente
-     * @throws IllegalArgumentException Se o owner for null ou se for menor ou igual
-     *                                  a zero
+     * @param ownerStr A string contendo o proprietário
+     * @return O proprietário da propriedade do Cadastro correspondente
+     * @throws IllegalArgumentException Se o proprietário for nulo ou se for menor ou igual a zero
      */
     private int handleOwner(String ownerStr) {
         if (ownerStr == null || ownerStr.trim().isEmpty()) {
-            throw new IllegalArgumentException("Owner" + Constants.NULL_OR_EMPTY_ERROR);
+            throw new IllegalArgumentException("Proprietário" + Constants.NULL_OR_EMPTY_ERROR);
         }
         int owner = Integer.parseInt(ownerStr);
         if (owner <= 0) {
-            throw new IllegalArgumentException("Owner" + Constants.ZERO_OR_NEGATIVE_ERROR);
+            throw new IllegalArgumentException("Proprietário" + Constants.ZERO_OR_NEGATIVE_ERROR);
         }
         return owner;
     }
 
     /**
-     * Processa as localizações do registro CSV, removendo valores "NA".
+     * Processa as localizações do registo CSV, removendo valores "NA".
      * 
-     * @param record O registro CSV contendo as localizações
+     * @param record O registo CSV contendo as localizações
      * @return Lista de localizações processadas
      */
     private Location handleLocation(CSVRecord record) {
@@ -168,18 +166,18 @@ public class Cadastro {
         
         // Verificar se alguma localização é nula
         if (freguesia.equals(Constants.NA_VALUE) || municipio.equals(Constants.NA_VALUE) || concelho.equals(Constants.NA_VALUE)) {
-            throw new IllegalArgumentException("Localizações não podem ser nulas para o registro: " + id);
+            throw new IllegalArgumentException("Localizações não podem ser nulas para o registo: " + id);
         }
         
         return new Location(freguesia,municipio,concelho);
     }
 
     /**
-     * Lê um arquivo CSV e retorna uma lista de cadastros.
+     * Lê um ficheiro CSV e retorna uma lista de cadastros.
      * 
-     * @param path O caminho do arquivo CSV
-     * @return Lista de cadastros lidos do arquivo
-     * @throws Exception Se houver erro ao ler ou processar o arquivo
+     * @param path O caminho do ficheiro CSV
+     * @return Lista de cadastros lidos do ficheiro
+     * @throws Exception Se houver erro ao ler ou processar o ficheiro
      */
     public static List<Cadastro> getCadastros(String path) throws Exception {
         List<Cadastro> cadastros = new ArrayList<>();
@@ -212,16 +210,14 @@ public class Cadastro {
                 c.setPropretiesNear(cadastros);
             }
 
-
             System.out.println("Total de cadastros: " + cadastros.size());  
-            System.out.println("Total de registros ignorados: " + skippedRecords);
+            System.out.println("Total de registos ignorados: " + skippedRecords);
 
             // Mostra a contagem por localização
             System.out.println("Contagem por localização:");
             for (Map.Entry<Location, Integer> entry : locationCount.entrySet()) {
                 System.out.println(entry.getKey() + " -> " + entry.getValue() + " (Preço: " + entry.getKey().getPrice() + " €/m²)");
             }
-
 
             return cadastros;
         } catch (IOException e) {
@@ -285,14 +281,8 @@ public class Cadastro {
      */
     @Override
     public String toString() {
-        return "Cadastro{" +
-                "id=" + id +
-                ", length=" + length +
-                ", area=" + area +
-                ", shape=" + shape +
-                ", owner=" + owner +
-                ", location=" + location +
-                '}';
+        return String.format("Id: %d, Proprietário: %d, Área: %.1f, Comprimento: %.1f, Localização: %s",
+                id, owner, area, length, location);
     }
 
     /**
@@ -341,9 +331,9 @@ public class Cadastro {
     }
 
     /**
-     * Retorna a lista de localizações do cadastro.
+     * Retorna a localização do cadastro.
      * 
-     * @return Lista de localizações
+     * @return A localização do cadastro
      */
     public Location getLocation() {
         return location;

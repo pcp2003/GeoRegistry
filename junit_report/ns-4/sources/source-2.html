@@ -1,0 +1,270 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PropertyExchangeService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">service.exchange</a>
+</div>
+
+<h1>Coverage Summary for Class: PropertyExchangeService (service.exchange)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PropertyExchangeService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (3/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (16/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    47.8%
+  </span>
+  <span class="absValue">
+    (22/46)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package service.exchange;
+&nbsp;
+&nbsp;import model.Cadastro;
+&nbsp;import service.OwnerGraph;
+&nbsp;import service.PropertyGraph;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;/**
+&nbsp; * Serviço para gerar e gerir sugestões de troca de propriedades.
+&nbsp; * Analisa propriedades e proprietários para encontrar trocas potencialmente benéficas.
+&nbsp; * 
+&nbsp; * @author Lei-G
+&nbsp; * @version 1.0
+&nbsp; */
+&nbsp;public class PropertyExchangeService {
+&nbsp;    private final PropertyGraph propertyGraph;
+&nbsp;    private final List&lt;Cadastro&gt; cadastros;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cria um novo serviço de troca de propriedades.
+&nbsp;     * 
+&nbsp;     * @param ownerGraph Grafo que representa as relações entre proprietários
+&nbsp;     * @param propertyGraph Grafo que representa as adjacências entre propriedades
+&nbsp;     * @param cadastros Lista de todas as propriedades no sistema
+&nbsp;     */
+<b class="fc">&nbsp;    public PropertyExchangeService(OwnerGraph ownerGraph, PropertyGraph propertyGraph, List&lt;Cadastro&gt; cadastros) {</b>
+<b class="fc">&nbsp;        this.propertyGraph = propertyGraph;</b>
+<b class="fc">&nbsp;        this.cadastros = cadastros;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gera sugestões de troca de propriedades que maximizam a área média por proprietário.
+&nbsp;     * 
+&nbsp;     * @param proprietario Proprietário a quem sugerir troca
+&nbsp;     * @return Lista de sugestões de troca ordenadas por viabilidade e melhoria na área média
+&nbsp;     * @throws IllegalArgumentException se o número máximo de sugestões for menor ou igual a zero
+&nbsp;     */
+&nbsp;    public List&lt;PropertyExchange&gt; generateExchangeSuggestions(int proprietario) {
+<b class="fc">&nbsp;        List&lt;PropertyExchange&gt; suggestions = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        Map&lt;Integer, List&lt;Cadastro&gt;&gt; propertiesByOwner = groupPropertiesByOwner();</b>
+&nbsp;
+<b class="fc">&nbsp;        List&lt;Cadastro&gt; propriedadesProprietario = propertiesByOwner.get(proprietario);</b>
+<b class="pc">&nbsp;        if (propriedadesProprietario == null || propriedadesProprietario.isEmpty()) {</b>
+<b class="nc">&nbsp;            return suggestions; // Nenhuma propriedade encontrada para esse proprietário</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        for (Map.Entry&lt;Integer, List&lt;Cadastro&gt;&gt; entry : propertiesByOwner.entrySet()) {</b>
+<b class="fc">&nbsp;            int otherOwner = entry.getKey();</b>
+<b class="fc">&nbsp;            if (proprietario &gt;= otherOwner) continue; // Evita duplicados e auto-troca</b>
+&nbsp;
+<b class="fc">&nbsp;            List&lt;Cadastro&gt; propriedadesProposta = entry.getValue();</b>
+&nbsp;
+<b class="fc">&nbsp;            for (Cadastro prop1 : propriedadesProprietario) {</b>
+<b class="fc">&nbsp;                for (Cadastro prop2 : propriedadesProposta) {</b>
+&nbsp;                    // Verifica se são propriedades adjacentes
+<b class="fc">&nbsp;                    if (!propertyGraph.getAdjacentProperties(prop1).contains(prop2)) {</b>
+&nbsp;                        continue;
+&nbsp;                    }
+&nbsp;
+&nbsp;                    // Filtra propriedades do mesmo dono (embora já deva estar garantido pelo loop)
+<b class="pc">&nbsp;                    if (prop1.getOwner() == prop2.getOwner()) {</b>
+&nbsp;                        continue;
+&nbsp;                    }
+&nbsp;
+&nbsp;                    // Ignora trocas entre propriedades com áreas iguais (considerando precisão)
+<b class="pc">&nbsp;                    if (Double.compare(prop1.getArea(), prop2.getArea()) == 0) {</b>
+&nbsp;                        continue;
+&nbsp;                    }
+&nbsp;
+<b class="nc">&nbsp;                    double priceDiff = Math.abs(prop1.getPrice() - prop2.getPrice());</b>
+<b class="nc">&nbsp;                    double feasibilityScore = calculateFeasibilityScore(prop1, prop2);</b>
+<b class="nc">&nbsp;                    double avgAreaImprovement = calculateAverageAreaImprovement(prop1, prop2, propriedadesProprietario, propriedadesProposta);</b>
+&nbsp;
+<b class="nc">&nbsp;                    suggestions.add(new PropertyExchange(prop1, prop2, priceDiff, feasibilityScore, avgAreaImprovement));</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // Ordena as sugestões por viabilidade e melhoria na área média
+<b class="fc">&nbsp;        suggestions.sort((s1, s2) -&gt; {</b>
+<b class="nc">&nbsp;            double score1 = s1.getFeasibilityScore() + s1.getAverageAreaImprovement();</b>
+<b class="nc">&nbsp;            double score2 = s2.getFeasibilityScore() + s2.getAverageAreaImprovement();</b>
+<b class="nc">&nbsp;            return Double.compare(score2, score1); // Ordem decrescente</b>
+&nbsp;        });
+&nbsp;
+<b class="fc">&nbsp;        return suggestions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Agrupa as propriedades por proprietário.
+&nbsp;     * 
+&nbsp;     * @return Mapa de proprietário para lista de suas propriedades
+&nbsp;     */
+&nbsp;    private Map&lt;Integer, List&lt;Cadastro&gt;&gt; groupPropertiesByOwner() {
+<b class="fc">&nbsp;        Map&lt;Integer, List&lt;Cadastro&gt;&gt; propertiesByOwner = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (Cadastro cadastro : cadastros) {</b>
+<b class="fc">&nbsp;            propertiesByOwner.computeIfAbsent(cadastro.getOwner(), k -&gt; new ArrayList&lt;&gt;()).add(cadastro);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return propertiesByOwner;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Calcula a pontuação de viabilidade de uma troca (0-1).
+&nbsp;     * Quanto menor a diferença de preço entre as propriedades, maior a viabilidade.
+&nbsp;     * 
+&nbsp;     * @param prop1 Primeira propriedade
+&nbsp;     * @param prop2 Segunda propriedade
+&nbsp;     * @return Pontuação de viabilidade (0-1)
+&nbsp;     */
+&nbsp;    private double calculateFeasibilityScore(Cadastro prop1, Cadastro prop2) {
+<b class="nc">&nbsp;        double areaPrice1 = prop1.getPrice();</b>
+<b class="nc">&nbsp;        double areaPrice2 = prop2.getPrice();</b>
+&nbsp;
+<b class="nc">&nbsp;        double maxPrice = Math.max(areaPrice1, areaPrice2);</b>
+<b class="nc">&nbsp;        double minPrice = Math.min(areaPrice1, areaPrice2);</b>
+&nbsp;        
+&nbsp;        // Quanto mais próxima a razão entre os preços for de 1, maior a viabilidade
+<b class="nc">&nbsp;        return minPrice / maxPrice;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Calcula a melhoria na área média que uma troca proporcionaria.
+&nbsp;     * 
+&nbsp;     * @param prop1 Primeira propriedade
+&nbsp;     * @param prop2 Segunda propriedade
+&nbsp;     * @param properties1 Lista de propriedades do primeiro proprietário
+&nbsp;     * @param properties2 Lista de propriedades do segundo proprietário
+&nbsp;     * @return Melhoria na área média
+&nbsp;     */
+&nbsp;    private double calculateAverageAreaImprovement(Cadastro prop1, Cadastro prop2, List&lt;Cadastro&gt; properties1, List&lt;Cadastro&gt; properties2) {
+&nbsp;        
+&nbsp;        // Calcula a área total atual de cada proprietário
+<b class="nc">&nbsp;        double totalArea1 = properties1.stream().mapToDouble(Cadastro::getArea).sum();</b>
+<b class="nc">&nbsp;        double totalArea2 = properties2.stream().mapToDouble(Cadastro::getArea).sum();</b>
+&nbsp;
+&nbsp;        // Calcula a área média atual por proprietário
+<b class="nc">&nbsp;        double currentAvgArea1 = totalArea1 / properties1.size();</b>
+<b class="nc">&nbsp;        double currentAvgArea2 = totalArea2 / properties2.size();</b>
+<b class="nc">&nbsp;        double currentAvgArea = (currentAvgArea1 + currentAvgArea2) / 2;</b>
+&nbsp;        
+&nbsp;        // Calcula a área total após a troca
+<b class="nc">&nbsp;        double newTotalArea1 = totalArea1 - prop1.getArea() + prop2.getArea();</b>
+<b class="nc">&nbsp;        double newTotalArea2 = totalArea2 - prop2.getArea() + prop1.getArea();</b>
+&nbsp;        
+&nbsp;        // Calcula a nova área média por proprietário
+<b class="nc">&nbsp;        double newAvgArea1 = newTotalArea1 / properties1.size();</b>
+<b class="nc">&nbsp;        double newAvgArea2 = newTotalArea2 / properties2.size();</b>
+<b class="nc">&nbsp;        double newAvgArea = (newAvgArea1 + newAvgArea2) / 2;</b>
+&nbsp;        
+&nbsp;        // Retorna a melhoria percentual
+<b class="nc">&nbsp;        return (newAvgArea - currentAvgArea) / currentAvgArea;</b>
+&nbsp;    }
+&nbsp;} 
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-17 22:49</div>
+</div>
+</body>
+</html>

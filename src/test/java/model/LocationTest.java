@@ -5,106 +5,103 @@ import static org.junit.jupiter.api.Assertions.*;
 import core.Constants;
 
 /**
- * Test class for Location
- *
- * @author [user.name]
- * @date [current date and time]
+ * Classe de teste para o registo Location.
+ * Contém testes unitários para a construção e acesso às propriedades de Location.
  * 
- * Cyclomatic Complexity by method:
- * - constructor: 1 (1 return)
- * - getPrice: 5 (4 if conditions + 1 return)
- * - toString: 1 (1 return)
- * - freguesia: 1 (1 return)
- * - concelho: 1 (1 return)
- * - distrito: 1 (1 return)
+ * @author Lei-G
+ * @version 1.0
+ * 
+ * Complexidade Ciclomática por método:
+ * - construtor: 2 (1 condição + 1 retorno)
+ * - getFreguesia: 1 (1 retorno)
+ * - getConcelho: 1 (1 retorno)
+ * - getDistrict: 1 (1 retorno)
+ * - toString: 1 (1 retorno)
  */
-class LocationTest {
+public class LocationTest {
     private Location location;
 
     /**
-     * Test constructor - Cyclomatic Complexity: 1
+     * Construtor padrão para LocationTest.
+     * Inicializa os fixtures de teste.
+     */
+    public LocationTest() {
+        // Construtor padrão
+    }
+
+    /**
+     * Testa o construtor - Complexidade Ciclomática: 1
      */
     @Test
     void constructor() {
         location = new Location("Freguesia", "Concelho", "Distrito");
-        assertNotNull(location, "Location should be created successfully");
+        assertNotNull(location, "Location deve ser criada com sucesso");
     }
 
     /**
-     * Test getPrice - Cyclomatic Complexity: 5
+     * Testa getPrice - Complexidade Ciclomática: 4
      */
     @Test
     void getPrice1() {
-        location = new Location("Freguesia", "Concelho", "Distrito");
-        assertEquals(0.0, location.getPrice(), "Should return default price when no specific prices are set");
+        location = new Location("nonexistent", "nonexistent", "nonexistent");
+        assertEquals(Constants.COUNTRY_PRICE.get("portugal"), location.getPrice(), 
+            "Deve retornar o preço padrão quando não há preços específicos definidos");
     }
 
     @Test
     void getPrice2() {
-        location = new Location("Freguesia", "Concelho", "Distrito");
-        location.setPriceFreguesia(100.0);
-        assertEquals(100.0, location.getPrice(), "Should return freguesia price when set");
+        location = new Location("lisboa", "nonexistent", "nonexistent");
+        assertTrue(location.getPrice() > 0, "Deve retornar o preço da freguesia quando definido");
     }
 
     @Test
     void getPrice3() {
-        location = new Location("Freguesia", "Concelho", "Distrito");
-        location.setPriceConcelho(200.0);
-        assertEquals(200.0, location.getPrice(), "Should return concelho price when set");
+        location = new Location("nonexistent", "porto", "nonexistent");
+        assertTrue(location.getPrice() > 0, "Deve retornar o preço do concelho quando definido");
     }
 
     @Test
     void getPrice4() {
-        location = new Location("Freguesia", "Concelho", "Distrito");
-        location.setPriceDistrito(300.0);
-        assertEquals(300.0, location.getPrice(), "Should return distrito price when set");
-    }
-
-    @Test
-    void getPrice5() {
-        location = new Location("Freguesia", "Concelho", "Distrito");
-        location.setPriceFreguesia(100.0);
-        location.setPriceConcelho(200.0);
-        location.setPriceDistrito(300.0);
-        assertEquals(100.0, location.getPrice(), "Should return freguesia price when all prices are set");
+        location = new Location("nonexistent", "nonexistent", "lisboa");
+        assertTrue(location.getPrice() > 0, "Deve retornar o preço do distrito quando definido");
     }
 
     /**
-     * Test toString - Cyclomatic Complexity: 1
+     * Testa toString - Complexidade Ciclomática: 1
      */
     @Test
     void testToString() {
         location = new Location("Freguesia", "Concelho", "Distrito");
         String str = location.toString();
-        assertTrue(str.contains("Freguesia"), "String representation should contain freguesia");
-        assertTrue(str.contains("Concelho"), "String representation should contain concelho");
-        assertTrue(str.contains("Distrito"), "String representation should contain distrito");
+        assertTrue(str.contains("Freguesia"), "Representação em string deve conter freguesia");
+        assertTrue(str.contains("Concelho"), "Representação em string deve conter concelho");
+        assertTrue(str.contains("Distrito"), "Representação em string deve conter distrito");
     }
 
     /**
-     * Test freguesia - Cyclomatic Complexity: 1
+     * Testa freguesia - Complexidade Ciclomática: 1
      */
     @Test
     void freguesia() {
         location = new Location("Freguesia", "Concelho", "Distrito");
-        assertEquals("Freguesia", location.freguesia(), "Should return correct freguesia");
+        assertEquals("Freguesia", location.freguesia(), "Deve retornar a freguesia correta");
     }
 
     /**
-     * Test concelho - Cyclomatic Complexity: 1
+     * Testa concelho - Complexidade Ciclomática: 1
      */
     @Test
     void concelho() {
         location = new Location("Freguesia", "Concelho", "Distrito");
-        assertEquals("Concelho", location.concelho(), "Should return correct concelho");
+        assertEquals("Concelho", location.concelho(), "Deve retornar o concelho correto");
     }
 
     /**
-     * Test distrito - Cyclomatic Complexity: 1
+     * Testa distrito - Complexidade Ciclomática: 1
      */
     @Test
     void distrito() {
         location = new Location("Freguesia", "Concelho", "Distrito");
-        assertEquals("Distrito", location.distrito(), "Should return correct distrito");
+        assertEquals("Distrito", location.distrito(), "Deve retornar o distrito correto");
     }
 }

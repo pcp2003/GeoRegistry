@@ -30,11 +30,19 @@ import java.util.List;
  */
 public class PropertyExchangePanel extends JPanel {
 
+    /** The parent frame that contains this panel */
     private final JFrame parentFrame;
+
+    /** List of all cadastral properties */
     private final List<Cadastro> cadastros;
 
+    /** Service for handling property exchange operations */
     private PropertyExchangeService exchangeService;
+
+    /** Text area for displaying exchange suggestions */
     private JTextArea suggestionsArea;
+
+    /** Spinner for selecting property owner */
     private JSpinner proprietarioSpinner;
 
     /**

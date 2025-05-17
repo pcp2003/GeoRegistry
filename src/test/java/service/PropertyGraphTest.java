@@ -1,30 +1,29 @@
 package service;
 
 import model.Cadastro;
-import model.Location;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.io.ParseException;
 import org.apache.commons.csv.CSVRecord;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
+import core.Constants;
 
 /**
- * Test class for PropertyGraph
+ * Classe de teste para PropertyGraph
  *
  * @author [user.name]
  * @date [current date and time]
  * 
- * Cyclomatic Complexity by method:
- * - constructor: 1 (inherits from Graph)
- * - createGraph: 2 (1 try-catch + 1 return)
- * - calculateAverageArea: 4 (3 if conditions + 1 return)
- * - getAdjacentProperties: 2 (1 if condition + 1 return)
- * - getNumberOfProperties: 1 (1 return)
- * - getNumberOfAdjacenciesBetweenProperties: 1 (1 return)
- * - toString: 1 (1 return)
+ * Complexidade Ciclomática por método:
+ * - construtor: 1 (herda de Graph)
+ * - createGraph: 2 (1 try-catch + 1 retorno)
+ * - calculateAverageArea: 4 (3 condições if + 1 retorno)
+ * - getAdjacentProperties: 2 (1 condição if + 1 retorno)
+ * - getNumberOfProperties: 1 (1 retorno)
+ * - getNumberOfAdjacenciesBetweenProperties: 1 (1 retorno)
+ * - toString: 1 (1 retorno)
  */
 class PropertyGraphTest {
     private List<Cadastro> testCadastros;
@@ -33,47 +32,93 @@ class PropertyGraphTest {
     void setUp() throws ParseException {
         testCadastros = new ArrayList<>();
         
-        // Create mock cadastros for testing
-        CSVRecord mockRecord = mock(CSVRecord.class);
-        when(mockRecord.get(anyInt())).thenReturn("1");
-        testCadastros.add(new Cadastro(mockRecord));
+        // Criar primeira propriedade
+        CSVRecord mockRecord1 = mock(CSVRecord.class);
+        when(mockRecord1.get(Constants.ID_INDEX)).thenReturn("1"); // ID
+        when(mockRecord1.get(Constants.LENGTH_INDEX)).thenReturn("10.5"); // Comprimento
+        when(mockRecord1.get(Constants.AREA_INDEX)).thenReturn("100.0"); // Área
+        when(mockRecord1.get(Constants.SHAPE_INDEX)).thenReturn("MULTIPOLYGON (((0 0, 0 1, 1 1, 1 0, 0 0)))"); // Forma
+        when(mockRecord1.get(Constants.OWNER_INDEX)).thenReturn("1"); // Proprietário
+        when(mockRecord1.get(Constants.FREGUESIA_INDEX)).thenReturn("Santa Maria Maior"); // Freguesia
+        when(mockRecord1.get(Constants.CONCELHO_INDEX)).thenReturn("Lisboa"); // Concelho
+        when(mockRecord1.get(Constants.DISTRICT_INDEX)).thenReturn("Lisboa"); // Distrito
+
+        // Criar segunda propriedade com geometria adjacente
+        CSVRecord mockRecord2 = mock(CSVRecord.class);
+        when(mockRecord2.get(Constants.ID_INDEX)).thenReturn("2"); // ID
+        when(mockRecord2.get(Constants.LENGTH_INDEX)).thenReturn("10.5"); // Comprimento
+        when(mockRecord2.get(Constants.AREA_INDEX)).thenReturn("100.0"); // Área
+        when(mockRecord2.get(Constants.SHAPE_INDEX)).thenReturn("MULTIPOLYGON (((1 0, 1 1, 2 1, 2 0, 1 0)))"); // Forma Adjacente
+        when(mockRecord2.get(Constants.OWNER_INDEX)).thenReturn("2"); // Proprietário
+        when(mockRecord2.get(Constants.FREGUESIA_INDEX)).thenReturn("Santa Maria Maior"); // Freguesia
+        when(mockRecord2.get(Constants.CONCELHO_INDEX)).thenReturn("Lisboa"); // Concelho
+        when(mockRecord2.get(Constants.DISTRICT_INDEX)).thenReturn("Lisboa"); // Distrito
+
+        testCadastros.add(new Cadastro(mockRecord1));
+        testCadastros.add(new Cadastro(mockRecord2));
     }
 
     /**
-     * Test constructor - Cyclomatic Complexity: 1
+     * Testa o construtor - Complexidade Ciclomática: 1
      */
     @Test
     void constructor() {
         PropertyGraph graph = new PropertyGraph(testCadastros);
-        assertNotNull(graph, "PropertyGraph should be created with valid cadastros");
+        assertNotNull(graph, "PropertyGraph deve ser criado com cadastros válidos");
     }
 
     /**
-     * Test createGraph - Cyclomatic Complexity: 2
+     * Testa createGraph - Complexidade Ciclomática: 2
      */
     @Test
     void createGraph1() {
         PropertyGraph graph = new PropertyGraph(testCadastros);
-        assertTrue(graph.getNumberOfProperties() >= 0, "Graph should be created successfully");
+        assertTrue(graph.getNumberOfProperties() >= 0, "Grafo deve ser criado com sucesso");
     }
 
     @Test
-    void createGraph2() {
-        // Test with invalid cadastros that would cause TopologyException
+    void createGraph2() throws ParseException {
+        // Criar uma lista com geometrias inválidas que causariam TopologyException
         List<Cadastro> invalidCadastros = new ArrayList<>();
+        
+        // Criar primeira propriedade com geometria inválida
+        CSVRecord mockRecord1 = mock(CSVRecord.class);
+        when(mockRecord1.get(Constants.ID_INDEX)).thenReturn("1"); // ID
+        when(mockRecord1.get(Constants.LENGTH_INDEX)).thenReturn("10.5"); // Comprimento
+        when(mockRecord1.get(Constants.AREA_INDEX)).thenReturn("100.0"); // Área
+        when(mockRecord1.get(Constants.SHAPE_INDEX)).thenReturn("MULTIPOLYGON (((0 0, 0 1, 1 1, 1 0, 0 0)))"); // Forma
+        when(mockRecord1.get(Constants.OWNER_INDEX)).thenReturn("1"); // Proprietário
+        when(mockRecord1.get(Constants.FREGUESIA_INDEX)).thenReturn("Santa Maria Maior"); // Freguesia
+        when(mockRecord1.get(Constants.CONCELHO_INDEX)).thenReturn("Lisboa"); // Concelho
+        when(mockRecord1.get(Constants.DISTRICT_INDEX)).thenReturn("Lisboa"); // Distrito
+
+        // Criar segunda propriedade com geometria auto-intersectante
+        CSVRecord mockRecord2 = mock(CSVRecord.class);
+        when(mockRecord2.get(Constants.ID_INDEX)).thenReturn("2"); // ID
+        when(mockRecord2.get(Constants.LENGTH_INDEX)).thenReturn("10.5"); // Comprimento
+        when(mockRecord2.get(Constants.AREA_INDEX)).thenReturn("100.0"); // Área
+        when(mockRecord2.get(Constants.SHAPE_INDEX)).thenReturn("MULTIPOLYGON (((0 0, 2 2, 0 2, 2 0, 0 0)))"); // Forma Auto-intersectante
+        when(mockRecord2.get(Constants.OWNER_INDEX)).thenReturn("2"); // Proprietário
+        when(mockRecord2.get(Constants.FREGUESIA_INDEX)).thenReturn("Santa Maria Maior"); // Freguesia
+        when(mockRecord2.get(Constants.CONCELHO_INDEX)).thenReturn("Lisboa"); // Concelho
+        when(mockRecord2.get(Constants.DISTRICT_INDEX)).thenReturn("Lisboa"); // Distrito
+
+        invalidCadastros.add(new Cadastro(mockRecord1));
+        invalidCadastros.add(new Cadastro(mockRecord2));
+
         assertThrows(IllegalStateException.class, () -> new PropertyGraph(invalidCadastros),
-                "Should throw IllegalStateException for invalid cadastros");
+                "Deve lançar IllegalStateException para cadastros inválidos");
     }
 
     /**
-     * Test calculateAverageArea - Cyclomatic Complexity: 4
+     * Testa calculateAverageArea - Complexidade Ciclomática: 4
      */
     @Test
     void calculateAverageArea1() {
         PropertyGraph graph = new PropertyGraph(testCadastros);
         assertThrows(IllegalArgumentException.class,
                 () -> graph.calculateAverageArea(null, null, null),
-                "Should throw IllegalArgumentException when no location parameters are provided");
+                "Deve lançar IllegalArgumentException quando nenhum parâmetro de localização é fornecido");
     }
 
     @Test
@@ -81,7 +126,7 @@ class PropertyGraphTest {
         PropertyGraph graph = new PropertyGraph(testCadastros);
         assertThrows(IllegalArgumentException.class,
                 () -> graph.calculateAverageArea("nonexistent", null, null),
-                "Should throw IllegalArgumentException when no properties match district filter");
+                "Deve lançar IllegalArgumentException quando nenhuma propriedade corresponde ao filtro de distrito");
     }
 
     @Test
@@ -89,7 +134,7 @@ class PropertyGraphTest {
         PropertyGraph graph = new PropertyGraph(testCadastros);
         assertThrows(IllegalArgumentException.class,
                 () -> graph.calculateAverageArea(null, "nonexistent", null),
-                "Should throw IllegalArgumentException when no properties match municipality filter");
+                "Deve lançar IllegalArgumentException quando nenhuma propriedade corresponde ao filtro de município");
     }
 
     @Test
@@ -97,17 +142,17 @@ class PropertyGraphTest {
         PropertyGraph graph = new PropertyGraph(testCadastros);
         assertThrows(IllegalArgumentException.class,
                 () -> graph.calculateAverageArea(null, null, "nonexistent"),
-                "Should throw IllegalArgumentException when no properties match county filter");
+                "Deve lançar IllegalArgumentException quando nenhuma propriedade corresponde ao filtro de concelho");
     }
 
     /**
-     * Test getAdjacentProperties - Cyclomatic Complexity: 2
+     * Testa getAdjacentProperties - Complexidade Ciclomática: 2
      */
     @Test
     void getAdjacentProperties1() {
         PropertyGraph graph = new PropertyGraph(testCadastros);
         Set<Cadastro> adjacent = graph.getAdjacentProperties(testCadastros.get(0));
-        assertNotNull(adjacent, "Should return set of adjacent properties");
+        assertNotNull(adjacent, "Deve retornar conjunto de propriedades adjacentes");
     }
 
     @Test
@@ -115,38 +160,38 @@ class PropertyGraphTest {
         PropertyGraph graph = new PropertyGraph(testCadastros);
         assertThrows(IllegalArgumentException.class,
                 () -> graph.getAdjacentProperties(null),
-                "Should throw IllegalArgumentException for null property");
+                "Deve lançar IllegalArgumentException para propriedade nula");
     }
 
     /**
-     * Test getNumberOfProperties - Cyclomatic Complexity: 1
+     * Testa getNumberOfProperties - Complexidade Ciclomática: 1
      */
     @Test
     void getNumberOfProperties() {
         PropertyGraph graph = new PropertyGraph(testCadastros);
-        assertTrue(graph.getNumberOfProperties() >= 0, "Should return non-negative number of properties");
+        assertTrue(graph.getNumberOfProperties() >= 0, "Deve retornar número não negativo de propriedades");
     }
 
     /**
-     * Test getNumberOfAdjacenciesBetweenProperties - Cyclomatic Complexity: 1
+     * Testa getNumberOfAdjacenciesBetweenProperties - Complexidade Ciclomática: 1
      */
     @Test
     void getNumberOfAdjacenciesBetweenProperties() {
         PropertyGraph graph = new PropertyGraph(testCadastros);
         assertTrue(graph.getNumberOfAdjacenciesBetweenProperties() >= 0,
-                "Should return non-negative number of adjacencies");
+                "Deve retornar número não negativo de adjacências");
     }
 
     /**
-     * Test toString - Cyclomatic Complexity: 1
+     * Testa toString - Complexidade Ciclomática: 1
      */
     @Test
     void testToString() {
         PropertyGraph graph = new PropertyGraph(testCadastros);
         String str = graph.toString();
         assertTrue(str.startsWith("PropertyGraph{properties=["),
-                "String representation should start with 'PropertyGraph{properties=['");
+                "Representação em string deve começar com 'PropertyGraph{properties=['");
         assertTrue(str.endsWith("], adjacencies=[]}"),
-                "String representation should end with '], adjacencies=[]}'");
+                "Representação em string deve terminar com '], adjacencies=[]}'");
     }
 }
