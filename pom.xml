@@ -46,7 +46,6 @@
             <version>5.2.0</version>
             <scope>test</scope>
         </dependency>
-
         <!-- Byte Buddy -->
         <dependency>
             <groupId>net.bytebuddy</groupId>
