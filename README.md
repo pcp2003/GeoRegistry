@@ -13,6 +13,12 @@ Projeto de Engenharia de Software 2024/25
 | João Antunes     | 111139              | deavenZ         |
 | Rafael Lopes     | 111110              | tranquilizante  |
 
+## Versão
+
+A versão atual da aplicação está marcada com a tag `GestaodoTerritorio-1.0`.
+
+Ver: [Releases](https://github.com/GuilhermePenedo/ES-2024_25-2Sem-Quarta-LEI-G/releases/tag/GestaodoTerritorio-1.0)
+
 ## Descrição do Projeto
 O projeto consiste num sistema de gestão de cadastros imobiliários que processa dados geográficos a partir de ficheiros CSV. O sistema utiliza tecnologias modernas para processamento de dados geoespaciais e logging robusto, com uma interface gráfica para a visualização dos dados.
 

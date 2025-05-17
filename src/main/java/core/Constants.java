@@ -11,6 +11,7 @@ import java.util.Map;
  * @author Lei-G
  * @version 1.0
  */
+
 public class Constants {
     /**
      * Construtor privado para impedir a instanciação.
