@@ -1,5 +1,6 @@
 package ui;
 import model.Cadastro;
+import model.Location;
 import service.OwnerGraph;
 import service.PropertyGraph;
 import core.Constants;
@@ -251,15 +252,15 @@ public class Gui extends JFrame {
             Constants.SORT_BY_LENGTH, 
             Constants.SORT_BY_AREA, 
             Constants.SORT_BY_OWNER,
-            Constants.SORT_BY_DISTRICT,
-            Constants.SORT_BY_MUNICIPALITY,
-            Constants.SORT_BY_COUNTY
+            Constants.SORT_BY_FREGUESIA,
+            Constants.SORT_BY_CONCELHO,
+            Constants.SORT_BY_DISTRICT
         };
 
         for (int i = 0; i < Constants.SORT_BUTTON_LABELS.length; i++) {
             JButton button = new JButton(Constants.SORT_BUTTON_LABELS[i]);
             final int sortType = sortTypes[i];
-            button.addActionListener(evento -> sortResults(evento, sortType));
+            button.addActionListener(e -> sortResults(e, sortType));
             sortButtons.add(button);
         }
     }
@@ -372,22 +373,22 @@ public class Gui extends JFrame {
 
             JButton cadastroButton = new JButton(Constants.SHOW_SHAPE_BUTTON_TEXT);
             styleButton(cadastroButton);
-            cadastroButton.addActionListener(_ -> showShapeWindow(cadastro));
+            cadastroButton.addActionListener(e -> showShapeWindow(cadastro));
             cadastroButton.setPreferredSize(new Dimension(130, 34));
 
             JPanel cardPanel = new JPanel(new BorderLayout(Constants.CARD_PADDING, Constants.CARD_PADDING));
             cardPanel.setBackground(Color.decode(Constants.CARD_BACKGROUND));
-            
+
             // Borda mais sutil com sombra
             cardPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(105, 103, 115, 40), 1),
                 BorderFactory.createEmptyBorder(12, 15, 12, 15)
             ));
 
-            List<String> location = cadastro.getLocation();
-            String district = location.size() > 0 ? location.get(0) : "N/A";
-            String municipality = location.size() > 1 ? location.get(1) : "N/A";
-            String county = location.size() > 2 ? location.get(2) : "N/A";
+            Location location = cadastro.getLocation();
+            String district = location.freguesia();
+            String municipality = location.concelho();
+            String county = location.distrito();
 
             // Criar um painel para as informações com GridBagLayout
             JPanel infoPanel = new JPanel(new GridBagLayout());
@@ -418,7 +419,7 @@ public class Gui extends JFrame {
             // Área
             gbc.gridx = 2;
             gbc.weightx = 0.25;
-            JLabel areaLabel = new JLabel("Área: " + cadastro.getArea());
+            JLabel areaLabel = new JLabel(String.format("Área: %.2f",cadastro.getArea()));
             areaLabel.setFont(areaLabel.getFont().deriveFont(12f));
             areaLabel.setForeground(Color.decode(Constants.TEXT_COLOR));
             infoPanel.add(areaLabel, gbc);
@@ -426,7 +427,7 @@ public class Gui extends JFrame {
             // Comprimento
             gbc.gridx = 3;
             gbc.weightx = 0.25;
-            JLabel lengthLabel = new JLabel("Comprimento: " + cadastro.getLength());
+            JLabel lengthLabel = new JLabel(String.format("Comprimento: %.2f",cadastro.getLength()));
             lengthLabel.setFont(lengthLabel.getFont().deriveFont(12f));
             lengthLabel.setForeground(Color.decode(Constants.TEXT_COLOR));
             infoPanel.add(lengthLabel, gbc);
@@ -440,6 +441,25 @@ public class Gui extends JFrame {
             locationLabel.setFont(locationLabel.getFont().deriveFont(12f));
             locationLabel.setForeground(Color.decode(Constants.LABEL_COLOR));
             infoPanel.add(locationLabel, gbc);
+
+            // Preço estimado
+            gbc.gridy = 2;
+            gbc.gridx = 0;
+            gbc.gridwidth = 2;
+            gbc.weightx = 0.5;
+            JLabel priceLabel = new JLabel(String.format("Preço estimado: %.2f€", cadastro.getPrice()));
+            priceLabel.setFont(priceLabel.getFont().deriveFont(12f));
+            priceLabel.setForeground(Color.decode(Constants.TEXT_COLOR));
+            infoPanel.add(priceLabel, gbc);
+
+            // Propriedades próximas
+            gbc.gridx = 2;
+            gbc.gridwidth = 2;
+            gbc.weightx = 0.5;
+            JLabel nearLabel = new JLabel("Propriedades próximas: " + cadastro.getPropretiesNear());
+            nearLabel.setFont(nearLabel.getFont().deriveFont(12f));
+            nearLabel.setForeground(Color.decode(Constants.TEXT_COLOR));
+            infoPanel.add(nearLabel, gbc);
 
             // Painel para o botão
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
@@ -477,7 +497,7 @@ public class Gui extends JFrame {
             shapeFrame.setSize(Constants.SHAPE_WINDOW_SIZE, Constants.SHAPE_WINDOW_SIZE);
             shapeFrame.setLocationRelativeTo(this);
 
-            ShapePanel shapePanel = new ShapePanel(cadastro.getShape());
+            ShapePanel shapePanel = new ShapePanel(cadastro.getShape(), cadastro.getId());
             shapeFrame.add(shapePanel);
 
             shapeFrame.setVisible(true);
@@ -707,7 +727,7 @@ public class Gui extends JFrame {
 
             JButton calculateButton = new JButton(Constants.AVERAGE_PROPERTY_AREA_BUTTON_TEXT);
             styleButton(calculateButton);
-            calculateButton.addActionListener(_ -> {
+            calculateButton.addActionListener(event -> {
                 try {
                     String district = districtField.getText().isEmpty() ? null : districtField.getText();
                     String municipality = municipalityField.getText().isEmpty() ? null : municipalityField.getText();
@@ -777,7 +797,7 @@ public class Gui extends JFrame {
 
             JButton calculateButton = new JButton(Constants.AVERAGE_OWNER_AREA_BUTTON_TEXT);
             styleButton(calculateButton);
-            calculateButton.addActionListener(_ -> {
+            calculateButton.addActionListener(event -> {
                 try {
                     String district = districtField.getText().isEmpty() ? null : districtField.getText();
                     String municipality = municipalityField.getText().isEmpty() ? null : municipalityField.getText();
@@ -822,7 +842,10 @@ public class Gui extends JFrame {
                 throw new IllegalStateException(Constants.EMPTY_LIST_ERROR + "gerar sugestões de troca");
             }
 
-            // Criar a janela de carregamento
+            // Resetar flag
+            exchangeLoadingCancelled = false;
+
+            // Janela de carregamento
             JFrame loadingFrame = new JFrame(Constants.PROPERTY_EXCHANGE_WINDOW_TITLE);
             loadingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             loadingFrame.setSize(300, 100);
@@ -836,32 +859,34 @@ public class Gui extends JFrame {
             loadingFrame.add(loadingPanel);
             loadingFrame.setVisible(true);
 
-            // Criar o frame das sugestões fora do worker
-            JFrame exchangeFrame = new JFrame(Constants.PROPERTY_EXCHANGE_WINDOW_TITLE);
-            exchangeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            exchangeFrame.setSize(800, 600);
-            exchangeFrame.setLocationRelativeTo(Gui.this);
-
             // Criar o painel em uma thread separada
             exchangeWorker = new SwingWorker<PropertyExchangePanel, Void>() {
                 @Override
                 protected PropertyExchangePanel doInBackground() {
-                    return new PropertyExchangePanel(cadastros, exchangeFrame);
+                    return new PropertyExchangePanel(cadastros, Gui.this);
                 }
 
                 @Override
                 protected void done() {
-                    if (isCancelled() || exchangeLoadingCancelled) return; // Checa a flag!
+                    if (isCancelled() || exchangeLoadingCancelled) return;
+
                     try {
-                        loadingFrame.dispose();
                         PropertyExchangePanel exchangePanel = get();
+
+                        JFrame exchangeFrame = new JFrame(Constants.PROPERTY_EXCHANGE_WINDOW_TITLE);
+                        exchangeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        exchangeFrame.setSize(800, 600);
+                        exchangeFrame.setLocationRelativeTo(Gui.this);
                         exchangeFrame.add(exchangePanel);
                         exchangeFrame.setVisible(true);
+
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(Gui.this,
                                 "Erro ao abrir painel de sugestões: " + ex.getMessage(),
                                 Constants.ERROR_TITLE,
                                 JOptionPane.ERROR_MESSAGE);
+                    } finally {
+                        loadingFrame.dispose();
                     }
                 }
             };
@@ -874,6 +899,7 @@ public class Gui extends JFrame {
                         exchangeWorker.cancel(true);
                     }
                 }
+
                 @Override
                 public void windowClosed(java.awt.event.WindowEvent e) {
                     exchangeLoadingCancelled = true;
@@ -884,6 +910,7 @@ public class Gui extends JFrame {
             });
 
             exchangeWorker.execute();
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "Erro ao abrir painel de sugestões: " + ex.getMessage(),
@@ -891,4 +918,5 @@ public class Gui extends JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
+
 }

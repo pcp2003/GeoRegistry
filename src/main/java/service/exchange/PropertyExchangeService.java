@@ -7,10 +7,10 @@ import service.PropertyGraph;
 import java.util.*;
 
 /**
- * Serviço responsável por gerar sugestões de troca de propriedades entre proprietários,
- * considerando a maximização da área média e a viabilidade das trocas.
+ * Serviço para gerar e gerir sugestões de troca de propriedades.
+ * Analisa propriedades e proprietários para encontrar trocas potencialmente benéficas.
  * 
- * @author [Lei-G]
+ * @author Lei-G
  * @version 1.0
  */
 public class PropertyExchangeService {
@@ -18,10 +18,11 @@ public class PropertyExchangeService {
     private final List<Cadastro> cadastros;
 
     /**
-     * Constrói o serviço de troca de propriedades.
+     * Cria um novo serviço de troca de propriedades.
      * 
-     * @param propertyGraph Grafo de propriedades
-     * @param cadastros Lista de cadastros
+     * @param ownerGraph Grafo que representa as relações entre proprietários
+     * @param propertyGraph Grafo que representa as adjacências entre propriedades
+     * @param cadastros Lista de todas as propriedades no sistema
      */
     public PropertyExchangeService(OwnerGraph ownerGraph, PropertyGraph propertyGraph, List<Cadastro> cadastros) {
         this.propertyGraph = propertyGraph;
@@ -31,53 +32,47 @@ public class PropertyExchangeService {
     /**
      * Gera sugestões de troca de propriedades que maximizam a área média por proprietário.
      * 
-     * @param maxSuggestions Número máximo de sugestões a serem geradas
+     * @param proprietario Proprietario a quem sugerir troca
      * @return Lista de sugestões de troca ordenadas por viabilidade e melhoria na área média
      * @throws IllegalArgumentException se o número máximo de sugestões for menor ou igual a zero
      */
-    public List<PropertyExchange> generateExchangeSuggestions(int maxSuggestions) {
-        if (maxSuggestions <= 0) {
-            throw new IllegalArgumentException("O número máximo de sugestões deve ser maior que zero");
-        }
-
+    public List<PropertyExchange> generateExchangeSuggestions(int proprietario) {
         List<PropertyExchange> suggestions = new ArrayList<>();
         Map<Integer, List<Cadastro>> propertiesByOwner = groupPropertiesByOwner();
 
-        // Para cada par de proprietários diferentes
-        for (Map.Entry<Integer, List<Cadastro>> entry1 : propertiesByOwner.entrySet()) {
-            int owner1 = entry1.getKey();
-            List<Cadastro> properties1 = entry1.getValue();
+        List<Cadastro> propriedadesProprietario = propertiesByOwner.get(proprietario);
+        if (propriedadesProprietario == null || propriedadesProprietario.isEmpty()) {
+            return suggestions; // Nenhuma propriedade encontrada para esse proprietário
+        }
 
-            for (Map.Entry<Integer, List<Cadastro>> entry2 : propertiesByOwner.entrySet()) {
-                int owner2 = entry2.getKey();
-                if (owner1 >= owner2) continue; // Evita duplicados
 
-                List<Cadastro> properties2 = entry2.getValue();
+            for (Map.Entry<Integer, List<Cadastro>> entry : propertiesByOwner.entrySet()) {
+                if (proprietario >= entry.getKey()) continue; // Evita duplicados
+
+                List<Cadastro> propriedadesProposta = entry.getValue();
 
                 // Para cada par de propriedades dos dois proprietários
-                for (Cadastro prop1 : properties1) {
-                    for (Cadastro prop2 : properties2) {
-                        // Verifica se as propriedades são adjacentes
+                for (Cadastro prop1 : propriedadesProprietario) {
+                    for (Cadastro prop2 : propriedadesProposta) {
                         if (propertyGraph.getAdjacentProperties(prop1).contains(prop2)) {
-                            double areaDiff = Math.abs(prop1.getArea() - prop2.getArea());
+                            double priceDiff = Math.abs(prop1.getPrice() - prop2.getPrice());
                             double feasibilityScore = calculateFeasibilityScore(prop1, prop2);
-                            double avgAreaImprovement = calculateAverageAreaImprovement(prop1, prop2, properties1, properties2);
-                            suggestions.add(new PropertyExchange(prop1, prop2, areaDiff, feasibilityScore, avgAreaImprovement));
+                            double avgAreaImprovement = calculateAverageAreaImprovement(prop1, prop2, propriedadesProprietario, propriedadesProposta);
+                            suggestions.add(new PropertyExchange(prop1, prop2, priceDiff, feasibilityScore, avgAreaImprovement));
                         }
                     }
                 }
-            }
         }
 
         // Ordena as sugestões por viabilidade e melhoria na área média
         suggestions.sort((s1, s2) -> {
-            double score1 = s1.getFeasibilityScore() * s1.getAverageAreaImprovement();
-            double score2 = s2.getFeasibilityScore() * s2.getAverageAreaImprovement();
+            double score1 = s1.getFeasibilityScore() + s1.getAverageAreaImprovement();
+            double score2 = s2.getFeasibilityScore() + s2.getAverageAreaImprovement();
             return Double.compare(score2, score1); // Ordem decrescente
         });
 
         // Retorna apenas o número máximo de sugestões solicitado
-        return suggestions.subList(0, Math.min(maxSuggestions, suggestions.size()));
+        return suggestions;
     }
 
     /**
@@ -95,20 +90,22 @@ public class PropertyExchangeService {
 
     /**
      * Calcula a pontuação de viabilidade de uma troca (0-1).
-     * Quanto menor a diferença de área entre as propriedades, maior a viabilidade.
+     * Quanto menor a diferença de preço entre as propriedades, maior a viabilidade.
      * 
      * @param prop1 Primeira propriedade
      * @param prop2 Segunda propriedade
      * @return Pontuação de viabilidade (0-1)
      */
     private double calculateFeasibilityScore(Cadastro prop1, Cadastro prop2) {
-        double area1 = prop1.getArea();
-        double area2 = prop2.getArea();
-        double maxArea = Math.max(area1, area2);
-        double minArea = Math.min(area1, area2);
+        double areaPrice1 = prop1.getPrice();
+        double areaPrice2 = prop2.getPrice();
+
+
+        double maxPrice = Math.max(areaPrice1, areaPrice2);
+        double minPrice = Math.min(areaPrice1, areaPrice2);
         
-        // Quanto mais próxima a razão entre as áreas for de 1, maior a viabilidade
-        return minArea / maxArea;
+        // Quanto mais próxima a razão entre os preços for de 1, maior a viabilidade
+        return minPrice / maxPrice;
     }
 
     /**

@@ -12,10 +12,21 @@ import java.awt.*;
 import java.util.List;
 
 /**
- * Painel responsável por exibir sugestões de troca de propriedades.
+ * Painel responsável por gerenciar e exibir sugestões de troca de propriedades.
+ * Este painel permite visualizar e interagir com as sugestões de troca geradas
+ * pelo sistema.
  * 
- * @author [Lei-G]
+ * O painel inclui:
+ * - Lista de sugestões de troca
+ * - Botões para criar novas trocas
+ * - Botões para limpar a lista
+ * - Visualização detalhada de cada troca
+ * 
+ * @author LEI-G
  * @version 1.0
+ * @see javax.swing.JPanel
+ * @see model.Cadastro
+ * @see service.exchange.PropertyExchangeService
  */
 public class PropertyExchangePanel extends JPanel {
 
@@ -24,7 +35,7 @@ public class PropertyExchangePanel extends JPanel {
 
     private PropertyExchangeService exchangeService;
     private JTextArea suggestionsArea;
-    private JSpinner maxSuggestionsSpinner;
+    private JSpinner proprietarioSpinner;
 
     /**
      * Constrói o painel de sugestões de troca.
@@ -56,12 +67,12 @@ public class PropertyExchangePanel extends JPanel {
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controlPanel.setBackground(Color.decode(Constants.BACKGROUND_COLOR));
         
-        JLabel maxSuggestionsLabel = new JLabel("Número máximo de sugestões:");
-        this.maxSuggestionsSpinner = new JSpinner(new SpinnerNumberModel(10, 1, 100, 1));
+        JLabel maxSuggestionsLabel = new JLabel("Qual o proprietário:");
+        this.proprietarioSpinner = new JSpinner(new SpinnerNumberModel(10, 1, 100, 1));
         JButton generateButton = new JButton("Gerar Sugestões");
         
         controlPanel.add(maxSuggestionsLabel);
-        controlPanel.add(maxSuggestionsSpinner);
+        controlPanel.add(proprietarioSpinner);
         controlPanel.add(generateButton);
         
         // Área de texto para exibir as sugestões
@@ -94,10 +105,10 @@ public class PropertyExchangePanel extends JPanel {
                 return;
             }
 
-            int maxSuggestions = (Integer) maxSuggestionsSpinner.getValue();
+            int proprietario = (Integer) proprietarioSpinner.getValue();
 
             // Gerar as sugestões
-            List<PropertyExchange> suggestions = exchangeService.generateExchangeSuggestions(maxSuggestions);
+            List<PropertyExchange> suggestions = exchangeService.generateExchangeSuggestions(proprietario);
             
             // Exibir as sugestões
             StringBuilder sb = new StringBuilder();

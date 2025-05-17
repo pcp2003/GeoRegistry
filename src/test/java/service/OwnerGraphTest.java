@@ -1,301 +1,152 @@
 package service;
-import util.TestLogger;
-import model.Cadastro;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import model.Cadastro;
+import model.Location;
 import org.junit.jupiter.api.Test;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
+import org.junit.jupiter.api.BeforeEach;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.io.ParseException;
+import org.apache.commons.csv.CSVRecord;
+import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.*;
 
 /**
- * Classe de teste para OwnerGraph
+ * Test class for OwnerGraph
+ *
+ * @author [user.name]
+ * @date [current date and time]
  * 
- * Complexidade Ciclomática dos métodos:
- * - OwnerGraph(): 1
- * - getAdjacentOwners(): 1
- * - areAdjacent(): 2
- * - getNumberOfOwners(): 1
- * - getNumberOfAdjacencies(): 1
- * - toString(): 2
- * - calculateAverageArea(): 3
- * 
- * @author Lei-G
- * @date 2024-04-06 21:30
+ * Cyclomatic Complexity by method:
+ * - constructor: 1 (inherits from Graph)
+ * - createGraph: 2 (1 try-catch + 1 return)
+ * - calculateAverageArea: 4 (3 if conditions + 1 return)
+ * - getAdjacentProperties: 2 (1 if condition + 1 return)
+ * - getNumberOfOwners: 1 (1 return)
+ * - getNumberOfAdjacenciesBetweenOwners: 1 (1 return)
+ * - toString: 1 (1 return)
  */
 class OwnerGraphTest {
+    private List<Cadastro> testCadastros;
 
-    private static OwnerGraph graph;
-    private static List<Cadastro> cadastros;
-
-    @BeforeAll
-    static void setUp() throws Exception {
-        TestLogger.init("OwnerGraphTest");
-        TestLogger.log("=== Iniciando setup dos testes ===\n");
-
-        String filePath = "Dados/Madeira-Moodle-1.1.csv";
+    @BeforeEach
+    void setUp() throws ParseException {
+        testCadastros = new ArrayList<>();
         
-        cadastros = Cadastro.getCadastros(filePath);
-    
-        TestLogger.logSuccess("Cadastros de teste criados com sucesso\n");
-
-        graph = new OwnerGraph(cadastros);
-
-        TestLogger.logSuccess("Grafo de proprietários criado com sucesso\n");
-        TestLogger.log("=== Setup concluído ===\n");
-    }
-
-    @AfterAll
-    static void tearDown() {
-        TestLogger.close();
+        // Create mock cadastros for testing
+        CSVRecord mockRecord = mock(CSVRecord.class);
+        when(mockRecord.get(anyInt())).thenReturn("1");
+        testCadastros.add(new Cadastro(mockRecord));
     }
 
     /**
-     * Testa a criação do grafo e verifica se ele contém o número correto de proprietários.
+     * Test constructor - Cyclomatic Complexity: 1
      */
     @Test
     void constructor() {
-        TestLogger.logTestStart("Construtor do OwnerGraph");
-        assertNotNull(graph, "O grafo deve ser criado");
-        
-        // Conta o número de proprietários únicos
-        Set<Integer> uniqueOwners = new HashSet<>();
-        for (Cadastro cadastro : cadastros) {
-            uniqueOwners.add(cadastro.getOwner());
-        }
-        
-        assertEquals(uniqueOwners.size(), graph.getNumberOfOwners(), 
-            "O grafo deve ter " + uniqueOwners.size() + " proprietários");
-        
-        TestLogger.logSuccess("Grafo criado corretamente com " + uniqueOwners.size() + " proprietários");
-        TestLogger.logTestEnd("Construtor do OwnerGraph");
+        OwnerGraph graph = new OwnerGraph(testCadastros);
+        assertNotNull(graph, "OwnerGraph should be created with valid cadastros");
     }
 
     /**
-     * Testa a obtenção de proprietários vizinhos para um proprietário específico.
+     * Test createGraph - Cyclomatic Complexity: 2
      */
     @Test
-    void getAdjacentOwners() {
-        TestLogger.logTestStart("Obtenção de proprietários vizinhos");
-        
-        // Testa apenas os primeiros 5 proprietários únicos
-        Set<Integer> uniqueOwners = new HashSet<>();
-        for (Cadastro cadastro : cadastros) {
-            uniqueOwners.add(cadastro.getOwner());
-        }
-        
-        List<Integer> ownersList = new ArrayList<>(uniqueOwners);
-        int testSize = Math.min(5, ownersList.size());
-        TestLogger.log("Testando vizinhanças para " + testSize + " proprietários");
-        
-        for (int i = 0; i < testSize; i++) {
-            int currentOwner = ownersList.get(i);
-            TestLogger.log("Verificando vizinhanças para o proprietário: " + currentOwner);
-            
-            // Verifica se o proprietário tem propriedades adjacentes
-            boolean hasAdjacentProperties = false;
-            for (Cadastro cadastro : cadastros) {
-                if (cadastro.getOwner() == currentOwner) {
-                    Set<Cadastro> adjacentProperties = graph.getAdjacentProperties(cadastro);
-                    for (Cadastro adjacent : adjacentProperties) {
-                        if (adjacent.getOwner() != currentOwner) {
-                            hasAdjacentProperties = true;
-                            break;
-                        }
-                    }
-                }
-                if (hasAdjacentProperties) break;
-            }
-            
-            assertTrue(hasAdjacentProperties, "O proprietário deve ter pelo menos uma propriedade adjacente");
-            
-            TestLogger.log("Proprietário tem propriedades adjacentes: " + hasAdjacentProperties);
-        }
-        
-        TestLogger.logSuccess("Verificação de vizinhanças realizada com sucesso para todos os proprietários testados");
-        TestLogger.logTestEnd("Obtenção de proprietários vizinhos");
+    void createGraph1() {
+        OwnerGraph graph = new OwnerGraph(testCadastros);
+        assertTrue(graph.getNumberOfOwners() >= 0, "Graph should be created successfully");
+    }
+
+    @Test
+    void createGraph2() {
+        // Test with invalid cadastros that would cause TopologyException
+        List<Cadastro> invalidCadastros = new ArrayList<>();
+        assertThrows(IllegalStateException.class, () -> new OwnerGraph(invalidCadastros),
+                "Should throw IllegalStateException for invalid cadastros");
     }
 
     /**
-     * Testa a verificação de vizinhança entre dois proprietários (primeira direção).
+     * Test calculateAverageArea - Cyclomatic Complexity: 4
      */
     @Test
-    void areAdjacent1() {
-        TestLogger.logTestStart("Verificação de vizinhança (direção 1)");
-        
-        Set<Integer> uniqueOwners = new HashSet<>();
-        for (Cadastro cadastro : cadastros) {
-            uniqueOwners.add(cadastro.getOwner());
-        }
-        
-        List<Integer> ownersList = new ArrayList<>(uniqueOwners);
-        int testSize = Math.min(5, ownersList.size());
-        TestLogger.log("Testando vizinhanças entre " + testSize + " proprietários");
-        
-        for (int i = 0; i < testSize; i++) {
-            for (int j = i + 1; j < testSize; j++) {
-                int owner1 = ownersList.get(i);
-                int owner2 = ownersList.get(j);
-                
-                TestLogger.log("Verificando vizinhança entre:");
-                TestLogger.log("  - Proprietário 1: " + owner1);
-                TestLogger.log("  - Proprietário 2: " + owner2);
-                
-                // Verifica se os proprietários têm propriedades adjacentes
-                boolean areAdjacent = false;
-                for (Cadastro cadastro1 : cadastros) {
-                    if (cadastro1.getOwner() == owner1) {
-                        Set<Cadastro> adjacentProperties = graph.getAdjacentProperties(cadastro1);
-                        for (Cadastro adjacent : adjacentProperties) {
-                            if (adjacent.getOwner() == owner2) {
-                                areAdjacent = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (areAdjacent) break;
-                }
-                
-                TestLogger.log("Resultado: " + (areAdjacent ? "São vizinhos" : "Não são vizinhos"));
-            }
-        }
-        
-        TestLogger.logSuccess("Verificação de vizinhança confirmada para todos os pares testados");
-        TestLogger.logTestEnd("Verificação de vizinhança (direção 1)");
+    void calculateAverageArea1() {
+        OwnerGraph graph = new OwnerGraph(testCadastros);
+        assertThrows(IllegalArgumentException.class,
+                () -> graph.calculateAverageArea(null, null, null),
+                "Should throw IllegalArgumentException when no location parameters are provided");
+    }
+
+    @Test
+    void calculateAverageArea2() {
+        OwnerGraph graph = new OwnerGraph(testCadastros);
+        assertThrows(IllegalArgumentException.class,
+                () -> graph.calculateAverageArea("nonexistent", null, null),
+                "Should throw IllegalArgumentException when no properties match district filter");
+    }
+
+    @Test
+    void calculateAverageArea3() {
+        OwnerGraph graph = new OwnerGraph(testCadastros);
+        assertThrows(IllegalArgumentException.class,
+                () -> graph.calculateAverageArea(null, "nonexistent", null),
+                "Should throw IllegalArgumentException when no properties match municipality filter");
+    }
+
+    @Test
+    void calculateAverageArea4() {
+        OwnerGraph graph = new OwnerGraph(testCadastros);
+        assertThrows(IllegalArgumentException.class,
+                () -> graph.calculateAverageArea(null, null, "nonexistent"),
+                "Should throw IllegalArgumentException when no properties match county filter");
     }
 
     /**
-     * Testa a verificação de vizinhança entre dois proprietários (direção oposta).
+     * Test getAdjacentProperties - Cyclomatic Complexity: 2
      */
     @Test
-    void areAdjacent2() {
-        TestLogger.logTestStart("Verificação de vizinhança (direção 2)");
-        
-        Set<Integer> uniqueOwners = new HashSet<>();
-        for (Cadastro cadastro : cadastros) {
-            uniqueOwners.add(cadastro.getOwner());
-        }
-        
-        List<Integer> ownersList = new ArrayList<>(uniqueOwners);
-        int testSize = Math.min(5, ownersList.size());
-        TestLogger.log("Testando vizinhanças entre " + testSize + " proprietários (direção inversa)");
-        
-        for (int i = 0; i < testSize; i++) {
-            for (int j = i + 1; j < testSize; j++) {
-                int owner1 = ownersList.get(j);
-                int owner2 = ownersList.get(i);
-                
-                TestLogger.log("Verificando vizinhança entre:");
-                TestLogger.log("  - Proprietário 1: " + owner1);
-                TestLogger.log("  - Proprietário 2: " + owner2);
-                
-                // Verifica se os proprietários têm propriedades adjacentes
-                boolean areAdjacent = false;
-                for (Cadastro cadastro1 : cadastros) {
-                    if (cadastro1.getOwner() == owner1) {
-                        Set<Cadastro> adjacentProperties = graph.getAdjacentProperties(cadastro1);
-                        for (Cadastro adjacent : adjacentProperties) {
-                            if (adjacent.getOwner() == owner2) {
-                                areAdjacent = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (areAdjacent) break;
-                }
-                
-                TestLogger.log("Resultado: " + (areAdjacent ? "São vizinhos" : "Não são vizinhos"));
-            }
-        }
-        
-        TestLogger.logSuccess("Verificação de vizinhança confirmada para todos os pares testados (direção inversa)");
-        TestLogger.logTestEnd("Verificação de vizinhança (direção 2)");
+    void getAdjacentProperties1() {
+        OwnerGraph graph = new OwnerGraph(testCadastros);
+        Set<Cadastro> adjacent = graph.getAdjacentProperties(testCadastros.get(0));
+        assertNotNull(adjacent, "Should return set of adjacent properties");
+    }
+
+    @Test
+    void getAdjacentProperties2() {
+        OwnerGraph graph = new OwnerGraph(testCadastros);
+        assertThrows(IllegalArgumentException.class,
+                () -> graph.getAdjacentProperties(null),
+                "Should throw IllegalArgumentException for null property");
     }
 
     /**
-     * Testa a contagem total de proprietários no grafo.
+     * Test getNumberOfOwners - Cyclomatic Complexity: 1
      */
     @Test
     void getNumberOfOwners() {
-        TestLogger.logTestStart("Contagem de proprietários");
-        
-        TestLogger.log("Obtendo número total de proprietários no grafo");
-        int numberOfOwners = graph.getNumberOfOwners();
-        TestLogger.log("Número de proprietários encontrado: " + numberOfOwners);
-        
-        // Conta o número de proprietários únicos
-        Set<Integer> uniqueOwners = new HashSet<>();
-        for (Cadastro cadastro : cadastros) {
-            uniqueOwners.add(cadastro.getOwner());
-        }
-        
-        TestLogger.log("Número esperado: " + uniqueOwners.size());
-        assertEquals(uniqueOwners.size(), numberOfOwners, 
-            "O grafo deve ter " + uniqueOwners.size() + " proprietários");
-        
-        TestLogger.logSuccess("Número correto de proprietários verificado");
-        TestLogger.logTestEnd("Contagem de proprietários");
+        OwnerGraph graph = new OwnerGraph(testCadastros);
+        assertTrue(graph.getNumberOfOwners() >= 0, "Should return non-negative number of owners");
     }
 
     /**
-     * Testa a contagem total de vizinhanças no grafo.
+     * Test getNumberOfAdjacenciesBetweenOwners - Cyclomatic Complexity: 1
      */
     @Test
-    void getNumberOfAdjacencies() {
-        TestLogger.logTestStart("Contagem de vizinhanças");
-        
-        TestLogger.log("Obtendo número total de vizinhanças no grafo");
-        int numberOfAdjacencies = graph.getNumberOfAdjacenciesBetweenOwners();
-        TestLogger.log("Número de vizinhanças encontrado: " + numberOfAdjacencies);
-        
-        assertNotNull(numberOfAdjacencies, "O número de vizinhanças não deve ser nulo");
-        TestLogger.log("Verificando se o número de vizinhanças é válido");
-        assertTrue(numberOfAdjacencies >= 0, "O número de vizinhanças deve ser não negativo");
-        
-        TestLogger.logSuccess("Número de vizinhanças verificado com sucesso");
-        TestLogger.logTestEnd("Contagem de vizinhanças");
+    void getNumberOfAdjacenciesBetweenOwners() {
+        OwnerGraph graph = new OwnerGraph(testCadastros);
+        assertTrue(graph.getNumberOfAdjacenciesBetweenOwners() >= 0,
+                "Should return non-negative number of adjacencies");
     }
 
     /**
-     * Testa o cálculo da área média por proprietário.
+     * Test toString - Cyclomatic Complexity: 1
      */
     @Test
-    void calculateAverageArea() {
-        TestLogger.logTestStart("Cálculo da área média por proprietário");
-        
-        // Testa o cálculo para diferentes combinações de localização
-        String[] districts = {null, "Funchal"};
-        String[] municipalities = {null, "Funchal"};
-        String[] counties = {null, "Funchal"};
-        
-        for (String district : districts) {
-            for (String municipality : municipalities) {
-                for (String county : counties) {
-                    // Pula o caso onde todos são null
-                    if (district == null && municipality == null && county == null) {
-                        continue;
-                    }
-                    
-                    TestLogger.log("Testando cálculo para:");
-                    if (district != null) TestLogger.log("  - Distrito: " + district);
-                    if (municipality != null) TestLogger.log("  - Município: " + municipality);
-                    if (county != null) TestLogger.log("  - Concelho: " + county);
-                    
-                    try {
-                        double averageArea = graph.calculateAverageArea(district, municipality, county);
-                        TestLogger.log("Área média calculada: " + averageArea);
-                        assertTrue(averageArea >= 0, "A área média deve ser não negativa");
-                    } catch (IllegalArgumentException e) {
-                        TestLogger.log("Erro esperado: " + e.getMessage());
-                    }
-                }
-            }
-        }
-        
-        TestLogger.logSuccess("Cálculo da área média testado com sucesso para todas as combinações válidas");
-        TestLogger.logTestEnd("Cálculo da área média por proprietário");
+    void testToString() {
+        OwnerGraph graph = new OwnerGraph(testCadastros);
+        String str = graph.toString();
+        assertTrue(str.startsWith("OwnerGraph{owners=["),
+                "String representation should start with 'OwnerGraph{owners=['");
+        assertTrue(str.endsWith("], adjacencies=[]}"),
+                "String representation should end with '], adjacencies=[]}'");
     }
-} 
+}

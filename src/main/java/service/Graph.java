@@ -2,27 +2,31 @@ package service;
 
 import model.Cadastro;
 import core.Constants;
+import model.Location;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.TopologyException;
 
 import java.util.*;
 
 /**
- * Classe base que representa um grafo genérico, contendo todas as funcionalidades
- * comuns entre os diferentes tipos de grafos no sistema de cadastro.
+ * Classe base para grafos de gestão de propriedades.
+ * Implementa funcionalidades comuns para diferentes tipos de grafos no sistema.
  * 
- * @author [Lei-G]
+ * @author Lei-G
  * @version 1.0
  */
 public class Graph {
+    /** Lista de todas as propriedades no grafo */
     protected final List<Cadastro> cadastros;
+    
+    /** Mapa que armazena as relações de adjacência entre propriedades */
     protected final Map<Cadastro, Set<Cadastro>> propertyAdjacencyList;
 
     /**
-     * Construtor da classe base.
+     * Cria um grafo a partir de uma lista de propriedades.
      * 
-     * @param cadastros Lista de cadastros para criar o grafo
-     * @throws IllegalArgumentException se a lista de cadastros for nula ou vazia
+     * @param cadastros Lista de propriedades para construir o grafo
+     * @throws IllegalArgumentException if list is null or empty
      */
     public Graph(List<Cadastro> cadastros) {
         if (cadastros == null) {
@@ -40,13 +44,12 @@ public class Graph {
     }
 
     /**
-     * Adiciona uma adjacência entre dois elementos no grafo.
+     * Adds an adjacency between two elements.
      * 
-     * @param <T> Tipo dos elementos (Integer para proprietários, Cadastro para propriedades)
-     * @param element1 Primeiro elemento
-     * @param element2 Segundo elemento
-     * @param adjacencyMap Mapa de adjacência a ser utilizado
-     * @throws IllegalArgumentException se algum dos elementos for inválido
+     * @param <T> Element type (Integer for owners, Cadastro for properties)
+     * @param element1 First element
+     * @param element2 Second element
+     * @param adjacencyMap Adjacency map to use
      */
     public static <T> void addAdjacency(T element1, T element2, Map<T, Set<T>> adjacencyMap) {
         if (element1 == null || element2 == null) {
@@ -66,13 +69,11 @@ public class Graph {
     }
 
     /**
-     * Verifica se duas propriedades são fisicamente adjacentes.
+     * Checks if two properties are physically adjacent.
      * 
-     * @param prop1 Primeira propriedade
-     * @param prop2 Segunda propriedade
-     * @return true se as propriedades são adjacentes, false caso contrário
-     * @throws IllegalArgumentException se alguma das propriedades for nula
-     * @throws TopologyException se ocorrer um erro durante a análise topológica
+     * @param prop1 First property
+     * @param prop2 Second property
+     * @return true if properties are adjacent
      */
     public static boolean arePropertiesPhysicallyAdjacent(Cadastro prop1, Cadastro prop2) {
         if (prop1 == null || prop2 == null) {
@@ -124,12 +125,12 @@ public class Graph {
     public static List<Cadastro> filterCadastrosByLocation(List<Cadastro> cadastros, String district, String municipality, String county) {
         return cadastros.stream()
             .filter(cadastro -> {
-                List<String> locations = cadastro.getLocation();
-                if (locations.size() < 3) return false;
+                Location location = cadastro.getLocation();
+                if (location == null) return false;
                 
-                boolean matchesDistrict = district == null || locations.get(0).equals(district);
-                boolean matchesMunicipality = municipality == null || locations.get(1).equals(municipality);
-                boolean matchesCounty = county == null || locations.get(2).equals(county);
+                boolean matchesDistrict = district == null || location.freguesia().equals(district);
+                boolean matchesMunicipality = municipality == null || location.concelho().equals(municipality);
+                boolean matchesCounty = county == null || location.distrito().equals(county);
                 
                 return matchesDistrict && matchesMunicipality && matchesCounty;
             })
@@ -137,13 +138,12 @@ public class Graph {
     }
 
     /**
-     * Retorna o conjunto de elementos adjacentes a um elemento específico.
+     * Returns adjacent elements for a given element.
      * 
-     * @param <T> Tipo dos elementos
-     * @param element O elemento cujas adjacências serão retornadas
-     * @param adjacencyMap Mapa de adjacência a ser utilizado
-     * @return Conjunto de elementos adjacentes
-     * @throws IllegalArgumentException se o elemento for nulo
+     * @param <T> Element type
+     * @param element Target element
+     * @param adjacencyMap Adjacency map to use
+     * @return Set of adjacent elements
      */
     public static <T> Set<T> getAdjacent(T element, Map<T, Set<T>> adjacencyMap) {
         if (element == null) {
@@ -154,27 +154,27 @@ public class Graph {
     }
 
     /**
-     * Retorna o número total de propriedades no grafo.
+     * Returns total number of properties.
      * 
-     * @return Número de propriedades
+     * @return Number of properties
      */
     public int getNumberOfProperties() {
         return cadastros.size();
     }
 
     /**
-     * Retorna a lista de todas as propriedades no grafo.
+     * Returns list of all properties.
      * 
-     * @return Lista de propriedades
+     * @return List of properties
      */
     public List<Cadastro> getProperties() {
         return cadastros;
     }
      
     /**
-     * Retorna a lista de todos os cadastros usados para criar o grafo.
+     * Returns list of all cadastros.
      * 
-     * @return Lista de cadastros
+     * @return List of cadastros
      */
     public List<Cadastro> getCadastros() {
         return cadastros;

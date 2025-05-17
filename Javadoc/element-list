@@ -1,3 +1,5 @@
-cadastro.graph
-cadastro.gui
-cadastro.importer
+core
+model
+service
+service.exchange
+ui

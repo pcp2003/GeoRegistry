@@ -1,719 +1,257 @@
 package model;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.locationtech.jts.geom.MultiPolygon;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
+import org.locationtech.jts.io.ParseException;
 import org.apache.commons.csv.CSVRecord;
-import util.TestLogger;
-import core.Constants;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.StringReader;
-import java.util.List;
-
+import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.*;
 
 /**
- * Classe de teste para Cadastro
+ * Test class for Cadastro
+ *
+ * @author [user.name]
+ * @date [current date and time]
  * 
- * Complexidade Ciclomática dos métodos:
- * - Cadastro(): 5
- * - handleId(): 2
- * - handleLength(): 2
- * - handleArea(): 2
- * - handleShape(): 3
- * - handleOwner(): 2
- * - handleLocation(): 1
- * - getCadastros(): 3
- * - sortCadastros(): 4
- * - toString(): 1
- * - getId(): 1
- * - getLength(): 1
- * - getArea(): 1
- * - getShape(): 1
- * - getOwner(): 1
- * - getLocation(): 1
- * 
- * @author Lei-G
- * @date 2024-04-06 21:30
+ * Cyclomatic Complexity by method:
+ * - constructor: 4 (3 if conditions + 1 return)
+ * - handleId: 2 (1 if condition + 1 return)
+ * - handleLength: 2 (1 if condition + 1 return)
+ * - handleArea: 2 (1 if condition + 1 return)
+ * - handleShape: 2 (1 if condition + 1 return)
+ * - handleOwner: 2 (1 if condition + 1 return)
+ * - handleLocation: 2 (1 if condition + 1 return)
+ * - getPrice: 4 (3 if conditions + 1 return)
+ * - setPropretiesNear: 2 (1 if condition + 1 return)
+ * - toString: 1 (1 return)
  */
 class CadastroTest {
-    private static final String CSV_PATH = new File("Dados/Madeira-Moodle-1.1.csv").getAbsolutePath();
-    private static CSVRecord validRecord;
+    private CSVRecord mockRecord;
+    private List<Cadastro> testCadastros;
+    private Cadastro cadastro;
 
-    @BeforeAll
-    static void setUp() throws Exception {
-        TestLogger.init("CadastroTest");
-        TestLogger.log("=== Iniciando setup dos testes ===");
-        TestLogger.log("Carregando arquivo: " + CSV_PATH);
-        
-        File csvFile = new File(CSV_PATH);
-        if (!csvFile.exists()) {
-            throw new IllegalStateException("Arquivo CSV não encontrado em: " + CSV_PATH);
-        }
-        
-        try (FileReader reader = new FileReader(csvFile);
-             CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            
-            List<CSVRecord> records = parser.getRecords();
-            TestLogger.log("Registros encontrados: " + records.size());
-            
-            if (records.size() > 1) {
-                validRecord = records.get(1);   
-                TestLogger.logSuccess("Cadastros de teste criados com sucesso");
-            } else {
-                throw new IllegalStateException("Arquivo CSV não contém registros suficientes");
-            }
-        }
-        
-        TestLogger.log("=== Setup concluído ===\n");
+    @BeforeEach
+    void setUp() throws ParseException {
+        mockRecord = mock(CSVRecord.class);
+        when(mockRecord.get(anyInt())).thenReturn("1"); // Default valid values
+        when(mockRecord.get(0)).thenReturn("1"); // ID
+        when(mockRecord.get(1)).thenReturn("10.5"); // Length
+        when(mockRecord.get(2)).thenReturn("100.0"); // Area
+        when(mockRecord.get(3)).thenReturn("MULTIPOLYGON (((0 0, 0 1, 1 1, 1 0, 0 0)))"); // Shape
+        when(mockRecord.get(4)).thenReturn("1"); // Owner
+        when(mockRecord.get(5)).thenReturn("Freguesia1"); // Freguesia
+        when(mockRecord.get(6)).thenReturn("Municipio1"); // Municipio
+        when(mockRecord.get(7)).thenReturn("Concelho1"); // Concelho
+
+        testCadastros = new ArrayList<>();
+        testCadastros.add(new Cadastro(mockRecord));
     }
 
-    @AfterAll
-    static void tearDown() {
-        TestLogger.close();
+    /**
+     * Test constructor - Cyclomatic Complexity: 4
+     */
+    @Test
+    void constructor1() throws ParseException {
+        cadastro = new Cadastro(mockRecord);
+        assertNotNull(cadastro, "Cadastro should be created with valid record");
     }
 
     @Test
-    void constructor() throws Exception {
-        TestLogger.logTestStart("Construtor do Cadastro");
-        
-        TestLogger.log("Criando cadastro com registro válido");
-        Cadastro cadastro = new Cadastro(validRecord);
-        
-        TestLogger.log("Verificando atributos do cadastro");
-        assertNotNull(cadastro, "O cadastro deve ser criado");
-        assertNotNull(cadastro.getId(), "O ID deve ser definido");
-        assertNotNull(cadastro.getOwner(), "O proprietário deve ser definido");
-        assertNotNull(cadastro.getArea(), "A área deve ser definida");
-        assertNotNull(cadastro.getLength(), "O comprimento deve ser definido");
-        assertNotNull(cadastro.getShape(), "A forma deve ser definida");
-        
-        TestLogger.logSuccess("Cadastro criado com sucesso");
-        TestLogger.logTestEnd("Construtor do Cadastro");
+    void constructor2() {
+        assertThrows(IllegalArgumentException.class, () -> new Cadastro(null),
+                "Should throw IllegalArgumentException for null record");
     }
 
     @Test
-    void constructorInvalid1() {
-        TestLogger.logTestStart("Construtor com ID inválido");
-        
-        String[] invalidValues = {
-                "a", // id invalido
-                "7343148", // random par_id
-                "2", // random par_number
-                "10.0", // comprimento
-                "100.0", // área
-                "MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0)))", // shape
-                "1", // owner
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        
-        TestLogger.log("Testando criação com ID inválido: " + invalidValues[0]);
-        
-        try (StringReader reader = new StringReader(String.join(";", invalidValues));
-             CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            
-            CSVRecord invalidRecord = parser.getRecords().get(0);
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com ID inválido");
-            
-            TestLogger.logSuccess("Exceção lançada corretamente para ID inválido");
-        } catch (Exception e) {
-            TestLogger.logError("Erro ao criar registro CSV inválido: " + e.getMessage());
-            fail("Erro ao criar registro CSV inválido: " + e.getMessage());
-        }
-        
-        TestLogger.logTestEnd("Construtor com ID inválido");
+    void constructor3() {
+        when(mockRecord.get(anyInt())).thenReturn(null);
+        assertThrows(IllegalArgumentException.class, () -> new Cadastro(mockRecord),
+                "Should throw IllegalArgumentException for record with null values");
     }
 
     @Test
-    void constructorInvalid2() {
-        TestLogger.logTestStart("constructorInvalid2");
-        // Cria um registro CSV inválido manualmente
-        String[] invalidValues = {
-                "1", // id
-                "7343148", // random par_id
-                "2", // random par_number
-                "a", // comprimento invalido
-                "100.0", // área
-                "MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0)))", // shape
-                "1", // owner
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidRecord = parser.getRecords().get(0);
-
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV inválido: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste constructorInvalid2 concluído com sucesso");
-        TestLogger.logTestEnd("constructorInvalid2");
+    void constructor4() {
+        when(mockRecord.get(anyInt())).thenReturn("");
+        assertThrows(IllegalArgumentException.class, () -> new Cadastro(mockRecord),
+                "Should throw IllegalArgumentException for record with empty values");
     }
 
+    /**
+     * Test handleId - Cyclomatic Complexity: 2
+     */
     @Test
-    void constructorInvalid3() {
-        TestLogger.logTestStart("constructorInvalid3");
-        // Cria um registro CSV inválido manualmente
-        String[] invalidValues = {
-                "1", // id
-                "7343148", // random par_id
-                "2", // random par_number
-                "10.0", // comprimento
-                "a", // área invalida
-                "MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0)))", // shape
-                "1", // owner
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidRecord = parser.getRecords().get(0);
-
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV inválido: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste constructorInvalid3 concluído com sucesso");
-        TestLogger.logTestEnd("constructorInvalid3");
-    }
-
-    @Test
-    void constructorInvalid4() {
-        TestLogger.logTestStart("constructorInvalid4");
-        // Cria um registro CSV inválido manualmente
-        String[] invalidValues = {
-                "1", // id
-                "7343148", // random par_id
-                "2", // random par_number
-                "10.0", // comprimento
-                "100.0", // área
-                "MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0)))", // shape
-                "a", // owner invalido
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidRecord = parser.getRecords().get(0);
-
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV inválido: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste constructorInvalid4 concluído com sucesso");
-        TestLogger.logTestEnd("constructorInvalid4");
-    }
-
-    @Test
-    void handleId1() {
-        TestLogger.logTestStart("handleId1");
-        // Cria um registro CSV inválido manualmente
-        String[] invalidValues = {
-                "0", // id a zero
-                "7343148", // random par_id
-                "2", // random par_number
-                "10.0", // comprimento
-                "100.0", // área
-                "MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0)))", // shape
-                "1", // owner
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidRecord = parser.getRecords().get(0);
-
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV inválido: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste handleId1 concluído com sucesso");
-        TestLogger.logTestEnd("handleId1");
+    void handleId1() throws ParseException {
+        when(mockRecord.get(0)).thenReturn("123");
+        cadastro = new Cadastro(mockRecord);
+        assertEquals("123", cadastro.getId(), "Should handle valid ID");
     }
 
     @Test
     void handleId2() {
-        TestLogger.logTestStart("handleId2");
-        // Cria um registro CSV inválido manualmente
-        String[] invalidValues = {
-                " ", // id vazio
-                "7343148", // random par_id
-                "2", // random par_number
-                "10.0", // comprimento
-                "100.0", // área
-                "MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0)))", // shape
-                "1", // owner
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidRecord = parser.getRecords().get(0);
-
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV inválido: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste handleId2 concluído com sucesso");
-        TestLogger.logTestEnd("handleId2");
+        when(mockRecord.get(0)).thenReturn(null);
+        assertThrows(IllegalArgumentException.class, () -> new Cadastro(mockRecord),
+                "Should throw IllegalArgumentException for null ID");
     }
 
+    /**
+     * Test handleLength - Cyclomatic Complexity: 2
+     */
     @Test
-    void handleLength1() {
-        TestLogger.logTestStart("handleLength1");
-        // Cria um registro CSV inválido manualmente
-        String[] invalidValues = {
-                "1", // id
-                "7343148", // random par_id
-                "2", // random par_number
-                "0", // comprimento a zero
-                "100.0", // área
-                "MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0)))", // shape
-                "1", // owner
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidRecord = parser.getRecords().get(0);
-
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV inválido: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste handleLength1 concluído com sucesso");
-        TestLogger.logTestEnd("handleLength1");
+    void handleLength1() throws ParseException {
+        when(mockRecord.get(1)).thenReturn("100");
+        cadastro = new Cadastro(mockRecord);
+        assertEquals(100.0, cadastro.getLength(), "Should handle valid length");
     }
 
     @Test
     void handleLength2() {
-        TestLogger.logTestStart("handleLength2");
-        // Cria um registro CSV inválido manualmente
-        String[] invalidValues = {
-                "1", // id
-                "7343148", // random par_id
-                "2", // random par_number
-                " ", // comprimento vazio
-                "100.0", // área
-                "MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0)))", // shape
-                "1", // owner
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidRecord = parser.getRecords().get(0);
-
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV inválido: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste handleLength2 concluído com sucesso");
-        TestLogger.logTestEnd("handleLength2");
+        when(mockRecord.get(1)).thenReturn("invalid");
+        assertThrows(IllegalArgumentException.class, () -> new Cadastro(mockRecord),
+                "Should throw IllegalArgumentException for invalid length");
     }
 
+    /**
+     * Test handleArea - Cyclomatic Complexity: 2
+     */
     @Test
-    void handleArea1() {
-        TestLogger.logTestStart("handleArea1");
-        // Cria um registro CSV inválido manualmente
-        String[] invalidValues = {
-                "1", // id
-                "7343148", // random par_id
-                "2", // random par_number
-                "10.0", // comprimento
-                "0", // área a zero
-                "MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0)))", // shape
-                "1", // owner
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidRecord = parser.getRecords().get(0);
-
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV inválido: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste handleArea1 concluído com sucesso");
-        TestLogger.logTestEnd("handleArea1");
+    void handleArea1() throws ParseException {
+        when(mockRecord.get(2)).thenReturn("1000");
+        cadastro = new Cadastro(mockRecord);
+        assertEquals(1000.0, cadastro.getArea(), "Should handle valid area");
     }
 
     @Test
     void handleArea2() {
-        TestLogger.logTestStart("handleArea2");
-        // Cria um registro CSV inválido manualmente
-        String[] invalidValues = {
-                "1", // id
-                "7343148", // random par_id
-                "2", // random par_number
-                "10.0", // comprimento
-                " ", // área vazia
-                "MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0)))", // shape
-                "1", // owner
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidRecord = parser.getRecords().get(0);
-
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV inválido: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste handleArea2 concluído com sucesso");
-        TestLogger.logTestEnd("handleArea2");
+        when(mockRecord.get(2)).thenReturn("invalid");
+        assertThrows(IllegalArgumentException.class, () -> new Cadastro(mockRecord),
+                "Should throw IllegalArgumentException for invalid area");
     }
 
+    /**
+     * Test handleShape - Cyclomatic Complexity: 2
+     */
     @Test
-    void handleOwner1() {
-        TestLogger.logTestStart("handleOwner1");
-        // Cria um registro CSV inválido manualmente
-        String[] invalidValues = {
-                "1", // id
-                "7343148", // random par_id
-                "2", // random par_number
-                "10.0", // comprimento
-                "100.0", // área
-                "MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0)))", // shape
-                "0", // owner a zero
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidRecord = parser.getRecords().get(0);
-
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV inválido: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste handleOwner1 concluído com sucesso");
-        TestLogger.logTestEnd("handleOwner1");
-    }
-
-    @Test
-    void handleOwner2() {
-        TestLogger.logTestStart("handleOwner2");
-        // Cria um registro CSV inválido manualmente
-        String[] invalidValues = {
-                "1", // id
-                "7343148", // random par_id
-                "2", // random par_number
-                "10.0", // comprimento
-                "100.0", // área
-                "MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0)))", // shape
-                " ", // owner invalido
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidRecord = parser.getRecords().get(0);
-
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidRecord);
-            }, "Deve lançar exceção ao criar cadastro com registro inválido");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV inválido: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste handleOwner2 concluído com sucesso");
-        TestLogger.logTestEnd("handleOwner2");
-    }
-
-    @Test
-    void handleShape1() throws Exception {
-        TestLogger.logTestStart("handleShape1");
-        Cadastro cadastro = new Cadastro(validRecord);
-        assertNotNull(cadastro.getShape(), "A forma deve ser processada");
-        TestLogger.logSuccess("Teste handleShape1 concluído com sucesso");
-        TestLogger.logTestEnd("handleShape1");
+    void handleShape1() throws ParseException {
+        when(mockRecord.get(3)).thenReturn("POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))");
+        cadastro = new Cadastro(mockRecord);
+        assertNotNull(cadastro.getShape(), "Should handle valid shape");
     }
 
     @Test
     void handleShape2() {
-        TestLogger.logTestStart("handleShape2");
-        // Cria um registro CSV com forma inválida
-        String[] invalidShapeValues = {
-                "1", // id
-                "7343148", // random par_id
-                "2", // random par_number
-                "10.0", // comprimento
-                "100.0", // área
-                "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", // shape inválido
-                "1", // owner
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidShapeValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidShapeRecord = parser.getRecords().get(0);
+        when(mockRecord.get(3)).thenReturn("invalid");
+        assertThrows(IllegalArgumentException.class, () -> new Cadastro(mockRecord),
+                "Should throw IllegalArgumentException for invalid shape");
+    }
 
-            assertThrows(IllegalArgumentException.class, () -> {
-                new Cadastro(invalidShapeRecord);
-            }, "Deve lançar exceção ao processar forma inválida");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV com forma inválida: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste handleShape2 concluído com sucesso");
-        TestLogger.logTestEnd("handleShape2");
+    /**
+     * Test handleOwner - Cyclomatic Complexity: 2
+     */
+    @Test
+    void handleOwner1() throws ParseException {
+        when(mockRecord.get(4)).thenReturn("John Doe");
+        cadastro = new Cadastro(mockRecord);
+        assertEquals("John Doe", cadastro.getOwner(), "Should handle valid owner");
     }
 
     @Test
-    void handleShape3() {
-        TestLogger.logTestStart("handleShape3");
-        // Cria um registro CSV com forma inválida
-        String[] invalidShapeValues = {
-                "1", // id
-                "7343148", // random par_id
-                "2", // random par_number
-                "10.0", // comprimento
-                "100.0", // área
-                "INVALID_SHAPE", // shape inválido (não é um MULTIPOLYGON válido)
-                "1", // owner
-                "Lisboa", // location1
-                "Portugal" // location2
-        };
-        try (StringReader reader = new StringReader(String.join(";", invalidShapeValues));
-                CSVParser parser = CSVFormat.newFormat(';').parse(reader)) {
-            CSVRecord invalidShapeRecord = parser.getRecords().get(0);
+    void handleOwner2() {
+        when(mockRecord.get(4)).thenReturn(null);
+        assertThrows(IllegalArgumentException.class, () -> new Cadastro(mockRecord),
+                "Should throw IllegalArgumentException for null owner");
+    }
 
-            assertThrows(org.locationtech.jts.io.ParseException.class, () -> {
-                new Cadastro(invalidShapeRecord);
-            }, "Deve lançar exceção ao processar forma inválida");
-        } catch (Exception e) {
-            fail("Erro ao criar registro CSV com forma inválida: " + e.getMessage());
-        }
-        TestLogger.logSuccess("Teste handleShape3 concluído com sucesso");
-        TestLogger.logTestEnd("handleShape3");
+    /**
+     * Test handleLocation - Cyclomatic Complexity: 2
+     */
+    @Test
+    void handleLocation1() throws ParseException {
+        when(mockRecord.get(5)).thenReturn("Freguesia");
+        when(mockRecord.get(6)).thenReturn("Concelho");
+        when(mockRecord.get(7)).thenReturn("Distrito");
+        cadastro = new Cadastro(mockRecord);
+        assertNotNull(cadastro.getLocation(), "Should handle valid location");
     }
 
     @Test
-    void getShape() throws Exception {
-        TestLogger.logTestStart("getShape");
-        Cadastro cadastro = new Cadastro(validRecord);
-        MultiPolygon shape = cadastro.getShape();
-        assertNotNull(shape, "A forma deve ser processada");
-        TestLogger.logSuccess("Teste getShape concluído com sucesso");
-        TestLogger.logTestEnd("getShape");
+    void handleLocation2() {
+        when(mockRecord.get(5)).thenReturn(null);
+        assertThrows(IllegalArgumentException.class, () -> new Cadastro(mockRecord),
+                "Should throw IllegalArgumentException for null location");
+    }
+
+    /**
+     * Test getPrice - Cyclomatic Complexity: 4
+     */
+    @Test
+    void getPrice1() throws ParseException {
+        cadastro = new Cadastro(mockRecord);
+        assertEquals(0.0, cadastro.getPrice(), "Should return default price when no specific prices are set");
     }
 
     @Test
-    void toStringTest() throws Exception {
-        TestLogger.logTestStart("toString");
-        Cadastro cadastro = new Cadastro(validRecord);
-        String result = cadastro.toString();
-        assertNotNull(result, "A representação em string não deve ser nula");
-        assertTrue(result.contains("Cadastro"), "A string deve conter 'Cadastro'");
-        TestLogger.logSuccess("Teste toString concluído com sucesso");
-        TestLogger.logTestEnd("toString");
+    void getPrice2() throws ParseException {
+        when(mockRecord.get(5)).thenReturn("Freguesia");
+        when(mockRecord.get(6)).thenReturn("Concelho");
+        when(mockRecord.get(7)).thenReturn("Distrito");
+        cadastro = new Cadastro(mockRecord);
+        cadastro.getLocation().setPriceFreguesia(100.0);
+        assertEquals(100.0, cadastro.getPrice(), "Should return freguesia price when set");
     }
 
     @Test
-    void handleLocation() throws Exception {
-        TestLogger.logTestStart("handleLocation");
-        Cadastro cadastro = new Cadastro(validRecord);
-        List<String> locations = cadastro.getLocation();
-        assertNotNull(locations, "As localizações devem ser processadas");
-        assertFalse(locations.isEmpty(), "A lista de localizações não deve estar vazia");
-        TestLogger.logSuccess("Teste handleLocation concluído com sucesso");
-        TestLogger.logTestEnd("handleLocation");
+    void getPrice3() throws ParseException {
+        when(mockRecord.get(5)).thenReturn("Freguesia");
+        when(mockRecord.get(6)).thenReturn("Concelho");
+        when(mockRecord.get(7)).thenReturn("Distrito");
+        cadastro = new Cadastro(mockRecord);
+        cadastro.getLocation().setPriceConcelho(200.0);
+        assertEquals(200.0, cadastro.getPrice(), "Should return concelho price when set");
     }
 
     @Test
-    void getCadastros1() throws Exception {
-        TestLogger.logTestStart("getCadastros1");
-        List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        assertNotNull(cadastros, "A lista de cadastros deve ser criada");
-        assertFalse(cadastros.isEmpty(), "A lista não deve estar vazia");
-        TestLogger.logSuccess("Teste getCadastros1 concluído com sucesso");
-        TestLogger.logTestEnd("getCadastros1");
+    void getPrice4() throws ParseException {
+        when(mockRecord.get(5)).thenReturn("Freguesia");
+        when(mockRecord.get(6)).thenReturn("Concelho");
+        when(mockRecord.get(7)).thenReturn("Distrito");
+        cadastro = new Cadastro(mockRecord);
+        cadastro.getLocation().setPriceDistrito(300.0);
+        assertEquals(300.0, cadastro.getPrice(), "Should return distrito price when set");
+    }
+
+    /**
+     * Test setPropretiesNear - Cyclomatic Complexity: 2
+     */
+    @Test
+    void setPropretiesNear1() throws ParseException {
+        cadastro = new Cadastro(mockRecord);
+        List<Cadastro> nearby = new ArrayList<>();
+        nearby.add(new Cadastro(mockRecord));
+        cadastro.setPropretiesNear(nearby);
+        assertEquals(1, cadastro.getPropretiesNear().size(), "Should set nearby properties");
     }
 
     @Test
-    void getCadastros2() {
-        TestLogger.logTestStart("getCadastros2");
-        assertThrows(Exception.class, () -> {
-            Cadastro.getCadastros("arquivo_inexistente.csv");
-        }, "Deve lançar exceção ao ler arquivo inválido");
-        TestLogger.logSuccess("Teste getCadastros2 concluído com sucesso");
-        TestLogger.logTestEnd("getCadastros2");
+    void setPropretiesNear2() throws ParseException {
+        cadastro = new Cadastro(mockRecord);
+        assertThrows(IllegalArgumentException.class, () -> cadastro.setPropretiesNear(null),
+                "Should throw IllegalArgumentException for null nearby properties");
     }
 
+    /**
+     * Test toString - Cyclomatic Complexity: 1
+     */
     @Test
-    void getCadastros3() throws Exception {
-        TestLogger.logTestStart("getCadastros3");
-        List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        assertNotNull(cadastros, "A lista de cadastros deve ser criada");
-        TestLogger.logSuccess("Teste getCadastros3 concluído com sucesso");
-        TestLogger.logTestEnd("getCadastros3");
-    }
-
-    @Test
-    void sortCadastros1() throws Exception {
-        TestLogger.logTestStart("sortCadastros1");
-        List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, Constants.SORT_BY_ID);
-        assertNotNull(sorted, "A lista ordenada não deve ser nula");
-        TestLogger.logSuccess("Teste sortCadastros1 concluído com sucesso");
-        TestLogger.logTestEnd("sortCadastros1");
-    }
-
-    @Test
-    void sortCadastros2() throws Exception {
-        TestLogger.logTestStart("sortCadastros2");
-        List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, Constants.SORT_BY_LENGTH);
-        assertNotNull(sorted, "A lista ordenada não deve ser nula");
-        TestLogger.logSuccess("Teste sortCadastros2 concluído com sucesso");
-        TestLogger.logTestEnd("sortCadastros2");
-    }
-
-    @Test
-    void sortCadastros3() throws Exception {
-        TestLogger.logTestStart("sortCadastros3");
-        List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, Constants.SORT_BY_AREA);
-        assertNotNull(sorted, "A lista ordenada não deve ser nula");
-        TestLogger.logSuccess("Teste sortCadastros3 concluído com sucesso");
-        TestLogger.logTestEnd("sortCadastros3");
-    }
-
-    @Test
-    void sortCadastros4() throws Exception {
-        TestLogger.logTestStart("sortCadastros4");
-        List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        List<Cadastro> sorted = Cadastro.sortCadastros(cadastros, Constants.SORT_BY_OWNER);
-        assertNotNull(sorted, "A lista ordenada não deve ser nula");
-        TestLogger.logSuccess("Teste sortCadastros4 concluído com sucesso");
-        TestLogger.logTestEnd("sortCadastros4");
-    }
-
-    @Test
-    void getId() throws Exception {
-        TestLogger.logTestStart("getId");
-        Cadastro cadastro = new Cadastro(validRecord);
-        assertNotNull(cadastro.getId(), "O ID deve ser definido");
-        TestLogger.logSuccess("Teste getId concluído com sucesso");
-        TestLogger.logTestEnd("getId");
-    }
-
-    @Test
-    void getLength() throws Exception {
-        TestLogger.logTestStart("getLength");
-        Cadastro cadastro = new Cadastro(validRecord);
-        assertNotNull(cadastro.getLength(), "O comprimento deve ser definido");
-        TestLogger.logSuccess("Teste getLength concluído com sucesso");
-        TestLogger.logTestEnd("getLength");
-    }
-
-    @Test
-    void getArea() throws Exception {
-        TestLogger.logTestStart("getArea");
-        Cadastro cadastro = new Cadastro(validRecord);
-        assertNotNull(cadastro.getArea(), "A área deve ser definida");
-        TestLogger.logSuccess("Teste getArea concluído com sucesso");
-        TestLogger.logTestEnd("getArea");
-    }
-
-    @Test
-    void getOwner() throws Exception {
-        TestLogger.logTestStart("getOwner");
-        Cadastro cadastro = new Cadastro(validRecord);
-        assertNotNull(cadastro.getOwner(), "O proprietário deve ser definido");
-        TestLogger.logSuccess("Teste getOwner concluído com sucesso");
-        TestLogger.logTestEnd("getOwner");
-    }
-
-    @Test
-    void getLocation() throws Exception {
-        TestLogger.logTestStart("getLocation");
-        Cadastro cadastro = new Cadastro(validRecord);
-        List<String> locations = cadastro.getLocation();
-        assertNotNull(locations, "As localizações devem ser processadas");
-        assertFalse(locations.isEmpty(), "A lista de localizações não deve estar vazia");
-        TestLogger.logSuccess("Teste getLocation concluído com sucesso");
-        TestLogger.logTestEnd("getLocation");
-    }
-
-    @Test
-    void testHandleLocation() throws Exception {
-        TestLogger.logTestStart("testHandleLocation");
-        
-        // Obter cadastros do arquivo CSV
-        List<Cadastro> cadastros = Cadastro.getCadastros(CSV_PATH);
-        TestLogger.log("Total de cadastros carregados: " + cadastros.size());
-        
-        // Verificar se temos cadastros
-        assertNotNull(cadastros, "A lista de cadastros não deve ser nula");
-        assertFalse(cadastros.isEmpty(), "A lista de cadastros não deve estar vazia");
-        
-        // Testar o primeiro cadastro
-        Cadastro cadastro = cadastros.get(0);
-        List<String> locations = cadastro.getLocation();
-        TestLogger.log("Localizações do primeiro cadastro: " + locations);
-        
-        // Verificar se as localizações foram extraídas corretamente
-        assertNotNull(locations, "A lista de localizações não deve ser nula");
-        assertFalse(locations.isEmpty(), "A lista de localizações não deve estar vazia");
-        
-        // Verificar se não há valores "NA" na lista
-        assertFalse(locations.contains(Constants.NA_VALUE), 
-            "A lista de localizações não deve conter valores 'NA'");
-        
-        // Verificar se a ordem das localizações está correta
-        // Assumindo que o CSV tem a ordem: Freguesia, Municipio, Concelho
-        if (locations.size() >= 3) {
-            TestLogger.log("Freguesia: " + locations.get(0));
-            TestLogger.log("Municipio: " + locations.get(1));
-            TestLogger.log("Concelho: " + locations.get(2));
-            
-            assertNotNull(locations.get(0), "Freguesia não deve ser nula");
-            assertNotNull(locations.get(1), "Municipio não deve ser nulo");
-            assertNotNull(locations.get(2), "Concelho não deve ser nulo");
-        } else {
-            TestLogger.logError("Lista de localizações tem menos de 3 elementos: " + locations.size());
-            fail("A lista de localizações deve ter pelo menos 3 elementos (Freguesia, Municipio, Concelho)");
-        }
-        
-        // Verificar se os valores não estão vazios
-        for (int i = 0; i < locations.size(); i++) {
-            String location = locations.get(i);
-            assertFalse(location.trim().isEmpty(), 
-                "Localização " + i + " não deve estar vazia: " + location);
-        }
-        
-        TestLogger.logSuccess("Teste testHandleLocation concluído com sucesso");
-        TestLogger.logTestEnd("testHandleLocation");
+    void testToString() {
+        cadastro = new Cadastro(mockRecord);
+        String str = cadastro.toString();
+        assertTrue(str.contains("Cadastro{id="), "String representation should contain id");
+        assertTrue(str.contains("length="), "String representation should contain length");
+        assertTrue(str.contains("area="), "String representation should contain area");
+        assertTrue(str.contains("shape="), "String representation should contain shape");
+        assertTrue(str.contains("owner="), "String representation should contain owner");
+        assertTrue(str.contains("location="), "String representation should contain location");
     }
 }

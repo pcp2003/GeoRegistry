@@ -7,18 +7,18 @@ import org.locationtech.jts.geom.TopologyException;
 import java.util.*;
 
 /**
- * Classe que representa um grafo de propriedades, onde os vértices são cadastros (propriedades)
- * e as arestas representam adjacências físicas entre as propriedades.
+ * Graph representing property adjacencies.
+ * Vertices are properties, edges represent physical adjacencies.
  * 
  * @author [Lei-G]
  * @version 1.0
  */
 public class PropertyGraph extends Graph {
     /**
-     * Constrói um grafo de propriedades a partir de uma lista de cadastros.
+     * Creates a property graph from a list of properties.
      * 
-     * @param cadastros Lista de cadastros que serão os vértices do grafo
-     * @throws IllegalArgumentException se a lista de cadastros for nula ou vazia
+     * @param cadastros List of properties
+     * @throws IllegalArgumentException if list is null or empty
      */
     public PropertyGraph(List<Cadastro> cadastros) {
         super(cadastros);
@@ -26,7 +26,7 @@ public class PropertyGraph extends Graph {
     }
 
     /**
-     * Constrói o grafo verificando adjacências entre todas as propriedades.
+     * Builds the graph by checking adjacencies between all properties.
      * @throws TopologyException se ocorrer um erro durante a análise topológica
      */
     private void buildGraph() {
@@ -49,11 +49,11 @@ public class PropertyGraph extends Graph {
     
 
     /**
-     * Retorna o conjunto de propriedades adjacentes a uma propriedade específica.
+     * Returns properties adjacent to a given property.
      * 
-     * @param property A propriedade cujas adjacências serão retornadas
-     * @return Conjunto de propriedades adjacentes
-     * @throws IllegalArgumentException se a propriedade for nula
+     * @param property Target property
+     * @return Set of adjacent properties
+     * @throws IllegalArgumentException if property is null
      */
     public Set<Cadastro> getAdjacentProperties(Cadastro property) {
         if (property == null) {
@@ -64,9 +64,9 @@ public class PropertyGraph extends Graph {
     }
     
     /**
-     * Retorna o número total de adjacências no grafo.
+     * Returns total number of adjacencies.
      * 
-     * @return Número de adjacências
+     * @return Number of adjacencies
      */
     public int getNumberOfAdjacenciesBetweenProperties() {
         int count = 0;
@@ -77,10 +77,9 @@ public class PropertyGraph extends Graph {
     }
 
     /**
-     * Retorna uma representação em string do grafo, mostrando cada propriedade
-     * e suas adjacências.
+     * Returns string representation of the graph.
      * 
-     * @return String representando o grafo
+     * @return Graph representation
      */
     @Override
     public String toString() {
@@ -97,13 +96,13 @@ public class PropertyGraph extends Graph {
     }
 
     /**
-     * Calcula a área média das propriedades em uma determinada região.
+     * Calculates average property area in a region.
      * 
-     * @param district Distrito para filtrar (opcional)
-     * @param municipality Município para filtrar (opcional)
-     * @param county Concelho para filtrar (opcional)
-     * @return A área média das propriedades
-     * @throws IllegalArgumentException se não houver propriedades na área especificada
+     * @param district District filter (optional)
+     * @param municipality Municipality filter (optional)
+     * @param county County filter (optional)
+     * @return Average area
+     * @throws IllegalArgumentException if no properties are found in the specified area
      */
     public double calculateAverageArea(String district, String municipality, String county) {
         if (district == null && municipality == null && county == null) {

@@ -2,6 +2,7 @@ package core;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.Map;
 
 /**
  * Classe que contém todas as constantes utilizadas no sistema de cadastro.
@@ -20,11 +21,13 @@ public class Constants {
     /** Constante para ordenação por proprietário */
     public static final int SORT_BY_OWNER = 3;
     /** Constante para ordenação por distrito */
-    public static final int SORT_BY_DISTRICT = 4;
-    /** Constante para ordenação por município */
-    public static final int SORT_BY_MUNICIPALITY = 5;
+    public static final int SORT_BY_FREGUESIA = 4;
     /** Constante para ordenação por concelho */
-    public static final int SORT_BY_COUNTY = 6;
+    public static final int SORT_BY_CONCELHO = 5;
+    /** Constante para ordenação por distrito */
+    public static final int SORT_BY_DISTRICT = 6;
+    /** Constante da area próxima para avaliação */
+    public static final double NEAR_RADIUS = 200;
 
     /** Índice do campo ID no CSV */
     public static final int ID_INDEX = 0;
@@ -37,11 +40,11 @@ public class Constants {
     /** Índice do campo proprietário no CSV */
     public static final int OWNER_INDEX = 6;
     /** Índice do campo Freguesia no CSV */
-    public static final int DISTRICT_INDEX = 7;
-    /** Índice do campo Municipio no CSV */
-    public static final int MUNICIPALITY_INDEX = 8;
+    public static final int FREGUESIA_INDEX = 7;
     /** Índice do campo Concelho no CSV */
-    public static final int COUNTY_INDEX = 9;
+    public static final int CONCELHO_INDEX = 8;
+    /** Índice do campo Distrito no CSV */
+    public static final int DISTRICT_INDEX = 9;
 
     /** Valor que indica localização não disponível no CSV */
     public static final String NA_VALUE = "NA";
@@ -225,4 +228,71 @@ public class Constants {
     public static final Color POLYGON_BORDER = Color.BLUE;
     /** Cor da borda dos buracos (vermelho) */
     public static final Color HOLE_BORDER = Color.RED;
+
+    // ================ Constantes do Preço das Localizações ================
+
+    /** Freguesia */
+    public static final Map<String, Integer> FREGUESIA_PRICE = Map.ofEntries(
+            Map.entry("arco da calheta", 3436),
+            Map.entry("calheta", 3436),
+            Map.entry("canhas", 2830),
+            Map.entry("curral das freiras", 2517),
+            Map.entry("câmara de lobos", 2517),
+            Map.entry("caniço", 2269),
+            Map.entry("são roque", 3542),
+            Map.entry("madalena do mar", 2830),
+            Map.entry("santo antónio", 3542),
+            Map.entry("paul do mar", 3436),
+            Map.entry("porto da cruz", 2343),
+            Map.entry("faial", 1500),
+            Map.entry("são martinho", 3696),
+            Map.entry("tabua", 2698),
+            Map.entry("santa maria maior", 3542),
+            Map.entry("machico", 2343),
+            Map.entry("estreito de câmara de lobos", 2517),
+            Map.entry("sé", 3684),
+            Map.entry("fajã da ovelha", 3436),
+            Map.entry("prazeres", 3436),
+            Map.entry("jardim da serra", 2517),
+            Map.entry("água de pena", 2343),
+            Map.entry("imaculado coração de maria", 3542),
+            Map.entry("campanário", 2698),
+            Map.entry("jardim do mar", 3436),
+            Map.entry("santo antónio da serra", 2343),
+            Map.entry("estreito da calheta", 3436),
+            Map.entry("são pedro", 3542),
+            Map.entry("caniçal", 2343),
+            Map.entry("são gonçalo", 3542),
+            Map.entry("santa luzia", 3542),
+            Map.entry("quinta grande", 2517),
+            Map.entry("monte", 3542),
+            Map.entry("ponta do pargo", 3436),
+            Map.entry("ponta do sol", 2830)
+    );
+
+    /** Concelho */
+    public static final Map<String, Integer> CONCELHO_PRICE = Map.ofEntries(
+            Map.entry("funchal", 3542),
+            Map.entry("calheta", 3436),
+            Map.entry("ponta do sol", 2830),
+            Map.entry("ribeira brava", 2698),
+            Map.entry("câmara de lobos", 2517),
+            Map.entry("santa cruz", 2269),
+            Map.entry("machico", 2343),
+            Map.entry("são vicente", 2034),
+            Map.entry("santana", 1500)
+    );
+
+    /** Distrito */
+    public static final Map<String, Integer> DISTRICT_PRICE = Map.of(
+            "ilha da madeira", 3251
+    );
+
+    /** País */
+    public static final Map<String, Integer> COUNTRY_PRICE = Map.of(
+            "portugal", 2827
+    );
+
+
+
 } 

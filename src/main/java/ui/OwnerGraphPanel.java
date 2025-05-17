@@ -20,16 +20,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Painel responsável por renderizar o grafo de proprietários.
- * Exibe os proprietários e suas adjacências de forma visual, onde:
- * - Os proprietários são representados por círculos preenchidos em verde
- * - As adjacências são representadas por linhas em laranja
- * - O grafo é automaticamente dimensionado e centralizado no painel
- * - Suporta zoom in/out usando a roda do mouse
- * - Suporta pan (mover a tela) arrastando com o mouse
+ * Painel responsável por visualizar o grafo de proprietários.
+ * Este painel permite visualizar e interagir com o grafo que representa
+ * as relações entre proprietários e suas propriedades.
  * 
- * @author [Lei-G]
+ * O painel inclui:
+ * - Visualização do grafo com zoom e pan
+ * - Lista de proprietários
+ * - Botões para criar e limpar o grafo
+ * - Interação com os nós do grafo
+ * 
+ * @author LEI-G
  * @version 1.0
+ * @see javax.swing.JPanel
+ * @see model.Cadastro
+ * @see service.OwnerGraph
  */
 public class OwnerGraphPanel extends JPanel implements MouseWheelListener, MouseListener, MouseMotionListener {
     /** O grafo de proprietários a ser visualizado */
@@ -83,7 +88,7 @@ public class OwnerGraphPanel extends JPanel implements MouseWheelListener, Mouse
             // Agrupa propriedades por proprietário
             Map<Integer, List<Cadastro>> propertiesByOwner = new HashMap<>();
             for (Cadastro cadastro : ownerGraph.getProperties()) {
-                propertiesByOwner.computeIfAbsent(cadastro.getOwner(), _ -> new ArrayList<>()).add(cadastro);
+                propertiesByOwner.computeIfAbsent(cadastro.getOwner(), e -> new ArrayList<>()).add(cadastro);
             }
             
             // Desenha um ponto por proprietário, no centro médio de suas propriedades
@@ -206,7 +211,7 @@ public class OwnerGraphPanel extends JPanel implements MouseWheelListener, Mouse
         // Agrupa propriedades por proprietário
         Map<Integer, List<Cadastro>> propertiesByOwner = new HashMap<>();
         for (Cadastro cadastro : ownerGraph.getProperties()) {
-            propertiesByOwner.computeIfAbsent(cadastro.getOwner(), _ -> new ArrayList<>()).add(cadastro);
+            propertiesByOwner.computeIfAbsent(cadastro.getOwner(), e -> new ArrayList<>()).add(cadastro);
         }
 
         // Calcula os limites do grafo usando os centros médios
