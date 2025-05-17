@@ -1,0 +1,159 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Location</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">model</a>
+</div>
+
+<h1>Coverage Summary for Class: Location (model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Location</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (3/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (6/9)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package model;
+&nbsp;
+&nbsp;import core.Constants;
+&nbsp;
+&nbsp;/**
+&nbsp; * Record que representa uma localização com freguesia, concelho e distrito.
+&nbsp; * 
+&nbsp; * @param freguesia A freguesia (subdivisão administrativa mais pequena) da localização
+&nbsp; * @param concelho O concelho (subdivisão administrativa intermédia) da localização
+&nbsp; * @param distrito O distrito (subdivisão administrativa maior) da localização
+&nbsp; * 
+&nbsp; * @author Lei-G
+&nbsp; * @version 1.0
+&nbsp; */
+<b class="fc">&nbsp;public record Location(String freguesia, String concelho, String distrito) {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Obtém o preço por metro quadrado para esta localização.
+&nbsp;     * O preço é determinado pela hierarquia da localização (freguesia &gt; concelho &gt; distrito &gt; país).
+&nbsp;     * 
+&nbsp;     * @return O preço por metro quadrado em euros
+&nbsp;     */
+&nbsp;    public int getPrice() {
+<b class="pc">&nbsp;        if (Constants.FREGUESIA_PRICE.containsKey(freguesia.toLowerCase())) {</b>
+<b class="nc">&nbsp;            return Constants.FREGUESIA_PRICE.get(freguesia.toLowerCase());</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (Constants.CONCELHO_PRICE.containsKey(concelho.toLowerCase())) {</b>
+<b class="nc">&nbsp;            return Constants.CONCELHO_PRICE.get(concelho.toLowerCase());</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (Constants.DISTRICT_PRICE.containsKey(distrito.toLowerCase())) {</b>
+<b class="nc">&nbsp;            return Constants.DISTRICT_PRICE.get(distrito.toLowerCase());</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return Constants.COUNTRY_PRICE.get(&quot;portugal&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String toString() {
+<b class="fc">&nbsp;        return freguesia + &quot;, &quot; + concelho + &quot;, &quot; + distrito;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-17 22:49</div>
+</div>
+</body>
+</html>

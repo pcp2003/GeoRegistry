@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="77544ef0-b9dd-4be9-8124-363db0ed3e0e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/allclasses-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/allclasses-index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/allpackages-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/allpackages-index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/constant-values.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/constant-values.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/core/Constants.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/core/Constants.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/core/Main.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/core/Main.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/core/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/core/package-summary.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/core/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/core/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/help-doc.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/help-doc.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-1.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-1.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-10.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-10.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-11.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-11.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-12.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-12.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-13.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-13.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-14.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-14.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-15.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-15.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-16.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-16.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-17.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-17.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-18.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-18.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-19.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-19.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-2.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-20.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-20.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-21.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-21.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-3.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-3.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-4.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-4.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-5.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-5.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-6.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-6.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-7.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-7.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-8.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-8.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index-files/index-9.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index-files/index-9.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/member-search-index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/member-search-index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/model/Cadastro.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/model/Cadastro.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/model/Location.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/model/Location.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/model/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/model/package-summary.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/model/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/model/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/overview-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/overview-summary.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/overview-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/overview-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/search.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/search.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/serialized-form.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/serialized-form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/service/Graph.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/service/Graph.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/service/OwnerGraph.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/service/OwnerGraph.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/service/PropertyGraph.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/service/PropertyGraph.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/service/exchange/PropertyExchange.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/service/exchange/PropertyExchange.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/service/exchange/PropertyExchangeService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/service/exchange/PropertyExchangeService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/service/exchange/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/service/exchange/package-summary.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/service/exchange/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/service/exchange/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/service/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/service/package-summary.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/service/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/service/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/type-search-index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/type-search-index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/ui/Gui.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/ui/Gui.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/ui/OwnerGraphPanel.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/ui/OwnerGraphPanel.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/ui/PropertyExchangePanel.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/ui/PropertyExchangePanel.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/ui/PropertyGraphPanel.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/ui/PropertyGraphPanel.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/ui/ShapePanel.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/ui/ShapePanel.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/ui/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/ui/package-summary.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/ui/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/ui/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/core/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/core/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/core/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/core/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Cadastro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Cadastro.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Location.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Location.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/exchange/PropertyExchangeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/exchange/PropertyExchangeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ui/Gui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/Gui.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ui/PropertyExchangePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/PropertyExchangePanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ui/PropertyGraphPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/PropertyGraphPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ui/ShapePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ui/ShapePanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/core/ConstantsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/core/ConstantsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/core/MainTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/model/CadastroTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/model/CadastroTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/model/LocationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/model/LocationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/service/GraphTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/service/GraphTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/service/OwnerGraphTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/service/OwnerGraphTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/service/PropertyGraphTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/service/PropertyGraphTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/service/exchange/PropertyExchangeServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/service/exchange/PropertyExchangeServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/service/exchange/PropertyExchangeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/service/exchange/PropertyExchangeTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ui/GuiTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ui/OwnerGraphPanelTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ui/PropertyExchangePanelTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ui/PropertyGraphPanelTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ui/ShapePanelTest.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExportToHTMLSettings">
+    <option name="OPEN_IN_BROWSER" value="true" />
+    <option name="OUTPUT_DIRECTORY" value="C:\Users\guipe\Documents\Iscte\3º Ano\ES-2024_25-2Sem-Quarta-LEI-G\junit_report" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JUnit3 Test Class" />
+        <option value="Class" />
+        <option value="JUnit5 Test Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2vHDjRRmaW2cRfrkhA7p8ZvQxBN" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.CadastroReader.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MapaUI.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CadastroTest.constructor1.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.CadastroTest.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.CalculatorTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CalculatorTest.testMultiply.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.ConstantsTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ConstantsTest.testConstants.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GraphTest.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.LocationTest.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.OwnerGraphTest.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.PropertyExchangeServiceTest.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.PropertyExchangeTest.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.PropertyGraphTest.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.Test.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.core in ES-2024_25-2Sem-Quarta-LEI-G.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.java in ES-2024_25-2Sem-Quarta-LEI-G.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.model in ES-2024_25-2Sem-Quarta-LEI-G.executor&quot;: &quot;Coverage&quot;,
+    &quot;Maven.Run GUI.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Run JavaFX.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit3&quot;: &quot;junit.framework.TestCase&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;tests&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/guipe/Documents/Iscte/3º Ano/PCD/PCD_project&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+      <recent name="junit.framework.TestCase" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="ui" />
+      <recent name="service.exchange" />
+      <recent name="service" />
+      <recent name="model" />
+      <recent name="core" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.java in ES-2024_25-2Sem-Quarta-LEI-G">
+    <configuration name="GraphTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="ES-2024_25-2Sem-Quarta-LEI-G" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="service" />
+      <option name="MAIN_CLASS_NAME" value="service.GraphTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OwnerGraphTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="ES-2024_25-2Sem-Quarta-LEI-G" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="service" />
+      <option name="MAIN_CLASS_NAME" value="service.OwnerGraphTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PropertyExchangeTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="ES-2024_25-2Sem-Quarta-LEI-G" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="service.exchange.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="service.exchange" />
+      <option name="MAIN_CLASS_NAME" value="service.exchange.PropertyExchangeTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PropertyGraphTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="ES-2024_25-2Sem-Quarta-LEI-G" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="service" />
+      <option name="MAIN_CLASS_NAME" value="service.PropertyGraphTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="java in ES-2024_25-2Sem-Quarta-LEI-G" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="ES-2024_25-2Sem-Quarta-LEI-G" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.java in ES-2024_25-2Sem-Quarta-LEI-G" />
+        <item itemvalue="JUnit.PropertyGraphTest" />
+        <item itemvalue="JUnit.OwnerGraphTest" />
+        <item itemvalue="JUnit.GraphTest" />
+        <item itemvalue="JUnit.PropertyExchangeTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23726.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23726.103" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="77544ef0-b9dd-4be9-8124-363db0ed3e0e" name="Changes" comment="" />
+      <created>1743793243505</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1743793243505</updated>
+      <workItem from="1743793244710" duration="2457000" />
+      <workItem from="1743795730073" duration="9000" />
+      <workItem from="1743840184698" duration="11784000" />
+      <workItem from="1743878842022" duration="10571000" />
+      <workItem from="1743945024302" duration="8836000" />
+      <workItem from="1747514614840" duration="298000" />
+      <workItem from="1747514931404" duration="4142000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ES_2024_25_2Sem_Quarta_LEI_G$java_in_ES_2024_25_2Sem_Quarta_LEI_G.ic" NAME="java in ES-2024_25-2Sem-Quarta-LEI-G Coverage Results" MODIFIED="1747518553282" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/ES_2024_25_2Sem_Quarta_LEI_G$OwnerGraphTest.ic" NAME="OwnerGraphTest Coverage Results" MODIFIED="1747516078413" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>service.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/workspace_xml$CadastroTest_constructor1.ic" NAME="CadastroTest.constructor1 Coverage Results" MODIFIED="1747513961920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>model.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/workspace_xml$ConstantsTest.ic" NAME="ConstantsTest Coverage Results" MODIFIED="1747514164009" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>core.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/ES_2024_25_2Sem_Quarta_LEI_G$PropertyExchangeServiceTest.ic" NAME="PropertyExchangeServiceTest Coverage Results" MODIFIED="1747515750465" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>service.exchange.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/ES_2024_25_2Sem_Quarta_LEI_G$core_in_ES_2024_25_2Sem_Quarta_LEI_G.ic" NAME="core in ES-2024_25-2Sem-Quarta-LEI-G Coverage Results" MODIFIED="1747514651538" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/ES_2024_25_2Sem_Quarta_LEI_G$GraphTest.ic" NAME="GraphTest Coverage Results" MODIFIED="1747515964748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>service.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/workspace_xml$model_in_ES_2024_25_2Sem_Quarta_LEI_G.ic" NAME="model in ES-2024_25-2Sem-Quarta-LEI-G Coverage Results" MODIFIED="1747514455375" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/workspace_xml$CadastroTest.ic" NAME="CadastroTest Coverage Results" MODIFIED="1747514441133" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>model.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/workspace_xml$PropertyExchangeServiceTest.ic" NAME="PropertyExchangeServiceTest Coverage Results" MODIFIED="1747514515498" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>service.exchange.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/ES_2024_25_2Sem_Quarta_LEI_G$CadastroTest.ic" NAME="CadastroTest Coverage Results" MODIFIED="1747515077898" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>model.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/ES_2024_25_2Sem_Quarta_LEI_G$PropertyGraphTest.ic" NAME="PropertyGraphTest Coverage Results" MODIFIED="1747516146481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>service.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/ES_2024_25_2Sem_Quarta_LEI_G$ConstantsTest.ic" NAME="ConstantsTest Coverage Results" MODIFIED="1747515011415" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>core.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/ES_2024_25_2Sem_Quarta_LEI_G$PropertyExchangeTest.ic" NAME="PropertyExchangeTest Coverage Results" MODIFIED="1747515812500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>service.exchange.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/workspace_xml$PropertyExchangeTest.ic" NAME="PropertyExchangeTest Coverage Results" MODIFIED="1747513226445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>service.exchange.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/workspace_xml$java_in_ES_2024_25_2Sem_Quarta_LEI_G.ic" NAME="java in ES-2024_25-2Sem-Quarta-LEI-G Coverage Results" MODIFIED="1747514211658" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/workspace_xml$core_in_ES_2024_25_2Sem_Quarta_LEI_G.ic" NAME="core in ES-2024_25-2Sem-Quarta-LEI-G Coverage Results" MODIFIED="1747514225381" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/ES_2024_25_2Sem_Quarta_LEI_G$LocationTest.ic" NAME="LocationTest Coverage Results" MODIFIED="1747515025005" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>model.*</FILTER>
+    </SUITE>
+  </component>
+</project>
