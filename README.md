@@ -1,5 +1,4 @@
-# ES-2024_25-2Sem-Quarta-LEI-G
-Software Engineering Project 2024/25
+# GeoRegistry
 
 ## Video
 Demonstration video: [video](https://youtu.be/7X2gcjkpPnk)
